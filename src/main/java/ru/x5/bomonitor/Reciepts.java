@@ -52,7 +52,9 @@ public class Reciepts implements Service {
                 "( SELECT Max( bon_seq_id )\n" +
                 "FROM   GK_BONKOPF\n" +
                 "WHERE  belegtyp = 50 ) ) AS SAFE_AMOUNT ) AS b";
-        return Integer.parseInt(DBConnection.executeSelect(query).get("count"));
+        //Integer.parseInt()
+        Double d= Double.parseDouble(DBConnection.executeSelect(query).get("count"));
+        return d.intValue();
     }
     public int getDuplicatesBon() throws SQLException {
         long dt = new Date().getTime()-(3*24*60*60*1000);

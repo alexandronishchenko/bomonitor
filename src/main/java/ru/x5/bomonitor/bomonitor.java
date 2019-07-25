@@ -13,6 +13,9 @@ public class bomonitor {
         mapping.put("items", new Items());
         mapping.put("printers", new Printers());
         mapping.put("reciepts", new Reciepts());
+        mapping.put("stock", new Stock());
+        mapping.put("taskmanager", new Taskmanager());
+        mapping.put("transportmodule", new TransportModule());
         mapping.put("action", new Action());
     }
 

@@ -1,0 +1,30 @@
+package ru.x5.bomonitor;
+
+import java.sql.SQLException;
+
+public class Taskmanager implements Service{
+    @Override
+    public int get(String directive) {
+        int res=0;
+        try {
+            res=getTaskNotTop();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public int get(String directive, String subquery) {
+        return 0;
+    }
+    public int getTaskNotTop() throws SQLException {
+        String s="SELECT count (*) FROM XRG_TASK_MGMT_GA_DETAILS \n" +
+                "  WHERE PLU in (SELECT PLU FROM XRG_SALES_PROFILE WHERE PLU in \n" +
+                "  (SELECT ITEM_ID FROM XRG_ITEM WHERE TOP_TYPECODE is null)\n" +
+                "  and ACTIVE ='J')";
+        return Integer.parseInt(DBConnection.executeSelect(s).get("count"));
+    }
+
+
+}
