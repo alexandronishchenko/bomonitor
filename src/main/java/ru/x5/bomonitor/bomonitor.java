@@ -1,5 +1,7 @@
 package ru.x5.bomonitor;
 
+import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
+
 import java.util.HashMap;
 
 public class bomonitor {
@@ -20,15 +22,28 @@ public class bomonitor {
     }
 
     public static void main(String[] args) {
-        String service=args[0];
-        String param=args[1];
         String subquery=null;
-        if(args.length==3){
+        String service=null;
+        String param=null;
+        if(args.length==1){
+            System.out.println("testing zabbix");
+            ZabbixImitation zi = new ZabbixImitation();
+            new Thread(zi).start();
+        }else if(args.length==3){
+            service=args[0];
+            param=args[1];
             subquery=args[2];
             System.out.println(String.valueOf(mapping.get(service).get(param,subquery)));
-        }else {
+        }else if(args.length==2){
+            service=args[0];
+            param=args[1];
             System.out.println(String.valueOf(mapping.get(service).get(param)));
+        }else {
+            System.out.println("incorrect param");
         }
+
+
+
     }
 
 }

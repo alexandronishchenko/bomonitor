@@ -1,8 +1,14 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
+import ru.x5.bomonitor.bomonitor;
+
 import java.io.*;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 public class ZabbixImitation implements Runnable{
     private Boolean isRun=true;
@@ -24,15 +30,17 @@ public class ZabbixImitation implements Runnable{
             Socket socket;
             try {
                 serverSocket = new ServerSocket(10057);
-                socket = serverSocket.accept();
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                OutputStream os = socket.getOutputStream();
-                while (socket.isConnected()){
-                    String header = readHeader(in);
-                    //System.out.println(in.readLine());
-                    //System.out.println(in.readLine());
-                    //System.out.println(in.readLine());
+                while (true){
+                    socket = serverSocket.accept();
+                    InputStreamReader in = new InputStreamReader(socket.getInputStream());
+                    OutputStream os = socket.getOutputStream();
+                    readHeader(in);
+
+                        ;
+                        sendResponse(os,getCommand(in));
+                    socket.close();
                 }
+
 
 
 
@@ -43,13 +51,94 @@ public class ZabbixImitation implements Runnable{
     }
     }
 
-    String readHeader(BufferedReader br) throws IOException {
-        String s = "";
-        while (br.ready()){
-            s=br.readLine();
+    void readHeader(InputStreamReader br) throws IOException {
+        byte[] head = new byte[5];
+        for (int i=0;i<5;i++){
+            head[i]=(byte)br.read();
         }
-        System.out.println(s);
-        return s;
+        System.out.println(new String(head));
+    }
+    public String getCommand(InputStreamReader br) throws IOException {
+            byte[] b2 = new byte[8];
+            for (int i = 0; i < 8; i++) {
+                b2[i] = (byte) br.read();
+            }
+            ByteBuffer bb = ByteBuffer.wrap(b2);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+            int lenth = bb.getInt();
+            byte[] data = new byte[lenth];
+            for (int i = 0; i < lenth; i++) {
+                data[i] = (byte) br.read();
+            }
+
+            return new String(data);
+    }
+    public void sendResponse(OutputStream ou,String directive) throws IOException {
+        //TODO: method to send data to zabbix.
+        /*
+        String[] directives = getServiceParams(directive);
+        Job job = new Job();
+        for(String s : directives)job.addDirective(s);
+
+        int result=job.runJob();
+        BigInteger integ = BigInteger.valueOf(result);
+        byte[] msg = integ.toByteArray();
+
+        byte[] header1 = new byte[]{'Z', 'B', 'X', 'D', '\1',};
+        for (int i = 0; i < header1.length; i++) {
+            ou.write(header1[i]);
+        }
+        BigInteger integ1 = BigInteger.valueOf(msg.length);
+        byte[] lenth = integ.toByteArray();
+        byte[] length = new byte[] {
+                (byte)(msg.length & 0xFF),
+                (byte)((msg.length >> 8) & 0xFF),
+                (byte)((msg.length >> 16) & 0xFF),
+                (byte)((msg.length >> 24) & 0xFF),
+                '\0', '\0', '\0', '\0'};
+        System.out.println(msg.length+"->");
+        for (int i = 0; i <8 ; i++) {
+            ou.write(length[i]);
+            System.out.println(length[i]);
+        }
+        for (int i = 0; i < msg.length; i++) {
+            ou.write(msg[i]);
+        }
+        ou.flush();
+*/
+
+
+        String[] directives = getServiceParams(directive);
+        Job job = new Job();
+        for(String s : directives){
+            job.addDirective(s);
+            System.out.println(s);
+        }
+
+
+        BigInteger integ = BigInteger.valueOf(2);
+        byte[] data = integ.toByteArray();
+        byte[] header = new byte[] {
+                'Z', 'B', 'X', 'D', '\1',
+                (byte)(data.length & 0xFF),
+                (byte)((data.length >> 8) & 0xFF),
+                (byte)((data.length >> 16) & 0xFF),
+                (byte)((data.length >> 24) & 0xFF),
+                '\0', '\0', '\0', '\0'};
+
+        byte[] packet = new byte[header.length + data.length];
+        System.arraycopy(header, 0, packet, 0, header.length);
+        System.arraycopy(data, 0, packet, header.length, data.length);
+        for (int i = 0; i <packet.length ; i++) {
+            ou.write(packet[i]);
+        }
+        ou.flush();
+
+    }
+
+    String[] getServiceParams(String s){
+        String[] arr = s.split(".");
+        return arr;
     }
 
 }

@@ -26,7 +26,7 @@ public class TransportModule implements Service {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
         String s="select count(*) from (select bon_seq_id from XRG_TRANSPORT_MODULE group by bon_seq_id having count(bon_seq_id)=1) r,\n" +
-                " xrg_transport_module d where d.ERROR_DESCRIPTION is not null and d.TIMESTAMP > '${DATE}' and r.bon_seq_id = d.bon_seq_id";
+                " xrg_transport_module d where d.ERROR_DESCRIPTION is not null and d.TIMESTAMP > '"+date+"' and r.bon_seq_id = d.bon_seq_id";
         return Integer.parseInt(DBConnection.executeSelect(s).get("count"));
     }
 }
