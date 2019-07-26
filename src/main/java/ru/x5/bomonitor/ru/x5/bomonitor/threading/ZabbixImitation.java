@@ -148,9 +148,9 @@ public class ZabbixImitation implements Runnable{
 //            ou.write(packet[i]);
 //        }
 //        ou.flush();
-
-        BigInteger bi = BigInteger.valueOf(1);
-        byte[] data = bi.toByteArray();
+        String s1 = new String("1");
+        //BigInteger bi = BigInteger.valueOf(1);
+        byte[] data = s1.getBytes();//Readed like string. Should be int at that case.
         byte[] header = new byte[] {
                 'Z', 'B', 'X', 'D', '\1',
                 (byte)(data.length & 0xFF),
