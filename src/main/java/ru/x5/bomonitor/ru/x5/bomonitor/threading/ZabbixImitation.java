@@ -29,16 +29,25 @@ public class ZabbixImitation implements Runnable{
         while (isRun) {
             Socket socket;
             try {
-                serverSocket = new ServerSocket(10057);
+
                 while (true){
+                    serverSocket = new ServerSocket(10057);
                     socket = serverSocket.accept();
                     InputStreamReader in = new InputStreamReader(socket.getInputStream());
                     OutputStream os = socket.getOutputStream();
                     readHeader(in);
 
-                        ;
-                        sendResponse(os,getCommand(in));
-                    socket.close();
+                        String div = getCommand(in);
+                        sendResponse(os,div);
+
+
+//                    while (socket.isConnected()){
+//                       System.out.println(getCommand(in));
+//                    }
+                    in.close();
+                    os.close();
+                    socket.close();//??
+                    serverSocket.close();
                 }
 
 
@@ -70,54 +79,78 @@ public class ZabbixImitation implements Runnable{
             for (int i = 0; i < lenth; i++) {
                 data[i] = (byte) br.read();
             }
-
+        //System.out.println(new String(data));
+        //System.out.println(br.read());
             return new String(data);
     }
     public void sendResponse(OutputStream ou,String directive) throws IOException {
         //TODO: method to send data to zabbix.
-        /*
-        String[] directives = getServiceParams(directive);
-        Job job = new Job();
-        for(String s : directives)job.addDirective(s);
-
-        int result=job.runJob();
-        BigInteger integ = BigInteger.valueOf(result);
-        byte[] msg = integ.toByteArray();
-
-        byte[] header1 = new byte[]{'Z', 'B', 'X', 'D', '\1',};
-        for (int i = 0; i < header1.length; i++) {
-            ou.write(header1[i]);
-        }
-        BigInteger integ1 = BigInteger.valueOf(msg.length);
-        byte[] lenth = integ.toByteArray();
-        byte[] length = new byte[] {
-                (byte)(msg.length & 0xFF),
-                (byte)((msg.length >> 8) & 0xFF),
-                (byte)((msg.length >> 16) & 0xFF),
-                (byte)((msg.length >> 24) & 0xFF),
-                '\0', '\0', '\0', '\0'};
-        System.out.println(msg.length+"->");
-        for (int i = 0; i <8 ; i++) {
-            ou.write(length[i]);
-            System.out.println(length[i]);
-        }
-        for (int i = 0; i < msg.length; i++) {
-            ou.write(msg[i]);
-        }
-        ou.flush();
-*/
-
-
-        String[] directives = getServiceParams(directive);
-        Job job = new Job();
-        for(String s : directives){
-            job.addDirective(s);
-            System.out.println(s);
-        }
+//
+//        String[] directives = getServiceParams(directive);
+//        Job job = new Job();
+//        System.out.println("Directives l: "+directives.length);
+//        for(String s : directives){
+//            job.addDirective(s);
+//
+//        }
+//
+//        int result=job.runJob();
+//        BigInteger integ = BigInteger.valueOf(result);
+//        byte[] msg = integ.toByteArray();
+//
+//        byte[] header1 = new byte[]{'Z', 'B', 'X', 'D', '\1',};
+//        for (int i = 0; i < header1.length; i++) {
+//            ou.write(header1[i]);
+//        }
+//        BigInteger integ1 = BigInteger.valueOf(msg.length);
+//        byte[] lenth = integ1.toByteArray();
+//        byte[] length = new byte[] {//change!
+//                (byte)(lenth.length & 0xFF),
+//                (byte)((lenth.length >> 8) & 0xFF),
+//                (byte)((lenth.length >> 16) & 0xFF),
+//                (byte)((lenth.length >> 24) & 0xFF),
+//                '\0', '\0', '\0', '\0'};
+//       // byte[] length=new byte[]{1,0,0,0,0,0,0,0};
+//        System.out.println(lenth.length+"->");
+//        for (int i = 0; i <8 ; i++) {
+//            ou.write(length[i]);
+//            System.out.println(length[i]);
+//        }
+//        for (int i = 0; i < msg.length; i++) {
+//            ou.write(msg[i]);
+//        }
+//        ou.flush();
 
 
-        BigInteger integ = BigInteger.valueOf(2);
-        byte[] data = integ.toByteArray();
+//        System.out.println("dircect");
+//        String[] directives = directive.split(".");
+//        Job job = new Job();
+//        for(String s : directives){
+//            job.addDirective(s);
+//            System.out.println(s);
+//        }
+//
+//
+//        BigInteger integ = BigInteger.valueOf(2);
+//        byte[] data = integ.toByteArray();
+//        byte[] header = new byte[] {
+//                'Z', 'B', 'X', 'D', '\1',
+//                (byte)(data.length & 0xFF),
+//                (byte)((data.length >> 8) & 0xFF),
+//                (byte)((data.length >> 16) & 0xFF),
+//                (byte)((data.length >> 24) & 0xFF),
+//                '\0', '\0', '\0', '\0'};
+//
+//        byte[] packet = new byte[header.length + data.length];
+//        System.arraycopy(header, 0, packet, 0, header.length);
+//        System.arraycopy(data, 0, packet, header.length, data.length);
+//        for (int i = 0; i <packet.length ; i++) {
+//            ou.write(packet[i]);
+//        }
+//        ou.flush();
+
+        BigInteger bi = BigInteger.valueOf(1);
+        byte[] data = bi.toByteArray();
         byte[] header = new byte[] {
                 'Z', 'B', 'X', 'D', '\1',
                 (byte)(data.length & 0xFF),
@@ -129,15 +162,17 @@ public class ZabbixImitation implements Runnable{
         byte[] packet = new byte[header.length + data.length];
         System.arraycopy(header, 0, packet, 0, header.length);
         System.arraycopy(data, 0, packet, header.length, data.length);
-        for (int i = 0; i <packet.length ; i++) {
-            ou.write(packet[i]);
-        }
+//        for (int i = 0; i <packet.length ; i++) {
+//            ou.
+//        }
+        ou.write(packet);
         ou.flush();
 
     }
 
     String[] getServiceParams(String s){
-        String[] arr = s.split(".");
+        System.out.println(s);
+        String[] arr = s.toString().split(".");
         return arr;
     }
 

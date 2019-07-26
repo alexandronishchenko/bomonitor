@@ -5,7 +5,7 @@ import ru.x5.bomonitor.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Job implements Runnable {
+public class Job {//implements Runnable {
 
     static HashMap<String, Service> mapping = new HashMap<>();
     static {
@@ -31,15 +31,15 @@ public class Job implements Runnable {
         this.isRun=b;
     }
 
-    public void run() {
-//        while(isRun){
-//
-//        }
+//    public void run() {
+////        while(isRun){
+////
+////        }
 
 
-    }
+    //}
     public void addDirective(String s){
-        this.directives.add(0,s);
+        this.directives.add(s);
     }
     public void setRun(Boolean b){
         this.isRun=b;
