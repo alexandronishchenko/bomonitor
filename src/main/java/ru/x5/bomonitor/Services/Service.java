@@ -1,4 +1,4 @@
-package ru.x5.bomonitor;
+package ru.x5.bomonitor.Services;
 
 
 public interface Service {

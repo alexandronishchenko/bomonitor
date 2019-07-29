@@ -1,8 +1,10 @@
-package ru.x5.bomonitor;
+package ru.x5.bomonitor.Services;
+
+import ru.x5.bomonitor.DBConnection;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-
+@ServiceUnit
 public class EGAIS implements Service {
     @Override
     public int get(String directive) {

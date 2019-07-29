@@ -1,11 +1,13 @@
-package ru.x5.bomonitor;
+package ru.x5.bomonitor.Services;
+
+import ru.x5.bomonitor.DBConnection;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-
-public class DBMonitoring implements Service{
+@ServiceUnit
+public class DBMonitoring implements Service {
 
     @Override
     public int get(String directive) {

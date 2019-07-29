@@ -1,11 +1,12 @@
 package ru.x5.bomonitor;
 
+import ru.x5.bomonitor.Services.*;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -35,6 +36,7 @@ public class bomonitor {
     }
 
     public static void main(String[] args) {
+        //initialize();
         String subquery=null;
         String service=null;
         String param=null;
@@ -57,6 +59,31 @@ public class bomonitor {
 
 
 
+    }
+
+    public static void initialize(){
+        ArrayList<File> classes = new ArrayList<>();
+        scanDir(String.valueOf(bomonitor.class.getProtectionDomain().getCodeSource().getLocation()),classes);
+        for(File f : classes){
+            System.out.println(f.getName());
+        }
+
+    }
+
+    private static ArrayList<File> scanDir(String file,ArrayList<File> classes){
+        File fl = new File(file);
+        File[] files = fl.listFiles();
+        for(File s : files){
+            System.out.println(s);
+            if(fl.isDirectory()){
+                scanDir(s.getName(),classes);
+            }else {
+                if(fl.getName().contains("class")){
+                    classes.add(fl);
+                }
+            }
+        }
+        return classes;
     }
 
 }

@@ -1,9 +1,11 @@
-package ru.x5.bomonitor;
+package ru.x5.bomonitor.Services;
+
+import ru.x5.bomonitor.DBConnection;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+@ServiceUnit
 public class TransportModule implements Service {
     @Override
     public int get(String directive) {
