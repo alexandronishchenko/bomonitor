@@ -55,7 +55,12 @@ public class Reciepts implements Service {
                 "FROM   GK_BONKOPF\n" +
                 "WHERE  belegtyp = 50 ) ) AS SAFE_AMOUNT ) AS b";
         //Integer.parseInt()
-        Double d= Double.parseDouble(DBConnection.executeSelect(query).get("count"));
+        Double d = 0.0;
+        try {
+             d = Double.parseDouble(DBConnection.executeSelect(query).get("count"));
+        }catch (NullPointerException e){
+            System.out.println("NULL was returned.");
+        }
         return d.intValue();
     }
     public int getDuplicatesBon() throws SQLException {

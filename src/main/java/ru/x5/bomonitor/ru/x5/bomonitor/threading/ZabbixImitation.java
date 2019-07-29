@@ -36,6 +36,7 @@ public class ZabbixImitation implements Runnable{
 
                 while (this.isRun){
                     serverSocket = new ServerSocket(this.port);
+                    serverSocket.setReuseAddress(true);
                     socket = serverSocket.accept();
                     InputStreamReader in = new InputStreamReader(socket.getInputStream());
                     OutputStream os = socket.getOutputStream();
@@ -46,6 +47,7 @@ public class ZabbixImitation implements Runnable{
                     os.close();
                     socket.close();
                     serverSocket.close();
+
                 }
         } catch(IOException e){
             e.printStackTrace();
@@ -61,6 +63,7 @@ public class ZabbixImitation implements Runnable{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                serverSocket=null;
             }
 
     }

@@ -95,6 +95,22 @@ public class bomonitor {
     }
 
     static void printAllMetrics(){
+        System.out.println("egais.gettmptables");
+        System.out.println("items.getdiff");
+        System.out.println("db.activerequests");
+        System.out.println("db.frozentransaction");
+        System.out.println("db.long");
+        System.out.println("db.tmptables");
+        System.out.println("prices.errorchange");
+        System.out.println("printers.queue");
+        System.out.println("reciepts.balancediff");
+        System.out.println("reciepts.duplicatebon");
+        System.out.println("reciepts.incorrectbon");
+        System.out.println("reciepts.queue");
+        System.out.println("reciepts.stockandreciept");
+        System.out.println("stock.geterrors");
+        System.out.println("taskmanager.count");
+        System.out.println("transportmodule.geterrors");
         System.out.println("heap.HeapMemoryUsage.used");
         System.out.println("garbagecollector.CollectionCount");
         System.out.println("garbagecollector2.CollectionCount");
