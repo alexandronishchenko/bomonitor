@@ -10,7 +10,7 @@ public class DBConnection {
     private static final String DB_URL="localhost";
     private static final String DB_USER="gkretail";
     private static final String DB_PASSWORD="gkretail";
-    private static final String DB_NAME="postgres";
+    private static final String DB_NAME="gkretail";
     private static final String DB_ADDITIONALS="";
 
     private static Connection connection;
@@ -18,8 +18,8 @@ public class DBConnection {
     private DBConnection() {
         //Connection= DriverManager.getConnection();
     }
-    public static Connection getConnection(){
-        if(null==connection){
+    public static Connection getConnection() throws SQLException {
+        if(null==connection||connection.isClosed()){
             try {
                 connection=DriverManager.getConnection("jdbc:postgresql://"+DB_URL+":5432/"+DB_NAME+DB_ADDITIONALS,DB_USER,DB_PASSWORD);
             } catch (SQLException e) {

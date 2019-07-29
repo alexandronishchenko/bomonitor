@@ -1,9 +1,7 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
-import ru.x5.bomonitor.ru.x5.bomonitor.threading.Job;
-
 public class Starter {
-    public static void runJob(Job j){
+    public static void runJob(SyncJob j){
         //new Thread(j).start();
     }
 }

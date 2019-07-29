@@ -5,7 +5,7 @@ import ru.x5.bomonitor.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Job {//implements Runnable {
+public class SyncJob {
 
     static HashMap<String, Service> mapping = new HashMap<>();
     static {
@@ -22,31 +22,11 @@ public class Job {//implements Runnable {
         mapping.put("action", new Action());
     }
     private ArrayList<String> directives=new ArrayList<>();
-    private Boolean isRun;
-
-    public Job() {
-        this.isRun=false;
-    }
-    public Job(Boolean b) {
-        this.isRun=b;
-    }
-
-//    public void run() {
-////        while(isRun){
-////
-////        }
-
-
-    //}
     public void addDirective(String s){
         this.directives.add(s);
     }
-    public void setRun(Boolean b){
-        this.isRun=b;
-    }
 
     public int runJob(){
-
         int result=0;
         String subquery=null;
         String service=null;
@@ -55,16 +35,16 @@ public class Job {//implements Runnable {
             System.out.println("testing zabbix");
             ZabbixImitation zi = new ZabbixImitation();
             new Thread(zi).start();
-        }else if(directives.size()==3){
+        }else if(directives.size()==3){//3 param
             service=directives.get(0);
             param=directives.get(1);
             subquery=directives.get(2);
             result=mapping.get(service).get(param,subquery);
-        }else if(directives.size()==2){
+        }else if(directives.size()==2){//2 param
             service=directives.get(0);
             param=directives.get(1);
             result=mapping.get(service).get(param);
-        }else {
+        }else {//else count of param
             System.out.println("incorrect param");
         }
         return result;
