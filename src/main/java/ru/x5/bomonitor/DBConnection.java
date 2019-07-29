@@ -10,7 +10,7 @@ public class DBConnection {
     private static final String DB_URL="localhost";
     private static final String DB_USER="gkretail";
     private static final String DB_PASSWORD="gkretail";
-    private static final String DB_NAME="gkretail";
+    private static final String DB_NAME=bomonitor.properties.getProperty("db_name");
     private static final String DB_ADDITIONALS="";
 
     private static Connection connection;

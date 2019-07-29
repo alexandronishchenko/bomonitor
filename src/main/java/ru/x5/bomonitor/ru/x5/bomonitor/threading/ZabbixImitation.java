@@ -10,6 +10,13 @@ import java.util.ArrayList;
 public class ZabbixImitation implements Runnable{
     private Boolean isRun=true;
 
+    private int port;
+    public ZabbixImitation(){
+
+    }
+    public ZabbixImitation(int port) {
+        this.port=port;
+    }
 
     public void setRun(Boolean run) {
         isRun = run;
@@ -28,7 +35,7 @@ public class ZabbixImitation implements Runnable{
             try {
 
                 while (this.isRun){
-                    serverSocket = new ServerSocket(10057);
+                    serverSocket = new ServerSocket(this.port);
                     socket = serverSocket.accept();
                     InputStreamReader in = new InputStreamReader(socket.getInputStream());
                     OutputStream os = socket.getOutputStream();

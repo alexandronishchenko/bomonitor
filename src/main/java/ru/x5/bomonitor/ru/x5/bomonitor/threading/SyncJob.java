@@ -31,6 +31,7 @@ public class SyncJob {
         String subquery=null;
         String service=null;
         String param=null;
+        try {
         if(directives.size()==1){
             System.out.println("testing zabbix");
             ZabbixImitation zi = new ZabbixImitation();
@@ -39,13 +40,17 @@ public class SyncJob {
             service=directives.get(0);
             param=directives.get(1);
             subquery=directives.get(2);
-            result=mapping.get(service).get(param,subquery);
+            result = mapping.get(service).get(param, subquery);
         }else if(directives.size()==2){//2 param
             service=directives.get(0);
             param=directives.get(1);
             result=mapping.get(service).get(param);
         }else {//else count of param
             System.out.println("incorrect param");
+        }
+        }catch (NullPointerException e){
+            //e.printStackTrace();
+            System.out.println("No such service: "+ service+" -> "+param);
         }
         return result;
     }
