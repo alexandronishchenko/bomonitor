@@ -20,6 +20,14 @@ public class SyncJob {
         mapping.put("stock", new Stock());
         mapping.put("taskmanager", new Taskmanager());
         mapping.put("transportmodule", new TransportModule());
+        mapping.put("heap", new Heap());
+        mapping.put("garbagecollector", new GarbageCollector1());
+        mapping.put("garbagecollector2", new GarbageCollector2());
+        mapping.put("classesloaded", new ClassesLoaded());
+        mapping.put("activemq", new ActiveMQ());
+        mapping.put("deferredmq", new DefferedAMQ());
+        mapping.put("threads", new Threads());
+        mapping.put("openedfiles", new OpenedFiles());
         mapping.put("action", new Action());
     }
     private ArrayList<String> directives=new ArrayList<>();

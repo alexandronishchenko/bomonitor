@@ -1,8 +1,10 @@
 package ru.x5.bomonitor;
 
+import ru.x5.bomonitor.JMXclient.JMXconnector;
 import ru.x5.bomonitor.Services.*;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
 
+import javax.management.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,11 +34,19 @@ public class bomonitor {
         mapping.put("stock", new Stock());
         mapping.put("taskmanager", new Taskmanager());
         mapping.put("transportmodule", new TransportModule());
+        mapping.put("heap", new Heap());
+        mapping.put("garbagecollector", new GarbageCollector1());
+        mapping.put("garbagecollector2", new GarbageCollector2());
+        mapping.put("classesloaded", new ClassesLoaded());
+        mapping.put("activemq", new ActiveMQ());
+        mapping.put("deferredmq", new DefferedAMQ());
+        mapping.put("threads", new Threads());
+        mapping.put("openedfiles", new OpenedFiles());
         mapping.put("action", new Action());
     }
 
     public static void main(String[] args) {
-        //initialize();
+        //initialize();//reflection init services
         String subquery=null;
         String service=null;
         String param=null;
@@ -55,10 +65,8 @@ public class bomonitor {
             System.out.println(String.valueOf(mapping.get(service).get(param)));
         }else {
             System.out.println("incorrect param");
+            printAllMetrics();
         }
-
-
-
     }
 
     public static void initialize(){
@@ -84,6 +92,18 @@ public class bomonitor {
             }
         }
         return classes;
+    }
+
+    static void printAllMetrics(){
+        System.out.println("heap.HeapMemoryUsage.used");
+        System.out.println("garbagecollector.CollectionCount");
+        System.out.println("garbagecollector2.CollectionCount");
+        System.out.println("classesloaded.LoadedClassCount");
+        System.out.println("activemq.TotalMessageCount");
+        System.out.println("deferredmq.QueueSize");
+        System.out.println("threads.ThreadCount");
+        System.out.println("openedfiles.OpenFileDescriptorCount");
+
     }
 
 }
