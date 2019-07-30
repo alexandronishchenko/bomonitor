@@ -2,14 +2,9 @@ package ru.x5.bomonitor.ZQL;
 
 
 import ru.x5.bomonitor.Action;
-import ru.x5.bomonitor.DBConnection;
-import ru.x5.bomonitor.Services.*;
-import ru.x5.bomonitor.queries.SQLnativeQueries;
-import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
+import ru.x5.bomonitor.Services.nativ.*;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 

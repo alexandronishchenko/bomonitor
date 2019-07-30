@@ -32,8 +32,13 @@ public class Composer {
         }catch (NullPointerException e){
             System.out.println("No such metric.");
         }
-        return job.getMetric();
+        String res="";
+        try {
+            res = job.getMetric();
+        }catch (NullPointerException e){
 
+        }
+        return res;
     }
     /*
     jmx|RealNameOfBean|RealNameAttribute

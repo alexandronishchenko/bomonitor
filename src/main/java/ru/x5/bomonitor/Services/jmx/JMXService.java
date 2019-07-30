@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.Services;
+package ru.x5.bomonitor.Services.jmx;
 
 import ru.x5.bomonitor.JMXclient.JMXconnector;
 

@@ -14,21 +14,22 @@ public class JMXconnector {
     public long docon(String name,String[] param) throws IOException, MalformedObjectNameException, InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
         //Create an RMI connector client and connect it to the RMI connector server
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:6422/jmxrmi");//!!!!!!!!!!
-        JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
-
-        MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
+        JMXConnector jmxc=null;
         long result=0;
-        result= Long.parseLong(getData(mbsc,name,param));
-        jmxc.close();
+        try {
+            jmxc = JMXConnectorFactory.connect(url, null);
+            MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
+
+            result= Long.parseLong(getData(mbsc,name,param));
+            jmxc.close();
+            return result;
+        }catch (IOException e){
+            System.out.println("JMX unavailable.");
+        }
         return result;
+
     }
 
-    String getData(MBeanServerConnection mbsc,String name, String param,String item) throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IOException {
-        CompositeData composite =
-                (CompositeData)mbsc.getAttribute(new ObjectName(name),
-                        param);
-        return (composite.get(item)).toString();
-    }
     String getData(MBeanServerConnection mbsc,String name, String[] param) throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IOException {
         String result="";
         if(param.length==1) {

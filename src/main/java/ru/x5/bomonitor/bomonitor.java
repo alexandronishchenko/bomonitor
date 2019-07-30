@@ -35,8 +35,10 @@ public class bomonitor {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    zi=new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
-                    zabbix = new Thread(zi);
+                    //zi.closeServSocket();
+                    //zabbix.destroy();
+                    //zi=new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
+                    //zabbix = new Thread(zi);
                     zabbix.start();
                 }
             }
@@ -81,6 +83,7 @@ public class bomonitor {
     }
 
     static void printAllMetrics(){
+        System.out.println("Old description:");
         System.out.println("egais.gettmptables");
         System.out.println("items.getdiff");
         System.out.println("db.activerequests");

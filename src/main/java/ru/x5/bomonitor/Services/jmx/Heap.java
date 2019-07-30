@@ -1,20 +1,26 @@
-package ru.x5.bomonitor.jmxServices;
+package ru.x5.bomonitor.Services.jmx;
 
-import ru.x5.bomonitor.Services.JMXService;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-import javax.management.*;
-import java.io.IOException;
-
 @ServiceUnit
-public class ActiveMQ extends JMXService implements Service {
-    String name="org.apache.activemq:type=Broker,brokerName=brokerActiveMQ";
+public class Heap extends JMXService implements Service {
+    String name = "java.lang:type=Memory";
+
     @Override
     public int get(String directive) {
-        long result=0;
+        long result =0;
+
+
+        return (int)result;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    }
+
+    @Override
+    public int get(String directive, String subquery) {
+        long result =0;
+
 //        try {
-//            result=jmXconnector.docon(name,directive);
+//           // result=jmXconnector.docon(name,directive,subquery);
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        } catch (MalformedObjectNameException e) {
@@ -28,12 +34,6 @@ public class ActiveMQ extends JMXService implements Service {
 //        } catch (ReflectionException e) {
 //            e.printStackTrace();
 //        }
-
-        return (int)result;
-    }
-
-    @Override
-    public int get(String directive, String subquery) {
-        return 0;
+        return (int)result;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     }
 }

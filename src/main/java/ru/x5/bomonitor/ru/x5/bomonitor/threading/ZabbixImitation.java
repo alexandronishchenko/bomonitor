@@ -5,6 +5,7 @@ import ru.x5.bomonitor.ZQL.Composer;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -35,13 +36,25 @@ public class ZabbixImitation implements Runnable{
 
     @Override
     public void run() {
-        while (true) {
+        try {
+            serverSocket = new ServerSocket(this.port);
+        } catch (IOException e) {
+            this.isRun=false;
+            e.printStackTrace();
+        }
+        try {
+            serverSocket.setReuseAddress(true);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        while (!serverSocket.isClosed()) {
 
             try {
                 //while (true){
-                    serverSocket = new ServerSocket(this.port);
-                    serverSocket.setReuseAddress(true);
+
+                    //serverSocket.setSoTimeout(10);//
                     socket = serverSocket.accept();
+                    socket.setReuseAddress(true);
                     in = new InputStreamReader(socket.getInputStream());
                     os = socket.getOutputStream();
                     readHeader(in);
@@ -50,13 +63,14 @@ public class ZabbixImitation implements Runnable{
                     in.close();
                     os.close();
                     socket.close();
-                    serverSocket.close();
+
 
                // }
         } catch(IOException e){
                 this.isRun=false;
-                //serverSocket.close();
+                //socket.close();
                 System.out.println("Exc");
+                Thread.currentThread().interrupt();
             e.printStackTrace();
         }
 //            finally {
@@ -70,6 +84,11 @@ public class ZabbixImitation implements Runnable{
 //            }
 
     }
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     void readHeader(InputStreamReader br) throws IOException {
@@ -130,4 +149,11 @@ public class ZabbixImitation implements Runnable{
 //        result.add(s);
 //        return result;
 //    }
+    public void closeServSocket(){
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

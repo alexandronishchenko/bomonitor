@@ -1,10 +1,12 @@
-package ru.x5.bomonitor.Services;
+package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Services.Service;
+import ru.x5.bomonitor.Services.ServiceUnit;
 
 import java.sql.SQLException;
 @ServiceUnit
-public class Taskmanager implements Service{
+public class Taskmanager implements Service {
     @Override
     public int get(String directive) {
         int res=0;

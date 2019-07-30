@@ -1,16 +1,11 @@
-package ru.x5.bomonitor.jmxServices;
+package ru.x5.bomonitor.Services.jmx;
 
-import ru.x5.bomonitor.JMXclient.JMXconnector;
-import ru.x5.bomonitor.Services.JMXService;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-import javax.management.*;
-import java.io.IOException;
-
 @ServiceUnit
-public class GarbageCollector2 extends JMXService implements Service {
-    String name="java.lang:type=GarbageCollector,name=PS Scavenge";
+public class GarbageCollector1 extends JMXService implements Service {
+    String name="java.lang:type=GarbageCollector,name=PS MarkSweep";
     @Override
     public int get(String directive) {
         long result= 0;

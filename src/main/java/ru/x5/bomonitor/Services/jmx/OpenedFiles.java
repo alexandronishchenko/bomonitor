@@ -1,15 +1,11 @@
-package ru.x5.bomonitor.jmxServices;
+package ru.x5.bomonitor.Services.jmx;
 
-import ru.x5.bomonitor.Services.JMXService;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-import javax.management.*;
-import java.io.IOException;
-
 @ServiceUnit
-public class DefferedAMQ extends JMXService implements Service {
-    String name="org.apache.activemq:type=Broker,brokerName=brokerActiveMQ,destinationType=Queue,destinationName=sappi.deferred.export";
+public class OpenedFiles extends JMXService implements Service {
+    String name="java.lang:type=OperatingSystem";
     @Override
     public int get(String directive) {
         long result=0;

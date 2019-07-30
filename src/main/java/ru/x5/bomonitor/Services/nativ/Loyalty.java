@@ -1,6 +1,8 @@
-package ru.x5.bomonitor.Services;
+package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Services.Service;
+import ru.x5.bomonitor.Services.ServiceUnit;
 
 import java.sql.SQLException;
 import java.util.HashMap;

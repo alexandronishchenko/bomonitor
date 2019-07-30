@@ -2,7 +2,8 @@ package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
 import ru.x5.bomonitor.*;
 import ru.x5.bomonitor.Services.*;
-import ru.x5.bomonitor.jmxServices.*;
+import ru.x5.bomonitor.Services.jmx.*;
+import ru.x5.bomonitor.Services.nativ.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +37,8 @@ public class SyncJob {
         this.directives.add(s);
     }
 
-    public int runJob(){
-        int result=0;
+    public String runJob(){
+        String result="";
         String subquery=null;
         String service=null;
         String param=null;
@@ -50,11 +51,11 @@ public class SyncJob {
             service=directives.get(0);
             param=directives.get(1);
             subquery=directives.get(2);
-            result = mapping.get(service).get(param, subquery);
+            result = String.valueOf(mapping.get(service).get(param, subquery));
         }else if(directives.size()==2){//2 param
             service=directives.get(0);
             param=directives.get(1);
-            result=mapping.get(service).get(param);
+            result= String.valueOf(mapping.get(service).get(param));
         }else {//else count of param
             System.out.println("incorrect param");
         }

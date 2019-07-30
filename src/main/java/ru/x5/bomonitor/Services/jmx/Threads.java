@@ -1,11 +1,7 @@
-package ru.x5.bomonitor.jmxServices;
+package ru.x5.bomonitor.Services.jmx;
 
-import ru.x5.bomonitor.Services.JMXService;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
-
-import javax.management.*;
-import java.io.IOException;
 
 @ServiceUnit
 public class Threads extends JMXService implements Service {
