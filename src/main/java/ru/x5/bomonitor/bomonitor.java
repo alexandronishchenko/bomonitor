@@ -2,6 +2,7 @@ package ru.x5.bomonitor;
 
 import ru.x5.bomonitor.JMXclient.JMXconnector;
 import ru.x5.bomonitor.Services.*;
+import ru.x5.bomonitor.ru.x5.bomonitor.threading.SyncJob;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
 
 import javax.management.*;
@@ -14,7 +15,7 @@ import java.util.Properties;
 
 public class bomonitor {
 //    static Properties properties = new Properties();
-    static HashMap<String,Service> mapping = new HashMap<>();
+    //static HashMap<String,Service> mapping = new HashMap<>();
     static Properties properties;
     static {
         //"/etc/zabbix/agentjar.properties"
@@ -24,48 +25,39 @@ public class bomonitor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mapping.put("loyalty", new Loyalty());
-        mapping.put("db", new DBMonitoring());
-        mapping.put("egais", new EGAIS());
-        mapping.put("prices", new Prices());
-        mapping.put("items", new Items());
-        mapping.put("printers", new Printers());
-        mapping.put("reciepts", new Reciepts());
-        mapping.put("stock", new Stock());
-        mapping.put("taskmanager", new Taskmanager());
-        mapping.put("transportmodule", new TransportModule());
-        mapping.put("heap", new Heap());
-        mapping.put("garbagecollector", new GarbageCollector1());
-        mapping.put("garbagecollector2", new GarbageCollector2());
-        mapping.put("classesloaded", new ClassesLoaded());
-        mapping.put("activemq", new ActiveMQ());
-        mapping.put("deferredmq", new DefferedAMQ());
-        mapping.put("threads", new Threads());
-        mapping.put("openedfiles", new OpenedFiles());
-        mapping.put("action", new Action());
     }
 
     public static void main(String[] args) {
         //initialize();//reflection init services
-        String subquery=null;
-        String service=null;
-        String param=null;
         if(args.length==1){
             System.out.println("testing zabbix");
             ZabbixImitation zi = new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
-            new Thread(zi).start();
-        }else if(args.length==3){
-            service=args[0];
-            param=args[1];
-            subquery=args[2];
-            System.out.println(String.valueOf(mapping.get(service).get(param,subquery)));
-        }else if(args.length==2){
-            service=args[0];
-            param=args[1];
-            System.out.println(String.valueOf(mapping.get(service).get(param)));
-        }else {
+            Thread zabbix = new Thread(zi);
+            zabbix.start();
+            while(true){
+                if(!zi.getRun()){
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    zi=new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
+                    zabbix = new Thread(zi);
+                    zabbix.start();
+                }
+            }
+
+
+        }else if(args.length==0){
             System.out.println("incorrect param");
             printAllMetrics();
+        }
+        else{
+            SyncJob job = new SyncJob();
+            for (int i = 0; i < args.length; i++) {
+                job.addDirective(args[i]);
+            }
+            System.out.println(job.runJob());
         }
     }
 

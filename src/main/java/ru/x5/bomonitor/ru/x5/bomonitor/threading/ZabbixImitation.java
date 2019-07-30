@@ -1,5 +1,7 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
+import ru.x5.bomonitor.ZQL.Composer;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,30 +18,32 @@ public class ZabbixImitation implements Runnable{
     }
     public ZabbixImitation(int port) {
         this.port=port;
+        this.isRun=true;
     }
 
     public void setRun(Boolean run) {
         isRun = run;
     }
-    boolean isRun(){
+    public boolean getRun(){
         return this.isRun;
     }
 
     ServerSocket serverSocket;
     Socket socket;
+    InputStreamReader in;
+    OutputStream os;
 
     @Override
     public void run() {
-        while (isRun) {
+        while (true) {
 
             try {
-
-                while (this.isRun){
+                //while (true){
                     serverSocket = new ServerSocket(this.port);
                     serverSocket.setReuseAddress(true);
                     socket = serverSocket.accept();
-                    InputStreamReader in = new InputStreamReader(socket.getInputStream());
-                    OutputStream os = socket.getOutputStream();
+                    in = new InputStreamReader(socket.getInputStream());
+                    os = socket.getOutputStream();
                     readHeader(in);
                     String div = getCommand(in);
                     sendResponse(os,div);
@@ -48,23 +52,22 @@ public class ZabbixImitation implements Runnable{
                     socket.close();
                     serverSocket.close();
 
-                }
+               // }
         } catch(IOException e){
+                this.isRun=false;
+                //serverSocket.close();
+                System.out.println("Exc");
             e.printStackTrace();
-
-        }finally {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                serverSocket=null;
-            }
+        }
+//            finally {
+//
+//                try {
+//                    serverSocket.close();
+//                } catch (IOException e) {
+//                    System.out.println("Unable to close server socket.");
+//                    //e.printStackTrace();
+//                }
+//            }
 
     }
     }
@@ -91,12 +94,14 @@ public class ZabbixImitation implements Runnable{
             return new String(data);
     }
     public void sendResponse(OutputStream ou,String directive) throws IOException {
-        SyncJob job = new SyncJob();
-        ArrayList<String> comands = getServiceParams(directive);
-        for(String s : comands){
-            job.addDirective(s);
-        }
-        String result = String.valueOf(job.runJob());
+//        SyncJob job = new SyncJob();
+//        ArrayList<String> comands = getServiceParams(directive);
+//        for(String s : comands){
+//            job.addDirective(s);
+//        }
+        Composer composer = new Composer(directive);
+
+        String result = String.valueOf(composer.getResult());
         byte[] data = result.getBytes();
         byte[] header = new byte[] {
                 'Z', 'B', 'X', 'D', '\1',
@@ -113,16 +118,16 @@ public class ZabbixImitation implements Runnable{
         ou.flush();
 
     }
-    ArrayList<String> getServiceParams(String s){
-        ArrayList<String> result=new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            if(s.charAt(i)=='.'){
-                result.add(s.substring(0,i));
-                s=s.substring(i+1);
-            }
-        }
-        result.add(s);
-        return result;
-    }
+//    ArrayList<String> getServiceParams(String s){
+//        ArrayList<String> result=new ArrayList<>();
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < s.length(); i++) {
+//            if(s.charAt(i)=='.'){
+//                result.add(s.substring(0,i));
+//                s=s.substring(i+1);
+//            }
+//        }
+//        result.add(s);
+//        return result;
+//    }
 }

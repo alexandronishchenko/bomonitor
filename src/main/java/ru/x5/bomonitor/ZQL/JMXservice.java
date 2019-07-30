@@ -1,18 +1,22 @@
-package ru.x5.bomonitor.Services;
+package ru.x5.bomonitor.ZQL;
 
 import ru.x5.bomonitor.JMXclient.JMXconnector;
 
 import javax.management.*;
 import java.io.IOException;
+import java.util.Arrays;
 
-@ServiceUnit
-public class ClassesLoaded extends JMXService implements Service{
-    String name="java.lang:type=ClassLoading";
-    @Override
-    public int get(String directive) {
+public class JMXservice extends Service {
+    protected JMXconnector jmXconnector= new JMXconnector();
+    private String name;
+@Override
+public String getMetric(){
         long result=0;
+        String[] params = (String[]) this.directives.toArray();
+        String[] pr = Arrays.copyOfRange(params,1,directives.size());
+        this.name=directives.get(0);
         try {
-            result=jmXconnector.docon(name,directive);
+            result=jmXconnector.docon(this.name,pr);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MalformedObjectNameException e) {
@@ -26,12 +30,7 @@ public class ClassesLoaded extends JMXService implements Service{
         } catch (ReflectionException e) {
             e.printStackTrace();
         }
-
-        return (int) result;
+        return String.valueOf(result);
     }
 
-    @Override
-    public int get(String directive, String subquery) {
-        return 0;
-    }
 }

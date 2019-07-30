@@ -29,6 +29,7 @@ public class DBConnection {
         return connection;
     }
     public static HashMap<String,String> executeSelect(String s) throws SQLException {
+        //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();
         Connection con = DBConnection.getConnection();
         Statement st = con.createStatement();
