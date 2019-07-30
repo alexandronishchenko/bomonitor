@@ -1,24 +1,18 @@
 package ru.x5.bomonitor;
 
-import ru.x5.bomonitor.JMXclient.JMXconnector;
-import ru.x5.bomonitor.Services.*;
+
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.SyncJob;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
-
-import javax.management.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Properties;
 
 public class bomonitor {
-//    static Properties properties = new Properties();
-    //static HashMap<String,Service> mapping = new HashMap<>();
+
     static Properties properties;
     static {
-        //"/etc/zabbix/agentjar.properties"
         properties=new Properties();
         try {
             properties.load(new FileInputStream("/etc/zabbix/agentjar.properties"));
