@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class bomonitor {
 
-    static Properties properties;
+    public static Properties properties;
     static {
         properties=new Properties();
         try {

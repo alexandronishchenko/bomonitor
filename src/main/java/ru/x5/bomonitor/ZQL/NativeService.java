@@ -22,6 +22,7 @@ public class NativeService extends Service {
         mapping.put("stock", new Stock());
         mapping.put("taskmanager", new Taskmanager());
         mapping.put("transportmodule", new TransportModule());
+        mapping.put("firebird", new Firebird());
 
         mapping.put("action", new Action());
     }
@@ -31,37 +32,6 @@ public class NativeService extends Service {
     //native|stockandrec1&stockandrec2|count|sum
     public String getMetric(){
         String result ="";
-//        String[] queries = getQueries();
-//        String[] results=new String[queries.length];
-//        String date="";
-//        if(directives.get(4)!=null){
-//            date=getDate(Integer.parseInt(directives.get(4)));
-//        }
-//        for (int i = 0; i < queries.length; i++) {
-//            try {
-//                results[i]= String.valueOf(DBConnection.executeSelect(SQLnativeQueries.getQuery(queries[i],date)).get(directives.get(3)));
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        if(directives.get(2).equals("sum")){
-//            int meta=0;
-//            for (int i = 0; i < results.length; i++) {
-//                try {
-//                    meta += Integer.parseInt(results[i]);
-//                }catch (NumberFormatException e){
-//                    System.out.println("Cannot parse "+results[i]+" to integer");
-//                    e.printStackTrace();
-//                }
-//            }
-//            result=String.valueOf(meta);
-//        }
-//
-//        if(directives.get(2).equals("str")){
-//            for (int i = 0; i < results.length; i++) {
-//                result+=results[i];
-//            }
-//        }
         String subquery=null;
         String service=null;
         String param=null;
