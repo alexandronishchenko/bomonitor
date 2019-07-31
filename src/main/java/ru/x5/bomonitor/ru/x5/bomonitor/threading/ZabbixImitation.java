@@ -85,6 +85,21 @@ public class ZabbixImitation implements Runnable{
 
     }
         try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
