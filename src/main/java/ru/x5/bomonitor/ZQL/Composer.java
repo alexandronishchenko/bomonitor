@@ -26,7 +26,7 @@ public class Composer {
                 job = new LogService();
                 break;
             case "fulldiag":
-                //job = new FullDiag();
+                job = new FullDiag();
                 break;
             case "hw":
                 job = new HardWareService();

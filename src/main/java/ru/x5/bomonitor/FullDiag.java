@@ -1,6 +1,7 @@
 package ru.x5.bomonitor;
 
 import ru.x5.bomonitor.Services.Service;
+import ru.x5.bomonitor.Services.ServiceUnit;
 import ru.x5.bomonitor.Services.nativ.*;
 import ru.x5.bomonitor.ZQL.JMXservice;
 import ru.x5.bomonitor.ZQL.LogService;
@@ -11,13 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FullDiag {//extends ru.x5.bomonitor.ZQL.Service {
+public class FullDiag extends ru.x5.bomonitor.ZQL.Service {
     static HashMap<String, String> mappingjmx = new HashMap<>();    static HashMap<String, Service> mapping = new HashMap<>();
     static HashMap<String, ru.x5.bomonitor.ZQL.Service> mappinglog = new HashMap<>();
 
-    public static void main(String[] args) {
-        getMetric();
-    }
+//    public static void main(String[] args) {
+//        getMetric();
+//    }
     static {
         mappingjmx.put("activemq", "TotalMessageCount");
         mappingjmx.put("classloaded","LoadedClassCount" );
@@ -45,23 +46,23 @@ public class FullDiag {//extends ru.x5.bomonitor.ZQL.Service {
 
     }
 
-         //@Override
-         static public String getMetric(){
+         @Override
+          public String getMetric(){
              return diag();
          }
 
 
-     static private String diag(){
+      private String diag(){
         //return "";
         String result ="";
-        result+="Phase 1 (services jmx):";
+        result+="Phase 1 (services jmx):\n";
         for(Map.Entry<String,String> pair : mappingjmx.entrySet()){
             ArrayList<String> dirs=new ArrayList<>();
             dirs.add("jmx");
             dirs.add(pair.getKey());
             dirs.add(pair.getValue());
 
-            result+="\n"+pair.getKey()+"\n";
+            result+=pair.getKey()+"\n";
             ru.x5.bomonitor.ZQL.Service jmxservice = new JMXservice();
             jmxservice.setDirectives(dirs);
             //pair.getValue();
@@ -69,9 +70,9 @@ public class FullDiag {//extends ru.x5.bomonitor.ZQL.Service {
            // System.out.println(service.getClass());
             result+=jmxservice.getMetric()+"\n";
         }
-        result+="Phase 2 ( services native):";
+        result+="Phase 2 ( services native):\n";
         for(Map.Entry<String,Service> pair : mapping.entrySet()){
-            result+="\n"+pair.getKey()+"\n";
+            result+=pair.getValue().getClass().getAnnotation(ServiceUnit.class).value()+"\n";
             Service service = pair.getValue();
             Method[] meth = service.getClass().getDeclaredMethods();
             //System.out.println(service.getClass());
@@ -90,7 +91,7 @@ public class FullDiag {//extends ru.x5.bomonitor.ZQL.Service {
             }
 
         }
-        result+="Phase 3 (log errors):";
+        result+="Phase 3 (log errors):\n";
         for(Map.Entry<String,ru.x5.bomonitor.ZQL.Service> pair : mappinglog.entrySet()){
             System.out.println(pair.getKey());
             ArrayList<String> dirs=new ArrayList<>();
@@ -130,7 +131,7 @@ public class FullDiag {//extends ru.x5.bomonitor.ZQL.Service {
 //        System.out.println("jmx.threads.ThreadCount");
 //        System.out.println("jmx.openedfiles.OpenFileDescriptorCount");
 
-        System.out.println(result);
+        //System.out.println(result);
         return result;
     }
 }
