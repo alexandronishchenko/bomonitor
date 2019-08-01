@@ -1,6 +1,7 @@
 package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-@ServiceUnit
+@ServiceUnit("Мониторинг БД")
 public class DBMonitoring implements Service {
 
     @Override
@@ -50,12 +51,13 @@ public class DBMonitoring implements Service {
     }
 
 
-
+@Metric("Активные сессии в БД")
     public int getActiveRequests() throws SQLException {
         String query="select count(*) from pg_stat_activity";
         HashMap<String,String> map = DBConnection.executeSelect(query);
         return Integer.parseInt(map.get("count"));
     }
+
     public int getAutoVacuum(String subquery) throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
@@ -76,17 +78,29 @@ public class DBMonitoring implements Service {
         return Integer.parseInt(map.get("count"));
 
     }
+    @Metric("Проходит ли автовакуум")
+    public int getAutoVacuum() throws SQLException {
+        SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
+        String date = smp.format(new Date());
+        HashMap<String,String> map;
+        String query="SELECT count(*) FROM pg_stat_user_tables where schemaname = 'gkretail' and autovacuum_count > 0 and cast(last_autovacuum as date)='"+date+"'";
 
+        map=DBConnection.executeSelect(query);
+        return Integer.parseInt(map.get("count"));
+
+    }
+    @Metric("Зависшие запросы")
     public int getFrozenTransactions() throws SQLException {
         String query = "SELECT count(*) FROM pg_stat_activity WHERE xact_start < (CURRENT_TIMESTAMP - INTERVAL '1 hour')";
         HashMap<String,String> map=DBConnection.executeSelect(query);
         return Integer.parseInt(map.get("count"));
     }
-
+    @Metric("Длинные операции в АПП к БД")
     public int getLongOperations(){
 //TODO: grep for log???
         return 0;
     }
+    @Metric("Временные таблицы")
     public int getTmpTables() throws SQLException {
         String query1="select count(errorcode) from XRG_SAP_PI_TX where status != 'OK'";
         String query2="select count(errorcode) from XRG_SAP_PI_RX where status != 'OK'";

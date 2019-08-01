@@ -3,7 +3,7 @@ package ru.x5.bomonitor.Services.jmx;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-@ServiceUnit
+@ServiceUnit("Heap")
 public class Heap extends JMXService implements Service {
     String name = "java.lang:type=Memory";
 

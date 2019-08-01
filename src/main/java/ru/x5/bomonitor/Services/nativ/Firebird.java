@@ -1,5 +1,6 @@
 package ru.x5.bomonitor.Services.nativ;
 
+import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
@@ -10,13 +11,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@ServiceUnit
+@ServiceUnit("Firebird")
 public class Firebird implements Service {
     @Override
     public int get(String directive) {
         int result= 0;
         if(directive.equals("actual")){
-            result=isActualGDB()?1:0;
+            result=isActualGDB();
         }
         return result;
     }
@@ -25,8 +26,9 @@ public class Firebird implements Service {
     public int get(String directive, String subquery) {
         return 0;
     }
-
-    boolean isActualGDB(){
+@Metric("Репликация идет")
+    public int isActualGDB(){
+        int res=0;
         boolean b=false;
         String file_name = "/usr/local/gkretail/bo/data/standard_stamm.gdb.zip";
         BasicFileAttributes attr = null;
@@ -40,6 +42,7 @@ public class Firebird implements Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return b;
+        res=b?1:0;
+        return res;
     }
 }

@@ -15,7 +15,7 @@ public class bomonitor {
     static {
         properties=new Properties();
         try {
-            properties.load(new FileInputStream("/etc/zabbix/agentjar.properties"));
+            properties.load(new FileInputStream("/etc/zabbix/bomonitor/bomonitor.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,10 +35,6 @@ public class bomonitor {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //zi.closeServSocket();
-                    //zabbix.destroy();
-                    //zi=new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
-                    //zabbix = new Thread(zi);
                     zabbix.start();
                 }
             }
@@ -83,6 +79,7 @@ public class bomonitor {
     }
 
     static void printAllMetrics(){
+        System.out.println("fulldiag or fulldiag.db(reciepts ...)");
         System.out.println("log.bolog or log.postgreslog or log.bolog.error");
         System.out.println("native.firebird.actual");
         System.out.println("native.egais.gettmptables");

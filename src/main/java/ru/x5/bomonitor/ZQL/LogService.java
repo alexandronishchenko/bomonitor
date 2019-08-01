@@ -3,8 +3,11 @@ package ru.x5.bomonitor.ZQL;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-//TODO: time searching.
+import java.util.Date;
+
+//TODO: save lenth of file. And bytebuffered read from the end. But it should have variable to save the lenth. May be better on zabbix native agent.
 public class LogService extends Service {
     File log=null;
     ArrayList<ERROR> errorsList=new ArrayList<>();
@@ -18,7 +21,7 @@ public class LogService extends Service {
                 String note = freader.readLine();
                 int ind=note.indexOf('}');
                 String value = note.substring(ind+2,note.length()-1);
-                String lev=note.substring(1,ind).toLowerCase();
+                String lev=note.substring(2,ind).toLowerCase();
                 errorsList.add(new ERROR(errorLevels.valueOf(lev),value));
             }
             freader.close();
@@ -89,7 +92,9 @@ public class LogService extends Service {
      * @param level
      */
     private String act(String error, errorLevels level){//one by one actions for different errors. Now has no actions. (at zabbix).
-        System.out.println("Start:"+error+"->"+level.toString().toUpperCase());
+        //System.out.println("Start:"+error+"->"+level.toString().toUpperCase());
+        String result="";
+        if(checkDate(error))result=error;
         switch (level){
             case ignore:
                 ;info();
@@ -116,9 +121,25 @@ public class LogService extends Service {
                 break;
 
         }
-        return error+"->"+level.toString().toUpperCase();
+        return result=error+"->"+level.toString().toUpperCase()+"\n";
 
     }
+
+    private boolean checkDate(String s){
+        boolean isCorrect=false;
+        //Date current_date=new Date();
+        long curdat=new Date().getTime()-60*60*1000;
+        SimpleDateFormat sd = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss:");
+        String date = sd.format(new Date(curdat));
+
+
+        //2019-06-28 16:11:04:818+0300
+
+
+
+        return isCorrect;
+    }
+
     void info(){
         System.out.println();
 

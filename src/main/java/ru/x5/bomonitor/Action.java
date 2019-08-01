@@ -3,7 +3,7 @@ package ru.x5.bomonitor;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-@ServiceUnit
+@ServiceUnit("Action")
 public class Action implements Service {
     ProcessBuilder pb;
     @Override

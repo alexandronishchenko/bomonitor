@@ -3,7 +3,7 @@ package ru.x5.bomonitor.Services.jmx;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-@ServiceUnit
+@ServiceUnit("Отлоенные сообщения MQ")
 public class DefferedAMQ extends JMXService implements Service {
     String name="org.apache.activemq:type=Broker,brokerName=brokerActiveMQ,destinationType=Queue,destinationName=sappi.deferred.export";
     @Override

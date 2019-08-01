@@ -1,12 +1,13 @@
 package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-@ServiceUnit
+@ServiceUnit("Лояльность")
 public class Loyalty implements Service {
 
     public int get(String directive){
@@ -39,7 +40,7 @@ public class Loyalty implements Service {
             return 99999;
         }
     }
-
+@Metric("Давно зависшие транзакции")
     public int getLongUnsetTransactions(){
 
         String query="select count(*) from GK_BON_CUST_ACCOUNT_TRANSACT bca full join gk_bonkopf bf" +
@@ -58,7 +59,7 @@ public class Loyalty implements Service {
             return 99999;
         }
     }
-
+@Metric("Неотправленные транзакции")
     public int getUnsentTransactions(){
         try {
             String query1="select count(*) from GK_BON_CUST_ACCOUNT_TRANSACT bca full join gk_bonkopf bf " +

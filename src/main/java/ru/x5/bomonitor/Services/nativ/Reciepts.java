@@ -1,13 +1,14 @@
 package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-@ServiceUnit
+@ServiceUnit("Чеки")
 public class Reciepts implements Service {
     @Override
     public int get(String directive) {
@@ -41,7 +42,7 @@ public class Reciepts implements Service {
     public int get(String directive, String subquery) {
         return 0;
     }
-
+@Metric("расхождение баланса")
     public int getBalanceDiff() throws SQLException {
         String query = "SELECT (balance-safe_amount) as \"count\" FROM   ( SELECT ( SELECT Sum( To_number( text, '999999999D99' ) ) AS BALANCE FROM   GK_ACCOUNTING_PERIOD_APPENDIX WHERE  accounting_period_id =\n" +
                 "( SELECT accounting_period_id\n" +
@@ -65,6 +66,7 @@ public class Reciepts implements Service {
         }
         return d.intValue();
     }
+    @Metric("задвоенный номер")
     public int getDuplicatesBon() throws SQLException {
         long dt = new Date().getTime()-(3*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
@@ -74,16 +76,19 @@ public class Reciepts implements Service {
                 "t.aktdat = d.aktdat and t.aktdat > '"+date+"'";
         return Integer.parseInt(DBConnection.executeSelect(query).get("count"));
     }
+    @Metric("Некоректный номер чека")
     public int getIncorrectBonnr() throws SQLException {
         String s = "select count(*) from gk_bonkopf where bonnr in ('0','-1','10000')";
         return Integer.parseInt(DBConnection.executeSelect(s).get("count"));
     }
+    @Metric("очередь чеков")
     public int getQueue() throws SQLException {
         String s = "select count(TRANSACTION_SEQ_ID) from gk_transaction_cache t\n" +
                 " inner join AS_WS k on k.ID_WS = t.WORKSTATION_ID and TY_WS in ( '0001', '0006', '0007', '0008' )\n" +
                 " where import_ok = 'N' and t.ID_BSNGP=1 and receive_timestamp <  (CURRENT_TIMESTAMP - INTERVAL '5 hour')";
         return Integer.parseInt(DBConnection.executeSelect(s).get("count"));
     }
+    @Metric("сверка чек - остаток")
     public int getStockAndReciept() throws SQLException {
         long dt = new Date().getTime()-(10*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");

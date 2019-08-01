@@ -1,11 +1,12 @@
 package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
 import java.sql.SQLException;
-@ServiceUnit
+@ServiceUnit("Остатки")
 public class Stock implements Service {
     @Override
     public int get(String directive) {
@@ -22,7 +23,7 @@ public class Stock implements Service {
     public int get(String directive, String subquery) {
         return 0;
     }
-
+@Metric("ошибки формата записи")
     public int getErrorFormat() throws SQLException {
         String s="select count(*) from GK_STOCK_LEDGER_ACCOUNT where cast(CURRENT_UNIT_COUNT as TEXT) like '%.____%'";
         return Integer.parseInt(DBConnection.executeSelect(s).get("count"));

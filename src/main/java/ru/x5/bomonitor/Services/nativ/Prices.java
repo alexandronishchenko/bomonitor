@@ -1,13 +1,14 @@
 package ru.x5.bomonitor.Services.nativ;
 
 import ru.x5.bomonitor.DBConnection;
+import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-@ServiceUnit
+@ServiceUnit("Контроль цен")
 public class Prices implements Service {
     @Override
     public int get(String directive) {
@@ -25,6 +26,7 @@ public class Prices implements Service {
     public int get(String directive, String subquery) {
         return 0;
     }
+    @Metric("ошибки в изменении цен")
     public int getErrorChange() throws SQLException {
         long dt = new Date().getTime()-(10*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");

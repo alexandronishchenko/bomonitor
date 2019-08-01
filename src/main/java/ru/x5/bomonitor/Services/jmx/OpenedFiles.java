@@ -3,7 +3,7 @@ package ru.x5.bomonitor.Services.jmx;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-@ServiceUnit
+@ServiceUnit("Дискрипторы файлов")
 public class OpenedFiles extends JMXService implements Service {
     String name="java.lang:type=OperatingSystem";
     @Override

@@ -1,5 +1,7 @@
 package ru.x5.bomonitor.ZQL;
 
+import ru.x5.bomonitor.FullDiag;
+
 import java.util.ArrayList;
 
 public class Composer {
@@ -22,6 +24,9 @@ public class Composer {
                 break;
             case "log":
                 job = new LogService();
+                break;
+            case "fulldiag":
+                //job = new FullDiag();
                 break;
             case "hw":
                 job = new HardWareService();
