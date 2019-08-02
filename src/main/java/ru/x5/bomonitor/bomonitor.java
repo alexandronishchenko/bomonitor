@@ -29,9 +29,14 @@ public class bomonitor {
             Thread zabbix = new Thread(zi);
             zabbix.start();
             while(true){
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 if(!zi.getRun()){
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(20000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
