@@ -1,9 +1,8 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
-import ru.x5.bomonitor.*;
+
 import ru.x5.bomonitor.Services.*;
-import ru.x5.bomonitor.Services.jmx.*;
-import ru.x5.bomonitor.Services.nativ.*;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
