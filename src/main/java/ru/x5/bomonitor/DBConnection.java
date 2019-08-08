@@ -3,6 +3,7 @@ package ru.x5.bomonitor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class DBConnection {
@@ -34,13 +35,76 @@ public class DBConnection {
         Connection con = DBConnection.getConnection();
         Statement st = con.createStatement();
         st.executeQuery(s);
+        //System.out.println(st.toString());
+
+        ResultSet result = st.getResultSet();
+        ResultSetMetaData rsmd = result.getMetaData();
+        int i =1;
+        //System.out.println(map.size());
+
+        while(result.next()){
+            map.put(rsmd.getColumnName(i),result.getString(i));
+            i++;
+        }
+        i=0;
+        result.close();
+        st.close();
+        con.close();
+        return map;
+    }
+    public static HashMap<String,String> executeSelect(String s,String requiredColumn,String[] dates) throws SQLException {
+        //String queryAndParams = s.split("")
+        HashMap<String,String> map = new HashMap<>();
+        Connection con = DBConnection.getConnection();
+        PreparedStatement st = con.prepareStatement(s);
+        //st.setString(1,requiredColumn);
+        //System.out.println(dates.length);
+        if(dates.length>0) {
+            for (int i = 0; i < dates.length; i++) {
+                st.setString(i + 1, dates[i]);
+            }
+        }
+       //System.out.println(st.toString());
+        st.executeQuery();
+        ResultSet result = st.getResultSet();
+        ResultSetMetaData rsmd = result.getMetaData();
+        int i =1;
+
+        if(result.next()){
+            //result.previous();
+            //System.out.println(rsmd.getColumnName(i)+"->"+result.getString(i));
+            map.put(rsmd.getColumnName(i),result.getString(i));
+            i++;
+            while(result.next()){
+                //System.out.println(rsmd.getColumnName(i)+"->"+result.getString(i));
+                map.put(rsmd.getColumnName(i),result.getString(i));
+                i++;
+            }
+        }else {
+            map.put(requiredColumn,"");
+        }
+
+        i=0;
+        result.close();
+        st.close();
+        con.close();
+
+        return map;
+    }
+    public static HashMap<String,String> getNote(String s) throws SQLException {
+        //String queryAndParams = s.split("")
+        HashMap<String,String> map = new HashMap<>();
+        Connection con = DBConnection.getConnection();
+        Statement st = con.createStatement();
+        st.executeQuery(s);
 
 
         ResultSet result = st.getResultSet();
         ResultSetMetaData rsmd = result.getMetaData();
         int i =1;
+        //map.put(rsmd.getColumnName(i),null);
         while(result.next()){
-            map.put(rsmd.getColumnName(i),result.getString(i));
+            map.put(rsmd.getColumnName(i),map.get(rsmd.getColumnName(i))+";"+result.getString(i));
             i++;
         }
         i=0;

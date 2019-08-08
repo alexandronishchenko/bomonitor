@@ -5,11 +5,16 @@ import ru.x5.bomonitor.Action;
 import ru.x5.bomonitor.Services.nativ.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 public class NativeService extends Service {
+    ArrayList<String> directives;
 
+    public void setDirectives(ArrayList<String> directives) {
+        this.directives = directives;
+    }
     static HashMap<String, ru.x5.bomonitor.Services.Service> mapping = new HashMap<>();
     static {
         mapping.put("loyalty", new Loyalty());
@@ -24,7 +29,7 @@ public class NativeService extends Service {
         mapping.put("transportmodule", new TransportModule());
         mapping.put("firebird", new Firebird());
 
-        mapping.put("action", new Action());
+      //  mapping.put("action", new Action());
     }
 
     @Override
@@ -40,17 +45,18 @@ public class NativeService extends Service {
             service=directives.get(1);
             param=directives.get(2);
             subquery=directives.get(3);
-            result = String.valueOf(mapping.get(service).get(param, subquery));
+            result = mapping.get(service).get(param, subquery);
         }else if(directives.size()==3){//2 param
             service=directives.get(1);
             param=directives.get(2);
-            result= String.valueOf(mapping.get(service).get(param));
+            result= mapping.get(service).get(param);
         }else {//else count of param
             System.out.println("incorrect param");
         }
     }catch (NullPointerException e){
         //e.printStackTrace();
         System.out.println("No such service: "+ service+" -> "+param);
+        e.printStackTrace();
     }
         return result;
 

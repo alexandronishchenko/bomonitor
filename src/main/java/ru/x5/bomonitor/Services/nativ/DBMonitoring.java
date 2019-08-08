@@ -4,6 +4,8 @@ import ru.x5.bomonitor.DBConnection;
 import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.StringMetric;
+import ru.x5.bomonitor.ZQL.SQLqueries;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -12,38 +14,48 @@ import java.util.HashMap;
 @ServiceUnit("Мониторинг БД")
 public class DBMonitoring implements Service {
 
-    @Override
-    public int get(String directive) {
-        int result=0;
+  //  @Override
+    public String get(String directive) {
+        String result="0";
         try {
         switch (directive){
             case "activerequests":
-                    result=getActiveRequests();
+                    result=String.valueOf(getActiveRequests());
                 break;
             case "frozentransaction":
-                result=getFrozenTransactions();
+                result=String.valueOf(getFrozenTransactions());
                 break;
             case "long":
-                result=getLongOperations();
+                result=String.valueOf(getLongOperations());
                 break;
             case "tmptables":
-                result=getTmpTables();
+                result=String.valueOf(getTmpTables());
                 break;
+            case "stractiverequests":
+                 result=getStringActiveRequests();
+                break;
+            case "strfrozentransaction":
+                result=getStringFrozenTransactions();
+                break;
+            case "strtmptables":
+                result=getStringTmpTables();
+                break;
+
         }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
-    public int get(String directive,String subquery) {
-        int res=0;
+    public String get(String directive,String subquery) {
+        String res="0";
         switch (directive){
             case "autovacuum":
-                try {
-                    res= getAutoVacuum(subquery);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    res= getAutoVacuum(subquery);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
                 break;
 
         }
@@ -53,11 +65,17 @@ public class DBMonitoring implements Service {
 
 @Metric("Активные сессии в БД")
     public int getActiveRequests() throws SQLException {
-        String query="select count(*) from pg_stat_activity";
-        HashMap<String,String> map = DBConnection.executeSelect(query);
+        HashMap<String,String> map = DBConnection.executeSelect(SQLqueries.COUNT_ACTIVE_REQUESTS);
         return Integer.parseInt(map.get("count"));
     }
+    @StringMetric("Активные сессии в БД")
+    public String getStringActiveRequests() throws SQLException {
+        HashMap<String,String> map = DBConnection.executeSelect(SQLqueries.COUNT_ACTIVE_REQUESTS);
+        return map.get("count");
+    }
 
+
+    //not included at full diag, only numerics
     public int getAutoVacuum(String subquery) throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
@@ -78,34 +96,60 @@ public class DBMonitoring implements Service {
         return Integer.parseInt(map.get("count"));
 
     }
+
+
     @Metric("Проходит ли автовакуум")
     public int getAutoVacuum() throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
-        HashMap<String,String> map;
-        String query="SELECT count(*) FROM pg_stat_user_tables where schemaname = 'gkretail' and autovacuum_count > 0 and cast(last_autovacuum as date)='"+date+"'";
-
-        map=DBConnection.executeSelect(query);
-        return Integer.parseInt(map.get("count"));
-
+        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count"));
     }
+    @StringMetric("Проходит ли автовакуум")
+    public String getStringAutoVacuum() throws SQLException {
+        SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
+        String date = smp.format(new Date());
+        return DBConnection.executeSelect(SQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count");
+    }
+
+
     @Metric("Зависшие запросы")
     public int getFrozenTransactions() throws SQLException {
-        String query = "SELECT count(*) FROM pg_stat_activity WHERE xact_start < (CURRENT_TIMESTAMP - INTERVAL '1 hour')";
-        HashMap<String,String> map=DBConnection.executeSelect(query);
-        return Integer.parseInt(map.get("count"));
+        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_FROZEN_QUERIES).get("count"));
     }
+    @StringMetric("Зависшие запросы")
+    public String getStringFrozenTransactions() throws SQLException {
+        return DBConnection.executeSelect(SQLqueries.COUNT_FROZEN_QUERIES).get("count");
+    }
+
+
     @Metric("Длинные операции в АПП к БД")
     public int getLongOperations(){
 //TODO: grep for log???
         return 0;
     }
-    @Metric("Временные таблицы")
+
+
+    @Metric("Ошибки сообщений SAP")
     public int getTmpTables() throws SQLException {
-        String query1="select count(errorcode) from XRG_SAP_PI_TX where status != 'OK'";
-        String query2="select count(errorcode) from XRG_SAP_PI_RX where status != 'OK'";
-        HashMap<String,String> m1 = DBConnection.executeSelect(query1);
-        HashMap<String,String> m2 = DBConnection.executeSelect(query2);
-        return Integer.parseInt(m1.get("count"))+Integer.parseInt(m2.get("count"));
+        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_TX).get("count"))+
+                Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_RX).get("count"));
+    }
+    @StringMetric("Ошибки сообщений SAP")
+    public String getStringTmpTables() throws SQLException {
+        String result="";
+        String s1=DBConnection.getNote(SQLqueries.SAP_ERRORS_TX).get("msgtype");
+        String s2=DBConnection.getNote(SQLqueries.SAP_ERRORS_RX).get("msgtype");
+
+        if(s1==null){result+= "";}else {
+            result+=s1+";";
+        }
+        //if(s1.isEmpty() ) result= "";
+        //if(s1.equals("NULL"))result= "";
+        if(s2==null){result+= "";}else {
+            result+=s2+";";
+        }
+        //if(s2.isEmpty() ) result= "";
+        //if(s2.equals("NULL"))result= "";
+        return result;
     }
 }

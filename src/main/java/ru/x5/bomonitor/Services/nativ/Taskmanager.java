@@ -4,15 +4,23 @@ import ru.x5.bomonitor.DBConnection;
 import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.StringMetric;
+import ru.x5.bomonitor.ZQL.SQLqueries;
 
 import java.sql.SQLException;
 @ServiceUnit("Диспетчер заданий")
 public class Taskmanager implements Service {
     @Override
-    public int get(String directive) {
-        int res=0;
+    public String get(String directive) {
+        String res="";
         try {
-            res=getTaskNotTop();
+            if (directive.equals("tasknottop")){
+                res=String.valueOf(getTaskNotTop());
+            }else if(directive.equals("strtasknottop")){
+                res=getStringTaskNotTop();
+            }else{
+                res="";
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -20,16 +28,22 @@ public class Taskmanager implements Service {
     }
 
     @Override
-    public int get(String directive, String subquery) {
-        return 0;
+    public String get(String directive, String subquery) {
+        return "";
     }
+
+
     @Metric("задания не из ТОП")
     public int getTaskNotTop() throws SQLException {
-        String s="SELECT count (*) FROM XRG_TASK_MGMT_GA_DETAILS \n" +
-                "  WHERE PLU in (SELECT PLU FROM XRG_SALES_PROFILE WHERE PLU in \n" +
-                "  (SELECT ITEM_ID FROM XRG_ITEM WHERE TOP_TYPECODE is null)\n" +
-                "  and ACTIVE ='J')";
-        return Integer.parseInt(DBConnection.executeSelect(s).get("count"));
+
+        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_TASKS_NOT_TOP).get("count"));
+    }
+    @StringMetric("задания не из ТОП")
+    public String getStringTaskNotTop() throws SQLException {
+        String result="";
+        String s1 = DBConnection.executeSelect(SQLqueries.TASKS_NOT_TOP).get("task_mgmt_ga_id");
+        if(s1!=null)result+=s1;
+        return result;
     }
 
 

@@ -4,28 +4,42 @@ import ru.x5.bomonitor.DBConnection;
 import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.StringMetric;
+import ru.x5.bomonitor.ZQL.SQLqueries;
 
 import java.sql.SQLException;
 @ServiceUnit("Товары")
 public class Items implements Service {
 
     @Override
-    public int get(String directive) {
-        return getDiff();
+    public String get(String directive) {
+        String result="";
+        try {
+            if (directive.equals("getdiff")) {
+                result=String.valueOf(getDiff());
+            } else if (directive.equals("strgetdiff")) {
+                result=regetStringDiff();
+            }
+        }catch (SQLException e){
+            System.out.println("SQL exception");
+        }
+        return result;
     }
 
     @Override
-    public int get(String directive, String subquery) {
-        return 0;
+    public String get(String directive, String subquery) {
+        return "";
     }
 @Metric("разница в БД")
-    public int getDiff(){
-        String query = "select count(CREATION_TIMESTAMP) from XRG_EGAIS_EXCISE_STAMPS_TMP where CREATION_TIMESTAMP < now()";
-        try {
-            return Integer.parseInt(DBConnection.executeSelect(query).get("count"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
+    public int getDiff() throws SQLException{
+        String query = "select count(ID_ITM) from as_itm t left join XRG_ITEM k on t.id_itm = k.item_id where k.item_id is null";
+        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_ITEMS_DIFF).get("count"));
+    }
+    @StringMetric("разница в БД")
+    public String regetStringDiff() throws SQLException{
+        String result="";
+        String s1 =DBConnection.getNote(SQLqueries.ITEMS_DIFF).get("ID_ITM");
+        if(s1==null)return "";
+        return result;
     }
 }

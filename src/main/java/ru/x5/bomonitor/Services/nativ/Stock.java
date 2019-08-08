@@ -4,28 +4,44 @@ import ru.x5.bomonitor.DBConnection;
 import ru.x5.bomonitor.Metric;
 import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.StringMetric;
+import ru.x5.bomonitor.ZQL.SQLqueries;
 
 import java.sql.SQLException;
 @ServiceUnit("Остатки")
 public class Stock implements Service {
     @Override
-    public int get(String directive) {
-        int res=0;
+    public String get(String directive) {
+        String result="";
         try {
-            res= getErrorFormat();
+            if(directive.equals("errorformat")){
+                result= String.valueOf(getErrorFormat());
+            }else if(directive.equals("strerrorformat")){
+                result= getStringErrorFormat();
+            }else{
+                result= "";
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return res;
+        return result;
     }
 
     @Override
-    public int get(String directive, String subquery) {
-        return 0;
+    public String get(String directive, String subquery) {
+        return "";
     }
+
+
 @Metric("ошибки формата записи")
     public int getErrorFormat() throws SQLException {
-        String s="select count(*) from GK_STOCK_LEDGER_ACCOUNT where cast(CURRENT_UNIT_COUNT as TEXT) like '%.____%'";
-        return Integer.parseInt(DBConnection.executeSelect(s).get("count"));
+        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_STOCK_ERR).get("count"));
+    }
+    @StringMetric("ошибки формата записи")
+    public String getStringErrorFormat() throws SQLException {
+        String result="";
+        String s1 = DBConnection.executeSelect(SQLqueries.STOCK_ERR).get("item_id");
+        if(s1!=null)result+=s1;
+        return result;
     }
 }

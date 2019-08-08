@@ -29,17 +29,17 @@ public class FullDiag extends ru.x5.bomonitor.ZQL.Service {
         mappingjmx.put("openedfiles","OpenFileDescriptorCount" );
         mappingjmx.put("threads", "ThreadCount");
 
-        mapping.put("loyalty", new Loyalty());
-        mapping.put("db", new DBMonitoring());
-        mapping.put("egais", new EGAIS());
-        mapping.put("prices", new Prices());
-        mapping.put("items", new Items());
-        mapping.put("printers", new Printers());
+//        mapping.put("loyalty", new Loyalty());
+//        mapping.put("db", new DBMonitoring());
+//        mapping.put("egais", new EGAIS());
+//        mapping.put("prices", new Prices());
+//        mapping.put("items", new Items());
+//        mapping.put("printers", new Printers());
         mapping.put("reciepts", new Reciepts());
-        mapping.put("stock", new Stock());
-        mapping.put("taskmanager", new Taskmanager());
-        mapping.put("transportmodule", new TransportModule());
-        mapping.put("firebird", new Firebird());
+//        mapping.put("stock", new Stock());
+//        mapping.put("taskmanager", new Taskmanager());
+//        mapping.put("transportmodule", new TransportModule());
+//        mapping.put("firebird", new Firebird());
 
         mappinglog.put("boservererror", new LogService());
         mappinglog.put("postgreslog", new LogService());

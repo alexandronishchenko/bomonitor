@@ -4,14 +4,14 @@ import ru.x5.bomonitor.Services.Service;
 import ru.x5.bomonitor.Services.ServiceUnit;
 
 @ServiceUnit("Action")
-public class Action implements Service {
+public class Action {//implements Service {
     ProcessBuilder pb;
-    @Override
+//    @Override
     public int get(String directive) {
         return 0;
     }
 
-    @Override
+//    @Override
     public int get(String directive, String subquery) {
         return 0;
     }

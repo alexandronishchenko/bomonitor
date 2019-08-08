@@ -12,25 +12,25 @@ public class SyncJob {
 
     static HashMap<String, Service> mapping = new HashMap<>();
     static {
-        mapping.put("loyalty", new Loyalty());
-        mapping.put("db", new DBMonitoring());
-        mapping.put("egais", new EGAIS());
-        mapping.put("prices", new Prices());
-        mapping.put("items", new Items());
-        mapping.put("printers", new Printers());
-        mapping.put("reciepts", new Reciepts());
-        mapping.put("stock", new Stock());
-        mapping.put("taskmanager", new Taskmanager());
-        mapping.put("transportmodule", new TransportModule());
-        mapping.put("heap", new Heap());
-        mapping.put("garbagecollector", new GarbageCollector1());
-        mapping.put("garbagecollector2", new GarbageCollector2());
-        mapping.put("classesloaded", new ClassesLoaded());
-        mapping.put("activemq", new ActiveMQ());
-        mapping.put("deferredmq", new DefferedAMQ());
-        mapping.put("threads", new Threads());
-        mapping.put("openedfiles", new OpenedFiles());
-        mapping.put("action", new Action());
+//        mapping.put("loyalty", new Loyalty());
+//        mapping.put("db", new DBMonitoring());
+//        mapping.put("egais", new EGAIS());
+//        mapping.put("prices", new Prices());
+//        mapping.put("items", new Items());
+//        mapping.put("printers", new Printers());
+//        mapping.put("reciepts", new Reciepts());
+//        mapping.put("stock", new Stock());
+//        mapping.put("taskmanager", new Taskmanager());
+//        mapping.put("transportmodule", new TransportModule());
+//        mapping.put("heap", new Heap());
+//        mapping.put("garbagecollector", new GarbageCollector1());
+//        mapping.put("garbagecollector2", new GarbageCollector2());
+//        mapping.put("classesloaded", new ClassesLoaded());
+//        mapping.put("activemq", new ActiveMQ());
+//        mapping.put("deferredmq", new DefferedAMQ());
+//        mapping.put("threads", new Threads());
+//        mapping.put("openedfiles", new OpenedFiles());
+//        mapping.put("action", new Action());
     }
     private ArrayList<String> directives=new ArrayList<>();
     public void addDirective(String s){
