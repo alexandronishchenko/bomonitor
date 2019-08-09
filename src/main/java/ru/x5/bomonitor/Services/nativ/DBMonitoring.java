@@ -51,11 +51,11 @@ public class DBMonitoring implements Service {
         String res="0";
         switch (directive){
             case "autovacuum":
-//                try {
-//                    res= getAutoVacuum(subquery);
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    res= String.valueOf(getAutoVacuum(subquery));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }
