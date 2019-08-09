@@ -21,10 +21,12 @@ public class JMXconnector {
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
 
             result= Long.parseLong(getData(mbsc,name,param));
-            jmxc.close();
+            //jmxc.close();
             return result;
         }catch (IOException e){
             System.out.println("JMX unavailable.");
+        }finally {
+            jmxc.close();
         }
         return result;
 
