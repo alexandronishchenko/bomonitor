@@ -1,6 +1,7 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
 import ru.x5.bomonitor.ZQL.Composer;
+import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -36,6 +37,7 @@ public class ZabbixImitation implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Version of listening zabbix server: "+bomonitor.properties.getProperty("zabbix_version"));
         try {
             serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
@@ -57,32 +59,29 @@ public class ZabbixImitation implements Runnable{
                     socket.setReuseAddress(true);
                     in = new InputStreamReader(socket.getInputStream());
                     os = socket.getOutputStream();
-                    readHeader(in);
-                    String div = getCommand(in);
-                    sendResponse(os,div);
-                    in.close();
-                    os.close();
-                    socket.close();
+                    if(bomonitor.properties.getProperty("zabbix_version").equals("4")){//for 4-th zabbix server
+                        readHeader(in);
+                        String div = getCommand4v(in);
+                        sendResponse(os,div);
+                        in.close();
+                        os.close();
+                        socket.close();
+                    }else if(bomonitor.properties.getProperty("zabbix_version").equals("3")){//for 3-rd zabbix server
+                        String div = getCommand3v(in);
+                        sendResponse(os,div);
+                        in.close();
+                        os.close();
+                        socket.close();
+                    }
 
 
                // }
         } catch(IOException e){
                 this.isRun=false;
-                //socket.close();
                 System.out.println("Exc");
                 Thread.currentThread().interrupt();
             e.printStackTrace();
         }
-//            finally {
-//
-//                try {
-//                    serverSocket.close();
-//                } catch (IOException e) {
-//                    System.out.println("Unable to close server socket.");
-//                    //e.printStackTrace();
-//                }
-//            }
-
     }
         try {
             in.close();
@@ -111,9 +110,9 @@ public class ZabbixImitation implements Runnable{
         for (int i=0;i<5;i++){
             head[i]=(byte)br.read();
         }
-        //System.out.println(new String(head));
+        System.out.println(new String(head));
     }
-    public String getCommand(InputStreamReader br) throws IOException {
+    public String getCommand4v(InputStreamReader br) throws IOException {
             byte[] b2 = new byte[8];
             for (int i = 0; i < 8; i++) {
                 b2[i] = (byte) br.read();
@@ -127,14 +126,21 @@ public class ZabbixImitation implements Runnable{
             }
             return new String(data);
     }
-    public void sendResponse(OutputStream ou,String directive) throws IOException {
-//        SyncJob job = new SyncJob();
-//        ArrayList<String> comands = getServiceParams(directive);
-//        for(String s : comands){
-//            job.addDirective(s);
-//        }
-        Composer composer = new Composer(directive);
+    public String getCommand3v(InputStreamReader br) throws IOException {
+        byte[] dat=new byte[1024];
+        int i=0;
+        while (br.ready()){
+            //data+=String.valueOf(br.read());
+            dat[i]= (byte) br.read();
+            i++;
+        }
 
+        String data = new String(dat).replaceAll("\u0000.*", "").replaceAll("\r","").replaceAll("\n","");
+        //System.out.println(data);
+        return data;
+    }
+    public void sendResponse(OutputStream ou,String directive) throws IOException {
+        Composer composer = new Composer(directive);
         String result = String.valueOf(composer.getResult());
         byte[] data = result.getBytes();
         byte[] header = new byte[] {
@@ -152,18 +158,7 @@ public class ZabbixImitation implements Runnable{
         ou.flush();
 
     }
-//    ArrayList<String> getServiceParams(String s){
-//        ArrayList<String> result=new ArrayList<>();
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < s.length(); i++) {
-//            if(s.charAt(i)=='.'){
-//                result.add(s.substring(0,i));
-//                s=s.substring(i+1);
-//            }
-//        }
-//        result.add(s);
-//        return result;
-//    }
+
     public void closeServSocket(){
         try {
             this.serverSocket.close();
