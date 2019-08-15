@@ -103,7 +103,7 @@ public class SQLqueries {
             "and bca.BOOKING_CANCEL_FLAG='N'  and  bca.bon_seq_id not in (select document_id" +
             " from gk_upload_protocol) and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'" +
             " or bca.BOOKING_SUCCESSFUL_FLAG='N' and bca.BOOKING_CANCEL_FLAG='N' " +
-            "and jrnl.error_code not in ('907','400','123','112') and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'";
+            "and jrnl.error_code not in ('907','400','123','112','111','180','185','211','212','213','152','155','190') and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'";
     public static String COUNT_UNSENT2="select count(*) from XRG_BONPOS_STOLOTTO_TRANS full " +
             "join xrg_clm_response_journal jrnl on jrnl.document_id=XRG_BONPOS_STOLOTTO_TRANS.bon_seq_id " +
             "where SUCCESS_FLAG='N' and XRG_BONPOS_STOLOTTO_TRANS.CANCEL_FLAG='N' and bon_seq_id not in " +
@@ -116,7 +116,7 @@ public class SQLqueries {
             "and bca.BOOKING_CANCEL_FLAG='N'  and  bca.bon_seq_id not in (select document_id" +
             " from gk_upload_protocol) and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'" +
             " or bca.BOOKING_SUCCESSFUL_FLAG='N' and bca.BOOKING_CANCEL_FLAG='N' " +
-            "and jrnl.error_code not in ('907','400','123','112') and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'";
+            "and jrnl.error_code not in ('907','400','123','112','111','180','185','211','212','213','152','155','190') and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'";
     public static String UNSENT2="select bf.bon_seq_id from XRG_BONPOS_STOLOTTO_TRANS full " +
             "join xrg_clm_response_journal jrnl on jrnl.document_id=XRG_BONPOS_STOLOTTO_TRANS.bon_seq_id " +
             "where SUCCESS_FLAG='N' and XRG_BONPOS_STOLOTTO_TRANS.CANCEL_FLAG='N' and bon_seq_id not in " +

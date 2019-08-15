@@ -26,13 +26,17 @@ public class JMXconnector {
         }catch (IOException e){
             System.out.println("JMX unavailable.");
         }finally {
-            jmxc.close();
+            try {
+                jmxc.close();
+            }catch (NullPointerException e){
+                System.out.println("there is no JMX connector");
+            }
         }
         return result;
 
     }
 
-    String getData(MBeanServerConnection mbsc,String name, String[] param) throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IOException {
+    private String getData(MBeanServerConnection mbsc,String name, String[] param) throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IOException {
         String result="";
         if(param.length==1) {
             Object sd = mbsc.getAttribute(new ObjectName(name), param[0]);
@@ -43,6 +47,7 @@ public class JMXconnector {
                             param[0]);
             result=(composite.get(param[1])).toString();
         }
+        //System.out.println(result);
         return result;
     }
 }
