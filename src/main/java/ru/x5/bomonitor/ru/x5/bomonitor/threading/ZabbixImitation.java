@@ -1,5 +1,6 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
+import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.ZQL.Composer;
 import ru.x5.bomonitor.bomonitor;
 
@@ -78,8 +79,8 @@ public class ZabbixImitation implements Runnable{
                // }
         } catch(IOException e){
                 this.isRun=false;
-                System.out.println("Exc");
-                Thread.currentThread().interrupt();
+            bomonitor.getLogger().insertRecord("Socket was closed.", LogLevel.error);
+            Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }
@@ -140,6 +141,7 @@ public class ZabbixImitation implements Runnable{
         return data;
     }
     public void sendResponse(OutputStream ou,String directive) throws IOException {
+        if(directive.isEmpty() || directive==null)return;
         Composer composer = new Composer(directive);
         String result = String.valueOf(composer.getResult());
         byte[] data = result.getBytes();

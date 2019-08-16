@@ -1,8 +1,10 @@
 package ru.x5.bomonitor.JMXclient;
 
+import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.bomonitor;
+
 import javax.management.*;
 import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.CompositeDataSupport;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -24,12 +26,12 @@ public class JMXconnector {
             //jmxc.close();
             return result;
         }catch (IOException e){
-            System.out.println("JMX unavailable.");
+            bomonitor.getLogger().insertRecord("JMX unavailable.", LogLevel.warn);
         }finally {
             try {
                 jmxc.close();
             }catch (NullPointerException e){
-                System.out.println("there is no JMX connector");
+                bomonitor.getLogger().insertRecord("there is no JMX connector", LogLevel.info);
             }
         }
         return result;

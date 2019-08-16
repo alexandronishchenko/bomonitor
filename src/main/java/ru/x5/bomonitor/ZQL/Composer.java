@@ -1,6 +1,8 @@
 package ru.x5.bomonitor.ZQL;
 
 import ru.x5.bomonitor.FullDiag;
+import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.bomonitor;
 
 import java.util.ArrayList;
 
@@ -35,13 +37,13 @@ public class Composer {
         try {
             job.setDirectives(directives);
         }catch (NullPointerException e){
-            System.out.println("No such metric.");
+            bomonitor.getLogger().insertRecord("No such metric:"+directives.toString(), LogLevel.error);
         }
         String res="";
         try {
             res = job.getMetric();
         }catch (NullPointerException e){
-
+            bomonitor.getLogger().insertRecord("No such metric:", LogLevel.info);
         }
         return res;
     }

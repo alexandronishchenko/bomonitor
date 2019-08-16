@@ -1,6 +1,8 @@
 package ru.x5.bomonitor;
 
 
+import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.SyncJob;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixImitation;
 import java.io.File;
@@ -12,6 +14,7 @@ import java.util.Properties;
 public class bomonitor {
 
     public static Properties properties;
+    public static Logger logger;
     static {
         properties=new Properties();
         try {
@@ -19,12 +22,14 @@ public class bomonitor {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logger=new Logger();
     }
 
     public static void main(String[] args) {
         //initialize();//reflection init services
         if(args.length==1){
             System.out.println("testing zabbix");
+            logger.insertRecord("Testing zabbix", LogLevel.info);
             ZabbixImitation zi = new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
             Thread zabbix = new Thread(zi);
             zabbix.start();
@@ -112,6 +117,10 @@ public class bomonitor {
         System.out.println("jmx.threads.ThreadCount");
         System.out.println("jmx.openedfiles.OpenFileDescriptorCount");
 
+    }
+
+    public static Logger getLogger(){
+        return logger;
     }
 
 }
