@@ -3,7 +3,9 @@ package ru.x5.bomonitor.ZQL;
 import ru.x5.bomonitor.FullDiag;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.bomonitor;
+import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixProxing;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Composer {
@@ -44,13 +46,15 @@ public class Composer {
             res = job.getMetric();
         }catch (NullPointerException e){
             bomonitor.getLogger().insertRecord("No such metric:", LogLevel.info);
+            try{
+                ZabbixProxing zp = new ZabbixProxing();
+                zp.sendRequestToClient("test");
+            }catch (IOException g){
+                System.out.println("Zabbix to client resend failed.");
+            }
         }
         return res;
     }
-    /*
-    jmx|RealNameOfBean|RealNameAttribute
-    native|queryConst&queryConst2&queryConst3|sum
-     */
 
     ArrayList<String> getServiceParams(String s){
         System.out.println(s);

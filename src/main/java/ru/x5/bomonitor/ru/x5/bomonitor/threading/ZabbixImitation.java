@@ -141,7 +141,10 @@ public class ZabbixImitation implements Runnable{
         return data;
     }
     public void sendResponse(OutputStream ou,String directive) throws IOException {
-        if(directive.isEmpty() || directive==null)return;
+        if(directive.isEmpty() || directive==null){
+            bomonitor.getLogger().insertRecord("Null string was fetched.",LogLevel.error);
+            return;
+        }
         Composer composer = new Composer(directive);
         String result = String.valueOf(composer.getResult());
         byte[] data = result.getBytes();
