@@ -47,8 +47,10 @@ public class Composer {
         }catch (NullPointerException e){
             bomonitor.getLogger().insertRecord("No such metric:", LogLevel.info);
             try{
-                ZabbixProxing zp = new ZabbixProxing();
-                zp.sendRequestToClient("test");
+                if(!directives.isEmpty()) {
+                    ZabbixProxing zp = new ZabbixProxing();
+                    System.out.println(zp.sendRequestToClient("system.cpu.load[percpu,avg1]+\n"));
+                }
             }catch (IOException g){
                 System.out.println("Zabbix to client resend failed.");
             }

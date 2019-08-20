@@ -10,9 +10,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Класс родитель для JMXconnector
+ * @see JMXconnector
+ * Содержит карту сервисов JMX. Необходим перевод на рефлексию.
+ */
 public class JMXservice extends Service {
+    /**
+     * Непосредственный коннектор с обработчиками.
+     */
     protected JMXconnector jmXconnector= new JMXconnector();
    // private String name;
+    /**
+     * Карта сервисов
+     */
     static HashMap<String, String> mapping = new HashMap<>();
     static {
         mapping.put("activemq", "org.apache.activemq:type=Broker,brokerName=brokerActiveMQ");
@@ -24,7 +35,12 @@ public class JMXservice extends Service {
         mapping.put("openedfiles","java.lang:type=OperatingSystem" );
         mapping.put("threads", "java.lang:type=Threading");
     }
-@Override
+
+    /**
+     * Запрос метрики от сервера.
+     * @return строковый результат запроса или пустую строку.
+     */
+    @Override
 public String getMetric(){
         long result=0;
         try {

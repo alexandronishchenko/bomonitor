@@ -4,6 +4,7 @@ import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
@@ -53,19 +54,24 @@ public class Logger {
             SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
             date = smp.format(new Date(dt));
              today=date.equals(created_date.substring(0,10));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(!today){
-            System.out.println("not today");
-            //System.out.println();
-            log.renameTo(new File(log.getAbsolutePath()+date.replaceAll("-","")));
-            log= new File(bomonitor.properties.getProperty("log"));
-            try {
-                log.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(!today) {
+                System.out.println("not today");
+                //System.out.println();
+                log.renameTo(new File(log.getAbsolutePath() + date.replaceAll("-", "")));
+                log = new File(bomonitor.properties.getProperty("log"));
+                try {
+                    log.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (NoSuchFileException g) {
+            //g.printStackTrace();
+            System.out.println("No prev file.");
+        } catch (IOException e){
+            System.out.println("Error with file");
         }
+
+
     }
 }
