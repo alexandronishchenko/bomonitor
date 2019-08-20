@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * Класс для запуска - основной.
+ */
 public class bomonitor {
 
     public static Properties properties;
@@ -63,6 +66,9 @@ public class bomonitor {
         }
     }
 
+    /**
+     * Не используется, возможно будет сканирование на аннотации.
+     */
     public static void initialize(){
         ArrayList<File> classes = new ArrayList<>();
         scanDir(String.valueOf(bomonitor.class.getProtectionDomain().getCodeSource().getLocation()),classes);
@@ -72,6 +78,12 @@ public class bomonitor {
 
     }
 
+    /**
+     * Метод сканирования директории.
+     * @param file
+     * @param classes
+     * @return
+     */
     private static ArrayList<File> scanDir(String file,ArrayList<File> classes){
         File fl = new File(file);
         File[] files = fl.listFiles();
@@ -88,6 +100,9 @@ public class bomonitor {
         return classes;
     }
 
+    /**
+     * Выводи все доступные метрики. Опять же, желательно перевести на рефлексию.
+     */
     static void printAllMetrics(){
         System.out.println("fulldiag or fulldiag.db(reciepts ...)");
         System.out.println("log.bolog or log.postgreslog or log.bolog.error");

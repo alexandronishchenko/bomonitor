@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Простое подключение к БД.
+ */
 public class DBConnection {
     //Creditionals
     private static final String DB_URL="localhost";
@@ -16,9 +19,18 @@ public class DBConnection {
 
     private static Connection connection;
 
+    /**
+     * Конструктор по умолчанию в привате для реализации паттерна синглтон.
+     */
     private DBConnection() {
         //Connection= DriverManager.getConnection();
     }
+
+    /**
+     * Метод получения коннекта к БД.
+     * @return Единственное подключение к БД.
+     * @throws SQLException
+     */
     public static Connection getConnection() throws SQLException {
         if(null==connection||connection.isClosed()){
             try {
@@ -29,6 +41,13 @@ public class DBConnection {
         }
         return connection;
     }
+
+    /**
+     * Выполняет простую выборку без переменных и возвращает мап.
+     * @param s запрос полный
+     * @return
+     * @throws SQLException
+     */
     public static HashMap<String,String> executeSelect(String s) throws SQLException {
         //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();
@@ -52,6 +71,15 @@ public class DBConnection {
         con.close();
         return map;
     }
+
+    /**
+     * Позволяет выполнить выборку с параметрами из массива. Здесь даты.
+     * @param s запрос с ?
+     * @param requiredColumn имя колонки для проверки на налл
+     * @param dates массив дат в формате строки SQL.
+     * @return Возвращает мап.
+     * @throws SQLException
+     */
     public static HashMap<String,String> executeSelect(String s,String requiredColumn,String[] dates) throws SQLException {
         //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();
@@ -91,6 +119,13 @@ public class DBConnection {
 
         return map;
     }
+
+    /**
+     * Возвращает набор строк, а не одну в одной записи мап, чем иммитирует функцию arr_agg
+     * @param s
+     * @return
+     * @throws SQLException
+     */
     public static HashMap<String,String> getNote(String s) throws SQLException {
         //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();

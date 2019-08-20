@@ -49,7 +49,9 @@ public class Composer {
             try{
                 if(!directives.isEmpty()) {
                     ZabbixProxing zp = new ZabbixProxing();
-                    System.out.println(zp.sendRequestToClient("system.cpu.load[percpu,avg1]+\n"));
+                    String zabRes=zp.sendRequestToClient("system.cpu.load[percpu,avg1]\n");
+                    System.out.println(zabRes);
+                    res=zabRes;
                 }
             }catch (IOException g){
                 System.out.println("Zabbix to client resend failed.");
