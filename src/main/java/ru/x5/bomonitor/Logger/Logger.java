@@ -17,7 +17,7 @@ public class Logger {
     }
 
 
-   public void insertRecord(String record,LogLevel level){
+   public void insertRecord(Object o,String record,LogLevel level){
         logRotate();
         BufferedWriter writer=null;
         try {
@@ -28,19 +28,35 @@ public class Logger {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
         String curDate = sdf.format(new Date());
-        System.out.println(curDate+" "+record);
+        record+=" "+level.name().toUpperCase();
+        System.out.println(curDate+" "+o.getClass().getName()+" "+record);
         if(writer!=null){
             try {
-                if(level.equals(LogLevel.error)){
-                writer.write(curDate+" "+record+"\r\n");
-                writer.flush();
-                writer.close();
+                String propLevel=level.name();
+                switch (bomonitor.properties.getProperty("log_level")){
+                    case "debug":
+                        if(propLevel.equals("debug")||propLevel.equals("info")||propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");}
+                        break;
+                    case "info":
+                        if(propLevel.equals("info")|| propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");}
+                        break;
+                    case "warn":
+                        if(propLevel.equals("warn")||propLevel.equals("error"))write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");
+                        break;
+                    case "error":
+                        if(propLevel.equals("error"))write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");
+                        break;
                 }
             } catch (IOException e) {
                 System.out.println("Cannot write to file.");
             }
         }
 
+    }
+    private void write(BufferedWriter wr,String s) throws IOException {
+        wr.write(s);
+        wr.flush();
+        wr.close();
     }
     void logRotate(){
         String file_name = log.getAbsolutePath();

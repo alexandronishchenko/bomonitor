@@ -42,12 +42,12 @@ public class JMXconnector {
             //jmxc.close();
             return result;
         }catch (IOException e){
-            bomonitor.getLogger().insertRecord("JMX unavailable.", LogLevel.warn);
+            bomonitor.getLogger().insertRecord(this,"JMX unavailable.", LogLevel.warn);
         }finally {
             try {
                 jmxc.close();
             }catch (NullPointerException e){
-                bomonitor.getLogger().insertRecord("there is no JMX connector", LogLevel.info);
+                bomonitor.getLogger().insertRecord(this,"there is no JMX connector", LogLevel.info);
             }
         }
         return result;

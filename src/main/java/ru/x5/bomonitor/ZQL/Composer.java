@@ -2,6 +2,7 @@ package ru.x5.bomonitor.ZQL;
 
 import ru.x5.bomonitor.FullDiag;
 import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
 import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixProxing;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Composer {
+    private static Logger loger=bomonitor.getLogger();
     String comand;
     ArrayList<String> directives=new ArrayList<>();
     Service job;
@@ -39,22 +41,22 @@ public class Composer {
         try {
             job.setDirectives(directives);
         }catch (NullPointerException e){
-            bomonitor.getLogger().insertRecord("No such metric:"+directives.toString(), LogLevel.error);
+            loger.insertRecord(this,"No such metric:"+directives.toString(), LogLevel.error);
         }
         String res="";
         try {
             res = job.getMetric();
         }catch (NullPointerException e){
-            bomonitor.getLogger().insertRecord("No such metric:", LogLevel.info);
+            loger.insertRecord(this,"No such metric:", LogLevel.info);
             try{
                 if(!directives.isEmpty()) {
                     ZabbixProxing zp = new ZabbixProxing();
-                    String zabRes=zp.sendRequestToClient("system.cpu.load[percpu,avg1]\n");
+                    String zabRes=zp.sendRequestToClient(comand);
                     System.out.println(zabRes);
                     res=zabRes;
                 }
             }catch (IOException g){
-                System.out.println("Zabbix to client resend failed.");
+                loger.insertRecord(this,"Zabbix to client resend failed.",LogLevel.info);
             }
         }
         return res;

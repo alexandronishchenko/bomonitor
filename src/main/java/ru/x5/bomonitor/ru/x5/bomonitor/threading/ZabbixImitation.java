@@ -1,6 +1,7 @@
 package ru.x5.bomonitor.ru.x5.bomonitor.threading;
 
 import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.ZQL.Composer;
 import ru.x5.bomonitor.bomonitor;
 
@@ -13,6 +14,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 public class ZabbixImitation implements Runnable{
+    private static Logger loger=bomonitor.getLogger();
     private Boolean isRun=true;
 
     private int port;
@@ -43,6 +45,7 @@ public class ZabbixImitation implements Runnable{
             serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
             this.isRun=false;
+            loger.insertRecord(this,e.getMessage(),LogLevel.error);
             e.printStackTrace();
         }
         try {
@@ -79,7 +82,7 @@ public class ZabbixImitation implements Runnable{
                // }
         } catch(IOException e){
                 this.isRun=false;
-            bomonitor.getLogger().insertRecord("Socket was closed.", LogLevel.error);
+            bomonitor.getLogger().insertRecord(this,"Socket was closed.", LogLevel.error);
             Thread.currentThread().interrupt();
             e.printStackTrace();
         }
@@ -111,7 +114,7 @@ public class ZabbixImitation implements Runnable{
         for (int i=0;i<5;i++){
             head[i]=(byte)br.read();
         }
-        System.out.println(new String(head));
+        loger.insertRecord(this,new String(head),LogLevel.debug);
     }
     public String getCommand4v(InputStreamReader br) throws IOException {
             byte[] b2 = new byte[8];
@@ -125,6 +128,7 @@ public class ZabbixImitation implements Runnable{
             for (int i = 0; i < lenth; i++) {
                 data[i] = (byte) br.read();
             }
+        loger.insertRecord(this,new String(data),LogLevel.debug);
             return new String(data);
     }
     public String getCommand3v(InputStreamReader br) throws IOException {
@@ -138,11 +142,12 @@ public class ZabbixImitation implements Runnable{
 
         String data = new String(dat).replaceAll("\u0000.*", "").replaceAll("\r","").replaceAll("\n","");
         //System.out.println(data);
+        loger.insertRecord(this,data,LogLevel.debug);
         return data;
     }
     public void sendResponse(OutputStream ou,String directive) throws IOException {
         if(directive.isEmpty() || directive==null){
-            bomonitor.getLogger().insertRecord("Null string was fetched.",LogLevel.error);
+            loger.insertRecord(this,"Null string was fetched.",LogLevel.warn);
             return;
         }
         Composer composer = new Composer(directive);
@@ -162,13 +167,5 @@ public class ZabbixImitation implements Runnable{
         ou.write(packet);
         ou.flush();
 
-    }
-
-    public void closeServSocket(){
-        try {
-            this.serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

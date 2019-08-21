@@ -32,7 +32,7 @@ public class bomonitor {
         //initialize();//reflection init services
         if(args.length==1){
             System.out.println("testing zabbix");
-            logger.insertRecord("Testing zabbix", LogLevel.info);
+            logger.insertRecord(bomonitor.class,"Testing zabbix", LogLevel.info);
             ZabbixImitation zi = new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
             Thread zabbix = new Thread(zi);
             zabbix.start();

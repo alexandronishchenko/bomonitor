@@ -1,7 +1,10 @@
 package ru.x5.bomonitor.ZQL;
 
 import ru.x5.bomonitor.JMXclient.JMXconnector;
+import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.Services.nativ.*;
+import ru.x5.bomonitor.bomonitor;
 
 import javax.management.*;
 import java.io.IOException;
@@ -19,6 +22,7 @@ public class JMXservice extends Service {
     /**
      * Непосредственный коннектор с обработчиками.
      */
+    private static Logger loger= bomonitor.getLogger();
     protected JMXconnector jmXconnector= new JMXconnector();
    // private String name;
     /**
@@ -64,7 +68,7 @@ public String getMetric(){
         } catch (ReflectionException e) {
             e.printStackTrace();
         }catch (ClassCastException e){
-            System.out.println("cast error");
+            loger.insertRecord(this,"cast error", LogLevel.error);
         }
         return String.valueOf(result);
     }
