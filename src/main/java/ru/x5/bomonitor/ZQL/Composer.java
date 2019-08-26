@@ -4,7 +4,7 @@ import ru.x5.bomonitor.FullDiag;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
-import ru.x5.bomonitor.ru.x5.bomonitor.threading.ZabbixProxing;
+import ru.x5.bomonitor.ru.x5.bomonitor.zabbix.ZabbixProxing;
 
 import java.io.IOException;
 import java.util.ArrayList;

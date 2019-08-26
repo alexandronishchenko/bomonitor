@@ -1,12 +1,10 @@
-package ru.x5.bomonitor.ru.x5.bomonitor.threading;
+package ru.x5.bomonitor.ru.x5.bomonitor.zabbix;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
-import ru.x5.bomonitor.ZQL.Composer;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;

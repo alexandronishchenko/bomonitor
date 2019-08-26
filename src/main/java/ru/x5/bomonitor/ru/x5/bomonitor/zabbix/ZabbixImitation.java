@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.ru.x5.bomonitor.threading;
+package ru.x5.bomonitor.ru.x5.bomonitor.zabbix;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
@@ -11,7 +11,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 
 public class ZabbixImitation implements Runnable{
     private static Logger loger=bomonitor.getLogger();

@@ -1,7 +1,8 @@
-package ru.x5.bomonitor.ru.x5.bomonitor.threading;
+package ru.x5.bomonitor;
 
 
 import ru.x5.bomonitor.Services.*;
+import ru.x5.bomonitor.ru.x5.bomonitor.zabbix.ZabbixImitation;
 
 
 import java.util.ArrayList;
