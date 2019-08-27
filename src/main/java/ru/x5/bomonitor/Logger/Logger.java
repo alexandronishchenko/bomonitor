@@ -30,7 +30,7 @@ public class Logger {
         String curDate = sdf.format(new Date());
         String levelS = level.name().toUpperCase();
         record="["+levelS+"] "+record;
-        System.out.println(curDate+" "+o.getClass().getName()+" "+record);
+        System.out.println(curDate+" <"+o.getClass().getName()+"> "+record);
         if(writer!=null){
             try {
                 String propLevel=level.name();
