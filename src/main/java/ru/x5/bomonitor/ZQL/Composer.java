@@ -41,13 +41,13 @@ public class Composer {
         try {
             job.setDirectives(directives);
         }catch (NullPointerException e){
-            loger.insertRecord(this,"No such metric:"+directives.toString(), LogLevel.error);
+            loger.insertRecord(this,"No job was setted:"+directives.toString(), LogLevel.warn);
         }
         String res="";
         try {
             res = job.getMetric();
         }catch (NullPointerException e){
-            loger.insertRecord(this,"No such metric:", LogLevel.info);
+            loger.insertRecord(this,"No integrated job was seted, try to resend to zabbix-agent:", LogLevel.info);
             try{
                 if(!directives.isEmpty()) {
                     ZabbixProxing zp = new ZabbixProxing();
@@ -56,7 +56,7 @@ public class Composer {
                     res=zabRes;
                 }
             }catch (IOException g){
-                loger.insertRecord(this,"Zabbix to client resend failed.",LogLevel.info);
+                loger.insertRecord(this,"Zabbix to client resend failed.",LogLevel.error);
             }
         }
         return res;

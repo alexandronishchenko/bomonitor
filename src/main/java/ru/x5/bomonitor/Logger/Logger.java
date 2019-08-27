@@ -28,7 +28,8 @@ public class Logger {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
         String curDate = sdf.format(new Date());
-        record+=" "+level.name().toUpperCase();
+        String levelS = level.name().toUpperCase();
+        record="["+levelS+"] "+record;
         System.out.println(curDate+" "+o.getClass().getName()+" "+record);
         if(writer!=null){
             try {
