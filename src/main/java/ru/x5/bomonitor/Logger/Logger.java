@@ -36,16 +36,16 @@ public class Logger {
                 String propLevel=level.name();
                 switch (bomonitor.properties.getProperty("log_level")){
                     case "debug":
-                        if(propLevel.equals("debug")||propLevel.equals("info")||propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");}
+                        if(propLevel.equals("debug")||propLevel.equals("info")||propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" <"+o.getClass().getName()+"> "+record+"\r\n");}
                         break;
                     case "info":
-                        if(propLevel.equals("info")|| propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");}
+                        if(propLevel.equals("info")|| propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" <"+o.getClass().getName()+"> "+record+"\r\n");}
                         break;
                     case "warn":
-                        if(propLevel.equals("warn")||propLevel.equals("error"))write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");
+                        if(propLevel.equals("warn")||propLevel.equals("error"))write(writer,curDate+" <"+o.getClass().getName()+"> "+record+"\r\n");
                         break;
                     case "error":
-                        if(propLevel.equals("error"))write(writer,curDate+" "+o.getClass().getName()+" "+record+"\r\n");
+                        if(propLevel.equals("error"))write(writer,curDate+" <"+o.getClass().getName()+"> "+record+"\r\n");
                         break;
                 }
             } catch (IOException e) {

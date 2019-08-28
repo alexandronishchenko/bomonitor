@@ -47,13 +47,14 @@ public class Composer {
         try {
             res = job.getMetric();
         }catch (NullPointerException e){
-            loger.insertRecord(this,"No integrated job was seted, try to resend to zabbix-agent:", LogLevel.info);
+            loger.insertRecord(this,"No integrated job was seted, try to resend to zabbix-agent:"+directives.toString(), LogLevel.info);
             try{
                 if(!directives.isEmpty()) {
                     ZabbixProxing zp = new ZabbixProxing();
                     String zabRes=zp.sendRequestToClient(comand);
                     System.out.println(zabRes);
                     res=zabRes;
+                    loger.insertRecord(this,"Succed send. Result='"+res+"'", LogLevel.debug);
                 }
             }catch (IOException g){
                 loger.insertRecord(this,"Zabbix to client resend failed.",LogLevel.error);
