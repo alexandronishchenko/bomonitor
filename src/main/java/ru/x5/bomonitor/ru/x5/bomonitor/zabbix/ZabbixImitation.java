@@ -49,6 +49,7 @@ public class ZabbixImitation implements Runnable{
         }
         try {
             serverSocket.setReuseAddress(true);
+            //serverSocket.setSoTimeout(30000);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -141,16 +142,20 @@ public class ZabbixImitation implements Runnable{
 
         String data = new String(dat).replaceAll("\u0000.*", "").replaceAll("\r","").replaceAll("\n","");
         //System.out.println(data);
-        loger.insertRecord(this,data,LogLevel.debug);
+        loger.insertRecord(this,"Fetched command: "+data,LogLevel.debug);
         return data;
     }
     public void sendResponse(OutputStream ou,String directive) throws IOException {
         if(directive.isEmpty() || directive==null){
-            loger.insertRecord(this,"Null string was fetched.",LogLevel.warn);
+            loger.insertRecord(this,"Null string was fetched. Closing connection.",LogLevel.warn);
             return;
         }
         Composer composer = new Composer(directive);
         String result = String.valueOf(composer.getResult());
+        if(result.isEmpty() || result==null){
+            loger.insertRecord(this,"Null result. Closing connection.",LogLevel.debug);
+            return;
+        }
         byte[] data = result.getBytes();
         byte[] header = new byte[] {
                 'Z', 'B', 'X', 'D', '\1',
