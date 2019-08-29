@@ -83,7 +83,7 @@ public class SQLqueries {
             "u1.document_id as Index_docId, u1.upload_type_code uCode from GK_UPLOAD_PROTOCOL u join GK_UPLOAD_PROTOCOL u1 on " +
             "u1.process_type_code = 'P' where u.upload_type_code = u1.upload_type_code || '_F' || 'F' and u.process_type_code = 'F' " +
             "and u1.document_id < u.document_id group by u.upload_type_code, u1.document_id, u1.upload_type_code) as cnt";
-    public static String STOPPED_COUNTERS = "select upload_type_code from (select max(u.document_id) as LastDocId, u.upload_type_code u1Code, " +
+    public static String STOPPED_COUNTERS = "select uCode from (select max(u.document_id) as LastDocId, u.upload_type_code u1Code, " +
             "u1.document_id as Index_docId, u1.upload_type_code uCode from GK_UPLOAD_PROTOCOL u join GK_UPLOAD_PROTOCOL u1 on " +
             "u1.process_type_code = 'P' where u.upload_type_code = u1.upload_type_code || '_F' || 'F' and u.process_type_code = 'F' " +
             "and u1.document_id < u.document_id group by u.upload_type_code, u1.document_id, u1.upload_type_code) as cnt";
@@ -117,7 +117,7 @@ public class SQLqueries {
             " from gk_upload_protocol) and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'" +
             " or bca.BOOKING_SUCCESSFUL_FLAG='N' and bca.BOOKING_CANCEL_FLAG='N' " +
             "and jrnl.error_code not in ('907','400','123','112','111','180','185','211','212','213','152','155','190') and aktdat between now() - interval '432 hour' and now() - interval '1 hour' and belegstatus!='1'";
-    public static String UNSENT2="select bf.bon_seq_id from XRG_BONPOS_STOLOTTO_TRANS full " +
+    public static String UNSENT2="select bon_seq_id from XRG_BONPOS_STOLOTTO_TRANS full " +
             "join xrg_clm_response_journal jrnl on jrnl.document_id=XRG_BONPOS_STOLOTTO_TRANS.bon_seq_id " +
             "where SUCCESS_FLAG='N' and XRG_BONPOS_STOLOTTO_TRANS.CANCEL_FLAG='N' and bon_seq_id not in " +
             "(select document_id from gk_upload_protocol) and XRG_BONPOS_STOLOTTO_TRANS.timestamp between now() - interval '432 hour' and now() - interval '1 hour' " +
