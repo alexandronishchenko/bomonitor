@@ -70,7 +70,7 @@ public class NativeService extends Service {
               loger.insertRecord(this,"incorrect param",LogLevel.info);
         }
     }catch (NullPointerException e){
-          loger.insertRecord(this,"No such service: "+ service+" -> "+param,LogLevel.warn);
+          loger.insertRecord(this,"No such service or result was null: "+ service+" -> "+param,LogLevel.warn);
           //loger.insertRecord(this,e.getMessage(), LogLevel.error);
     }
         return result;
