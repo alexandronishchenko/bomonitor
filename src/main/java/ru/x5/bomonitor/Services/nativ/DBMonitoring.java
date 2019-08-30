@@ -118,7 +118,12 @@ public class DBMonitoring implements Service {
     }
     @StringMetric("Зависшие запросы")
     public String getStringFrozenTransactions() throws SQLException {
-        return DBConnection.getNote(SQLqueries.FROZEN_QUERIES).get("query");
+        String result="";
+        String met=DBConnection.getNote(SQLqueries.FROZEN_QUERIES).get("query");
+        if(!met.isEmpty() || met!=null || met!=""){
+            result=met;
+        }
+        return result;
     }
 
 
