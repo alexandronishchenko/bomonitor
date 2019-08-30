@@ -118,7 +118,7 @@ public class DBMonitoring implements Service {
     }
     @StringMetric("Зависшие запросы")
     public String getStringFrozenTransactions() throws SQLException {
-        return DBConnection.executeSelect(SQLqueries.COUNT_FROZEN_QUERIES).get("count");
+        return DBConnection.getNote(SQLqueries.FROZEN_QUERIES).get("query");
     }
 
 

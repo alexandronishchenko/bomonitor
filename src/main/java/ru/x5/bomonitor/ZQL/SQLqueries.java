@@ -63,6 +63,7 @@ public class SQLqueries {
     //String ACTIVE_REQUESTS_STR="select * from pg_stat_activity";
     public static String COUNT_AUTOVACUUM="SELECT count(*) FROM pg_stat_user_tables where schemaname = 'gkretail' and autovacuum_count > 0 and cast(last_autovacuum as date)=?";
     public static String COUNT_FROZEN_QUERIES = "SELECT count(*) FROM pg_stat_activity WHERE xact_start < (CURRENT_TIMESTAMP - INTERVAL '1 hour')";
+    public static String FROZEN_QUERIES = "SELECT query FROM pg_stat_activity WHERE xact_start < (CURRENT_TIMESTAMP - INTERVAL '1 hour')";
     public static String COUNT_SAP_ERRORS_TX="select count(errorcode) from XRG_SAP_PI_TX where status != 'OK'";
     public static String COUNT_SAP_ERRORS_RX="select count(errorcode) from XRG_SAP_PI_RX where status != 'OK'";
     public static String SAP_ERRORS_TX="select msgtype from XRG_SAP_PI_TX where status != 'OK'";
