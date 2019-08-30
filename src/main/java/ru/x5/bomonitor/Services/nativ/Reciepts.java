@@ -73,11 +73,9 @@ public class Reciepts implements Service {
     }
     @StringMetric("расхождение баланса")
     public String getStringBalanceDiff() throws SQLException {
-        String result="";
+        String result=null;
         result=DBConnection.executeSelect(SQLqueries.BALANCE_DIFF).get("count");
-        if(result==null)return "";
-        if(result.isEmpty() ) return "";
-        if(result.equals("NULL"))return "";
+        if(result==null||result.equals("null")||result.equals("NULL"))return "";
         return result;
     }
 
@@ -90,16 +88,13 @@ public class Reciepts implements Service {
     }
     @StringMetric("задвоенный номер")
     public String getStringDuplicatesBon() throws SQLException {
-        String result="";
+        String result=null;
         long dt = new Date().getTime()-(3*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
-
         result=DBConnection.executeSelect(SQLqueries.DUPLICATE_BONNR,"bonnr",new String[]{date}).get("bonnr");
         //System.out.println(result);
-        if(result==null)return "";
-        if(result.isEmpty() ) return "";
-        if(result.equals("NULL"))return "";
+        if(result==null||result.equals("null")||result.equals("null"))return "";
         return result;
     }
 
@@ -110,8 +105,8 @@ public class Reciepts implements Service {
     @StringMetric("Номер некорректного чека")
     public String getStringIncorrectBonnr() throws SQLException{
         String result = DBConnection.executeSelect(SQLqueries.INCORRECT_BONNR_STR).get("bonnr");
-        if(result.isEmpty() || result==null || result.equals("NULL")) return "";
-        return DBConnection.executeSelect(SQLqueries.INCORRECT_BONNR_STR).get("bonnr");
+        if(result.isEmpty() || result==null || result.equals("NULL")|| result.equals("null")) return "";
+        return result;
     }
 
 
@@ -125,6 +120,7 @@ public class Reciepts implements Service {
         if(result==null)return "";
         if(result.isEmpty() ) return "";
         if(result.equals("NULL"))return "";
+        if(result.equals("null"))return "";
         return result;
     }
 
@@ -148,7 +144,7 @@ public class Reciepts implements Service {
         if(result==null)return "";
         if(result.isEmpty() ) return "";
         if(result.equals("NULL"))return "";
-
+        if(result.equals("null"))return "";
         return result;
     }
 }

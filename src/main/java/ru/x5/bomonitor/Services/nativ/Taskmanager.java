@@ -42,7 +42,7 @@ public class Taskmanager implements Service {
     public String getStringTaskNotTop() throws SQLException {
         String result="";
         String s1 = DBConnection.executeSelect(SQLqueries.TASKS_NOT_TOP).get("task_mgmt_ga_id");
-        if(s1!=null)result+=s1;
+        if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }
 

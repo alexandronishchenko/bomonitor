@@ -48,7 +48,7 @@ public class Loyalty implements Service {
     public String getStringStoppedCounters()throws SQLException{
         String result="";
         String s1=DBConnection.getNote(SQLqueries.STOPPED_COUNTERS).get("upload_type_code");
-        if(s1!=null&&!s1.equals("null"))result+=s1;
+        if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
 
     }
@@ -60,9 +60,9 @@ public class Loyalty implements Service {
     }
     @StringMetric("Давно зависшие транзакции")
     public String getStringLongUnsetTransactions()throws SQLException{
-        String result=" ";
+        String result="";
         String s1 = DBConnection.getNote(SQLqueries.OLD_UNSENT_TRANSACTIONS).get("bon_seq_id");
-        if(s1!=null&&!s1.equals("null"))result+=s1;
+        if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
             return result;
 
 
@@ -78,7 +78,7 @@ public class Loyalty implements Service {
     }
     @StringMetric("Неотправленные транзакции")
     public String getStringUnsentTransactions()throws SQLException{
-        String result=" ";
+        String result="";
         String s1 = DBConnection.getNote(SQLqueries.UNSENT1).get("bon_seq_id");
         String s2 = DBConnection.getNote(SQLqueries.UNSENT2).get("bon_seq_id");
         if(!s1.equals("null")&&s1!=null)result+=s1;

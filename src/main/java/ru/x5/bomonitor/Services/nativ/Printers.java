@@ -50,7 +50,7 @@ public class Printers implements Service {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = smp.format(new Date(dt));
         String s1=DBConnection.executeSelect(SQLqueries.QUEUE_PRINTER,"task_id",new String[]{date}).get("task_id");
-        if(s1!=null)result+=s1;
+        if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }
 }

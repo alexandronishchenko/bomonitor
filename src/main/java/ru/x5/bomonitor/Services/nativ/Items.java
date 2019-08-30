@@ -39,7 +39,7 @@ public class Items implements Service {
     public String regetStringDiff() throws SQLException{
         String result="";
         String s1 =DBConnection.getNote(SQLqueries.ITEMS_DIFF).get("ID_ITM");
-        if(s1==null)return "";
+        if(s1==null || s1.equals("NULL") || s1.equals("null"))return "";
         return result;
     }
 }

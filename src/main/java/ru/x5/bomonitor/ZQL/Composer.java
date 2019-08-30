@@ -43,7 +43,7 @@ public class Composer {
         }catch (NullPointerException e){
             loger.insertRecord(this,"No job was setted:"+directives.toString(), LogLevel.warn);
         }
-        String res="";
+        String res=null;
         try {
             res = job.getMetric();
         }catch (NullPointerException e){

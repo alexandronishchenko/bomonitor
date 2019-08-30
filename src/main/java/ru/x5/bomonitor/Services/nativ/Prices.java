@@ -61,11 +61,11 @@ public class Prices implements Service {
         String date = smp.format(new Date(dt));
         String result="";
         String s1 = DBConnection.executeSelect(SQLqueries.PRICE_GK_ERR,"item_id",new String[]{date}).get("item_id");
-        if(s1!=null)result+=s1;
+        if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         String s2= DBConnection.executeSelect(SQLqueries.PRICE_CHANGE_ERR,"item_id",new String[]{date}).get("item_id");
-        if(s2!=null)result+=s2;
+        if(s2!=null&&!s2.equals("null")&&!s1.equals("NULL"))result+=s2;
         String s3 =DBConnection.getNote(SQLqueries.UNPRINTED_PRICES).get("item_id");
-        if(s3!=null)result+=s3;
+        if(s3!=null&&!s3.equals("null")&&!s1.equals("NULL"))result+=s3;
         return result;
     }
 }

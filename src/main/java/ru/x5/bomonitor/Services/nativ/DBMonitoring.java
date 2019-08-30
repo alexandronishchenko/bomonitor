@@ -71,7 +71,7 @@ public class DBMonitoring implements Service {
     @StringMetric("Активные сессии в БД")
     public String getStringActiveRequests() throws SQLException {
         String result = DBConnection.getNote(SQLqueries.ACTIVE_REQUESTS).get("query");
-        if(result.isEmpty() || result==null || result.equals("NULL")) return " ";
+        if(result.isEmpty() || result==null || result.equals("NULL")) return "";
         return result;
     }
 
@@ -124,7 +124,7 @@ public class DBMonitoring implements Service {
         if(!met.isEmpty() || met!=null || met!=""){
             result=met;
         }else{
-            result=" ";
+            result="";
         }
         return result;
     }
@@ -153,7 +153,7 @@ public class DBMonitoring implements Service {
         if(s2==null || s1.equals("null")){result+= "";}else {
             result+=s2+";";
         }
-        if(result.isEmpty()) result=" ";
+        if(result.isEmpty()) result="";
         return result;
     }
 }

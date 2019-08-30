@@ -52,7 +52,7 @@ public class NativeService extends Service {
      */
     @Override
     public String getMetric(){
-        String result ="";
+        String result =null;
         String subquery=null;
         String service=null;
         String param=null;

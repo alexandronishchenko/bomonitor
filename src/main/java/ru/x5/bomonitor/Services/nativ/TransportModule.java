@@ -51,7 +51,7 @@ public class TransportModule implements Service {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
         String s1 = DBConnection.executeSelect(SQLqueries.TRANSPORT_ERRORS,"bon_seq_id",new String[]{date}).get("bon_seq_id");
-        if(s1!=null)result+=s1;
+        if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }
 }
