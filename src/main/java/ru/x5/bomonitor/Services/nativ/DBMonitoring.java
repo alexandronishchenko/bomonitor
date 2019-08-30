@@ -28,8 +28,8 @@ public class DBMonitoring implements Service {
             case "long":
                 result=String.valueOf(getLongOperations());
                 break;
-            case "tmptables":
-                result=String.valueOf(getTmpTables());
+            case "counterrsap":
+                result=String.valueOf(getCountErrSap());
                 break;
             case "stractiverequests":
                  result=getStringActiveRequests();
@@ -37,8 +37,8 @@ public class DBMonitoring implements Service {
             case "strfrozentransaction":
                 result=getStringFrozenTransactions();
                 break;
-            case "strtmptables":
-                result=getStringTmpTables();
+            case "erroridocs":
+                result= getStringErrIdoc();
                 break;
 
         }
@@ -70,8 +70,9 @@ public class DBMonitoring implements Service {
     }
     @StringMetric("Активные сессии в БД")
     public String getStringActiveRequests() throws SQLException {
-        HashMap<String,String> map = DBConnection.executeSelect(SQLqueries.COUNT_ACTIVE_REQUESTS);
-        return map.get("count");
+        String result = DBConnection.getNote(SQLqueries.ACTIVE_REQUESTS).get("query");
+        if(result.isEmpty() || result==null || result.equals("NULL")) return " ";
+        return result;
     }
 
 
@@ -122,6 +123,8 @@ public class DBMonitoring implements Service {
         String met=DBConnection.getNote(SQLqueries.FROZEN_QUERIES).get("query");
         if(!met.isEmpty() || met!=null || met!=""){
             result=met;
+        }else{
+            result=" ";
         }
         return result;
     }
@@ -135,26 +138,22 @@ public class DBMonitoring implements Service {
 
 
     @Metric("Ошибки сообщений SAP")
-    public int getTmpTables() throws SQLException {
+    public int getCountErrSap() throws SQLException {
         return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_TX).get("count"))+
                 Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_RX).get("count"));
     }
     @StringMetric("Ошибки сообщений SAP")
-    public String getStringTmpTables() throws SQLException {
+    public String getStringErrIdoc() throws SQLException {
         String result="";
         String s1=DBConnection.getNote(SQLqueries.SAP_ERRORS_TX).get("msgtype");
         String s2=DBConnection.getNote(SQLqueries.SAP_ERRORS_RX).get("msgtype");
-
-        if(s1==null){result+= "";}else {
+        if(s1==null || s1.equals("null")){result+= "";}else {
             result+=s1+";";
         }
-        //if(s1.isEmpty() ) result= "";
-        //if(s1.equals("NULL"))result= "";
-        if(s2==null){result+= "";}else {
+        if(s2==null || s1.equals("null")){result+= "";}else {
             result+=s2+";";
         }
-        //if(s2.isEmpty() ) result= "";
-        //if(s2.equals("NULL"))result= "";
+        if(result.isEmpty()) result=" ";
         return result;
     }
 }

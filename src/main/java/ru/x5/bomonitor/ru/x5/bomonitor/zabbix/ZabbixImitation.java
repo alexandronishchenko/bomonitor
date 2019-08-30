@@ -63,6 +63,9 @@ public class ZabbixImitation implements Runnable{
                     socket.setReuseAddress(true);
                     in = new InputStreamReader(socket.getInputStream());
                     os = socket.getOutputStream();
+
+                //for string queries. return empty row. Everywhere we shod return if string " "!!!!! Cause "" and null will disconnect server. Done for numeric.
+
                     if(bomonitor.properties.getProperty("zabbix_version").equals("4")){//for 4-th zabbix server
                         readHeader(in);
                         String div = getCommand4v(in);
@@ -145,6 +148,7 @@ public class ZabbixImitation implements Runnable{
         loger.insertRecord(this,"Fetched command: "+data,LogLevel.debug);
         return data;
     }
+    //for string queries. return empty row. Everywhere we shod return if string " "
     public void sendResponse(OutputStream ou,String directive) throws IOException {
         if(directive.isEmpty() || directive==null){
             loger.insertRecord(this,"Null string was fetched. Closing connection.",LogLevel.warn);
@@ -155,6 +159,9 @@ public class ZabbixImitation implements Runnable{
         if(result.isEmpty() || result==null){
             loger.insertRecord(this,"Null result. Closing connection.",LogLevel.debug);
             return;
+        }
+        if(result.equals(" ")){//for string queries. return empty row. Everywhere we shod return if string " "
+            result= "";
         }
         byte[] data = result.getBytes();
         byte[] header = new byte[] {

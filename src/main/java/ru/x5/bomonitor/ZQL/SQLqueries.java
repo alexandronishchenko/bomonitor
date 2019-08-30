@@ -60,7 +60,7 @@ public class SQLqueries {
     //DBmonitoring
 
     public static String COUNT_ACTIVE_REQUESTS="select count(*) from pg_stat_activity";
-    //String ACTIVE_REQUESTS_STR="select * from pg_stat_activity";
+    public static String ACTIVE_REQUESTS="select query from pg_stat_activity";
     public static String COUNT_AUTOVACUUM="SELECT count(*) FROM pg_stat_user_tables where schemaname = 'gkretail' and autovacuum_count > 0 and cast(last_autovacuum as date)=?";
     public static String COUNT_FROZEN_QUERIES = "SELECT count(*) FROM pg_stat_activity WHERE xact_start < (CURRENT_TIMESTAMP - INTERVAL '1 hour')";
     public static String FROZEN_QUERIES = "SELECT query FROM pg_stat_activity WHERE xact_start < (CURRENT_TIMESTAMP - INTERVAL '1 hour')";
