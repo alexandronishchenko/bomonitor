@@ -152,7 +152,7 @@ public class ZabbixImitation implements Runnable{
         }
         Composer composer = new Composer(directive);
         String result = String.valueOf(composer.getResult());
-        if( result==null){
+        if( result.equals("null")){
             loger.insertRecord(this,"Null result. Closing connection.",LogLevel.debug);
             return;
         }

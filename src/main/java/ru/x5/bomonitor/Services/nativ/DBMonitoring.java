@@ -16,7 +16,7 @@ public class DBMonitoring implements Service {
 
   //  @Override
     public String get(String directive) {
-        String result="0";
+        String result=null;
         try {
         switch (directive){
             case "activerequests":
@@ -48,7 +48,7 @@ public class DBMonitoring implements Service {
         return result;
     }
     public String get(String directive,String subquery) {
-        String res="0";
+        String res="";
         switch (directive){
             case "autovacuum":
                 try {
@@ -71,7 +71,7 @@ public class DBMonitoring implements Service {
     @StringMetric("Активные сессии в БД")
     public String getStringActiveRequests() throws SQLException {
         String result = DBConnection.getNote(SQLqueries.ACTIVE_REQUESTS).get("query");
-        if(result.isEmpty() || result==null || result.equals("NULL")) return "";
+        if(result.isEmpty() || result==null || result.equals("NULL") || result.equals("null")) return "";
         return result;
     }
 
@@ -121,7 +121,7 @@ public class DBMonitoring implements Service {
     public String getStringFrozenTransactions() throws SQLException {
         String result="";
         String met=DBConnection.getNote(SQLqueries.FROZEN_QUERIES).get("query");
-        if(!met.isEmpty() || met!=null || met!=""){
+        if(met!=null && !met.equals("NULL") && !met.equals("null")){
             result=met;
         }else{
             result="";

@@ -14,7 +14,7 @@ import java.util.Date;
 public class Reciepts implements Service {
     @Override
     public String get(String directive) {
-        String res="";
+        String res=null;
         try{
             switch (directive){
                 case "balancediff":

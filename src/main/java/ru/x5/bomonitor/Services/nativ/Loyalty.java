@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class Loyalty implements Service {
 
     public String get(String directive){
-        String result="";
+        String result=null;
         try {
             if (directive.equals("counter")) {
                 return String.valueOf(getStoppedCounters());
@@ -31,7 +31,7 @@ public class Loyalty implements Service {
                 return String.valueOf(getStoppedCounters() + getUnsentTransactions() + getLongUnsetTransactions());
             }
         }catch (SQLException e) {
-            result="";
+            result=null;
         }
         return result;
 

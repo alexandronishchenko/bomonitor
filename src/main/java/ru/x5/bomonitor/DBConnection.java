@@ -137,9 +137,19 @@ public class DBConnection {
         ResultSet result = st.getResultSet();
         ResultSetMetaData rsmd = result.getMetaData();
         int i =1;
-        //map.put(rsmd.getColumnName(i),null);
+        map.put(rsmd.getColumnName(1),"");
+//        for(Map.Entry<String,String> pair : result.en){
+//
+//        }
         while(result.next()){
-            map.put(rsmd.getColumnName(i),map.get(rsmd.getColumnName(i))+";"+result.getString(i));
+//            System.out.println(rsmd.getColumnCount());
+//            System.out.println(result.getString(rsmd.getColumnName(1)));
+            String subres = result.getString(1);
+            if(!subres.equals("null") && !subres.equals("")){
+                if(subres.length()>10)subres.substring(0,10);
+                map.put(rsmd.getColumnName(1),map.get(rsmd.getColumnName(1))+subres+";\n");
+            }
+            //map.put(rsmd.getColumnName(i),map.get(rsmd.getColumnName(0))+";"+result.getString(i));
             i++;
         }
         i=0;
