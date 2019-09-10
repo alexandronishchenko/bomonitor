@@ -1,6 +1,7 @@
 package ru.x5.bomonitor.JMXclient;
 
 import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Services.ZQL.JMXservice;
 import ru.x5.bomonitor.bomonitor;
 
 import javax.management.*;
@@ -15,6 +16,10 @@ import java.io.IOException;
  */
 
 public class JMXconnector {
+    private String HOST;
+    public JMXconnector(String host){
+        this.HOST=host;
+    }
     /**
      * Метод открывает соединение и обрабатывает полученный результат.
      * @param name имя в хэшмэп класса-родителя
@@ -31,7 +36,7 @@ public class JMXconnector {
      */
     public long docon(String name,String[] param) throws IOException, MalformedObjectNameException, InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
         //Create an RMI connector client and connect it to the RMI connector server
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:6422/jmxrmi");//!!!!!!!!!!
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"+this.HOST+"/jmxrmi");//!!!!!!!!!!
         JMXConnector jmxc=null;
         long result=0;
         try {

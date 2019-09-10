@@ -20,7 +20,7 @@ public class JMXservice extends Service {
      * Непосредственный коннектор с обработчиками.
      */
     private static Logger loger= bomonitor.getLogger();
-    protected JMXconnector jmXconnector= new JMXconnector();
+    protected JMXconnector jmXconnector;//= new JMXconnector();
    // private String name;
     /**
      * Карта сервисов
@@ -51,7 +51,20 @@ public String getMetric(){
             for (int i = 0; i < pr.size(); i++) {
                 params[i]=pr.get(i);
             }
+            String system = directives.get(2).toUpperCase();
+            if(system.contains("POS")){
+                if(bomonitor.properties.getProperty("pos_monitoring").equals("false")){
+                    loger.insertRecord(this,"POS monitoring is disabled at config.",LogLevel.error);
+                    return null;
+                }
+                jmXconnector=new JMXconnector(system+":18012");
+            }else if(system.equals("BO")){
+                jmXconnector= new JMXconnector("localhost:6422");
+            }else{
+                loger.insertRecord(this,"Wrong destination system POS or BO",LogLevel.error);
+            }
             result=jmXconnector.docon(JMXservice.mapping.get(directives.get(1)),params);
+            jmXconnector=null;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MalformedObjectNameException e) {

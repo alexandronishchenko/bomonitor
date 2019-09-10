@@ -84,7 +84,7 @@ public class Logger {
             }
         } catch (NoSuchFileException g) {
             //g.printStackTrace();
-            System.out.println("No prev file.");
+            System.out.println("No previous log file.");
         } catch (IOException e){
             System.out.println("Error with file");
         }
