@@ -2,7 +2,7 @@ package ru.x5.bomonitor;
 
 
 import ru.x5.bomonitor.Services.*;
-import ru.x5.bomonitor.ru.x5.bomonitor.zabbix.ZabbixImitation;
+import ru.x5.bomonitor.zabbix.ZabbixImitation;
 
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class SyncJob {
 
-    static HashMap<String, Service> mapping = new HashMap<>();
+    static HashMap<String, ServiceInterface> mapping = new HashMap<>();
     static {
 //        mapping.put("loyalty", new Loyalty());
 //        mapping.put("db", new DBMonitoring());

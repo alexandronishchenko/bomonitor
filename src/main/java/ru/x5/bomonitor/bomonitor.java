@@ -3,7 +3,7 @@ package ru.x5.bomonitor;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
-import ru.x5.bomonitor.ru.x5.bomonitor.zabbix.ZabbixImitation;
+import ru.x5.bomonitor.zabbix.ZabbixImitation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
