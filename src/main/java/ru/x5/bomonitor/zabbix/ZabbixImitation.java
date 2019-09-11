@@ -49,7 +49,7 @@ public class ZabbixImitation implements Runnable{
         }
         try {
             serverSocket.setReuseAddress(true);
-            //serverSocket.setSoTimeout(30000);
+            serverSocket.setSoTimeout(30000);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -61,6 +61,7 @@ public class ZabbixImitation implements Runnable{
                     //serverSocket.setSoTimeout(10);//
                     socket = serverSocket.accept();
                     socket.setReuseAddress(true);
+                    socket.setSoTimeout(10000);
                     in = new InputStreamReader(socket.getInputStream());
                     os = socket.getOutputStream();
                     if(bomonitor.properties.getProperty("zabbix_version").equals("4")){//for 4-th zabbix server
@@ -82,7 +83,7 @@ public class ZabbixImitation implements Runnable{
                // }
         } catch(IOException e){
                 this.isRun=false;
-            bomonitor.getLogger().insertRecord(this,"Socket was closed.", LogLevel.error);
+            bomonitor.getLogger().insertRecord(this,"Socket was closed.", LogLevel.info);
             Thread.currentThread().interrupt();
             e.printStackTrace();
         }

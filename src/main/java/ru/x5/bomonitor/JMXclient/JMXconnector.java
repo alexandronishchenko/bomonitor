@@ -37,6 +37,8 @@ public class JMXconnector {
     public long docon(String name,String[] param) throws IOException, MalformedObjectNameException, InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
         //Create an RMI connector client and connect it to the RMI connector server
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"+this.HOST+"/jmxrmi");//!!!!!!!!!!
+        bomonitor.getLogger().insertRecord(this,"JMX host is: "+HOST, LogLevel.debug);
+        bomonitor.getLogger().insertRecord(this,"JMX url is: "+"service:jmx:rmi:///jndi/rmi://"+this.HOST+"/jmxrmi", LogLevel.debug);
         JMXConnector jmxc=null;
         long result=0;
         try {
@@ -44,7 +46,7 @@ public class JMXconnector {
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
 
             result= Long.parseLong(getData(mbsc,name,param));
-            //jmxc.close();
+            bomonitor.getLogger().insertRecord(this,"JMX data: "+result, LogLevel.debug);
             return result;
         }catch (IOException e){
             bomonitor.getLogger().insertRecord(this,"JMX unavailable.", LogLevel.warn);

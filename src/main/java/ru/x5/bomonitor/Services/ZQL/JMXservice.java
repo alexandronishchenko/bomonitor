@@ -46,12 +46,13 @@ public String getMetric(){
         long result=0;
         try {
 
-            List<String> pr = directives.subList(2,directives.size());
+            List<String> pr = directives.subList(3,directives.size());
             String[] params = new String[pr.size()];
             for (int i = 0; i < pr.size(); i++) {
                 params[i]=pr.get(i);
             }
-            String system = directives.get(2).toUpperCase();
+            String system = directives.get(1).toUpperCase();
+            loger.insertRecord(this,"System was fetched to monitor:"+system,LogLevel.debug);
             if(system.contains("POS")){
                 if(bomonitor.properties.getProperty("pos_monitoring").equals("false")){
                     loger.insertRecord(this,"POS monitoring is disabled at config.",LogLevel.error);
@@ -63,7 +64,8 @@ public String getMetric(){
             }else{
                 loger.insertRecord(this,"Wrong destination system POS or BO",LogLevel.error);
             }
-            result=jmXconnector.docon(JMXservice.mapping.get(directives.get(1)),params);
+            result=jmXconnector.docon(JMXservice.mapping.get(directives.get(2)),params);
+            loger.insertRecord(this,"JMX result is: "+result,LogLevel.debug);
             jmXconnector=null;
         } catch (IOException e) {
             e.printStackTrace();

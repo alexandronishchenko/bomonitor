@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Composer {
     private static Logger loger=bomonitor.getLogger();
-    String comand;
+    public String comand;
     ArrayList<String> directives=new ArrayList<>();
     Service job;
     public Composer(String comand) {
@@ -21,21 +21,29 @@ public class Composer {
     public String getResult(){
         this.directives=getServiceParams(this.comand);
         String serviceKind = this.directives.get(0);
+        loger.insertRecord(this,"JOB will: "+directives.get(0)+", kind: |"+serviceKind+"|", LogLevel.debug);
         switch (serviceKind){
             case "jmx":
                 job = new JMXservice();
+                loger.insertRecord(this,"JMX job was setted:"+directives.toString(), LogLevel.debug);
                 break;
             case "native":
                 job = new NativeService();
+                loger.insertRecord(this,"Native job was setted:"+directives.toString(), LogLevel.debug);
                 break;
             case "log":
                 job = new LogService();
+                loger.insertRecord(this,"Log job was setted:"+directives.toString(), LogLevel.debug);
                 break;
             case "fulldiag":
                 job = new FullDiag();
+                loger.insertRecord(this,"Fulldiag job was setted:"+directives.toString(), LogLevel.debug);
+
                 break;
             case "hw":
                 job = new HardWareService();
+                loger.insertRecord(this,"Hardware job was setted:"+directives.toString(), LogLevel.debug);
+
                 break;
         }
         try {
