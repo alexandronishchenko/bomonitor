@@ -60,6 +60,7 @@ public class ZabbixAgentThread extends Thread {
                 loger.insertRecord(this,"Error in messaging between agent and server.", LogLevel.error);
             }
         }
+        ZabbixAgentServer.threads.remove(this);
 
     }
     void readHeader(InputStreamReader br) throws IOException {

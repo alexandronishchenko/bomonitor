@@ -37,7 +37,7 @@ public class ZabbixAgentServer implements Runnable {
     }
 
     ServerSocket serverSocket;
-    ArrayList<Thread> threads=new ArrayList<>();
+    static ArrayList<Thread> threads=new ArrayList<>();
 
     @Override
     public void run() {
@@ -71,8 +71,10 @@ public class ZabbixAgentServer implements Runnable {
             }
         }
         try {
-            for(Thread th : this.threads){
-                th.interrupt();
+
+            for (int i = 0; i < threads.size(); i++) {
+                threads.get(i).interrupt();
+                threads.remove(i);
             }
             serverSocket.close();
         } catch (IOException e) {
