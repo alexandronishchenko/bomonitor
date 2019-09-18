@@ -2,7 +2,7 @@ package ru.x5.bomonitor;
 
 
 import ru.x5.bomonitor.Services.*;
-import ru.x5.bomonitor.zabbix.ZabbixImitation;
+import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
 
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class SyncJob {
         try {
         if(directives.size()==1){
             System.out.println("testing zabbix");
-            ZabbixImitation zi = new ZabbixImitation();
+            ZabbixAgentServer zi = new ZabbixAgentServer();
             new Thread(zi).start();
         }else if(directives.size()==3){//3 param
             service=directives.get(0);

@@ -3,7 +3,7 @@ package ru.x5.bomonitor;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
-import ru.x5.bomonitor.zabbix.ZabbixImitation;
+import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class bomonitor {
         if(args.length==1){
             System.out.println("testing zabbix");
             logger.insertRecord(bomonitor.class.getName(),"Testing zabbix", LogLevel.info);
-            ZabbixImitation zi = new ZabbixImitation(Integer.parseInt(properties.getProperty("port")));
+            ZabbixAgentServer zi = new ZabbixAgentServer(Integer.parseInt(properties.getProperty("port")));
             Thread zabbix = new Thread(zi);
             zabbix.start();
             while(true){
