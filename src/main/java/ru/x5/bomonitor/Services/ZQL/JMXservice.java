@@ -25,17 +25,7 @@ public class JMXservice extends Service {
     /**
      * Карта сервисов
      */
-    public static HashMap<String, String> mapping = new HashMap<>();
-    static {
-        mapping.put("activemq", "org.apache.activemq:type=Broker,brokerName=brokerActiveMQ");
-        mapping.put("classloaded","java.lang:type=ClassLoading" );
-        mapping.put("defactivemq","org.apache.activemq:type=Broker,brokerName=brokerActiveMQ,destinationType=Queue,destinationName=sappi.deferred.export" );
-        mapping.put("gc1", "java.lang:type=GarbageCollector,name=PS MarkSweep");
-        mapping.put("gc2", "java.lang:type=GarbageCollector,name=PS Scavenge");
-        mapping.put("heap", "java.lang:type=Memory");
-        mapping.put("openedfiles","java.lang:type=OperatingSystem" );
-        mapping.put("threads", "java.lang:type=Threading");
-    }
+    public static HashMap<String, String> mapping = bomonitor.initializeJMXServices();
 
     /**
      * Запрос метрики от сервера.

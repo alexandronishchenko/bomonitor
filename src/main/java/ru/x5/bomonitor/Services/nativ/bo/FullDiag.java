@@ -1,8 +1,7 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
 import ru.x5.bomonitor.Services.Metric;
-import ru.x5.bomonitor.Services.ServiceInterface;
-import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.ZQL.LogService;
 import ru.x5.bomonitor.Services.ZQL.Service;
 
@@ -12,9 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import ru.x5.bomonitor.Services.ZQL.JMXservice;
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
+import ru.x5.bomonitor.bomonitor;
 
 public class FullDiag extends Service {
-    static HashMap<String, String> mappingjmx = new HashMap<>();    static HashMap<String, ServiceInterface> mapping = new HashMap<>();
+    static HashMap<String, String> mappingjmx = new HashMap<>();    static HashMap<String, ServiceNativeInterface> mapping = bomonitor.initializeNativeServices();
     static HashMap<String, Service> mappinglog = new HashMap<>();
 
 //    public static void main(String[] args) {
@@ -29,18 +30,6 @@ public class FullDiag extends Service {
         mappingjmx.put("heap", "HeapMemoryUsage.used");
         mappingjmx.put("openedfiles","OpenFileDescriptorCount" );
         mappingjmx.put("threads", "ThreadCount");
-
-        mapping.put("loyalty", new Loyalty());
-        mapping.put("db", new DBMonitoring());
-        mapping.put("egais", new EGAIS());
-        mapping.put("prices", new Prices());
-        mapping.put("items", new Items());
-        mapping.put("printers", new Printers());
-        mapping.put("reciepts", new Reciepts());
-        mapping.put("stock", new Stock());
-        mapping.put("taskmanager", new Taskmanager());
-        mapping.put("transportmodule", new TransportModule());
-        mapping.put("firebird", new Firebird());
 
         mappinglog.put("boservererror", new LogService());
         mappinglog.put("postgreslog", new LogService());
@@ -72,9 +61,9 @@ public class FullDiag extends Service {
             result+=jmxservice.getMetric()+"\n";
         }
         result+="Phase 2 ( services native):\n";
-        for(Map.Entry<String,ServiceInterface> pair : mapping.entrySet()){
-            result+=pair.getValue().getClass().getAnnotation(ServiceUnit.class).value()+"\n";
-            ServiceInterface service = pair.getValue();
+        for(Map.Entry<String, ServiceNativeInterface> pair : mapping.entrySet()){
+            result+=pair.getValue().getClass().getAnnotation(ServiceNative.class).value()+"\n";
+            ServiceNativeInterface service = pair.getValue();
             Method[] meth = service.getClass().getDeclaredMethods();
             for(Method m : meth){
                 if(m.getAnnotation(Metric.class)!=null){

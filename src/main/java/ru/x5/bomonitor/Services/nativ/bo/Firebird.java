@@ -1,9 +1,9 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
 import ru.x5.bomonitor.Services.Metric;
-import ru.x5.bomonitor.Services.ServiceInterface;
-import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,8 +12,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@ServiceUnit("Firebird")
-public class Firebird implements ServiceInterface {
+@ServiceNative("Firebird")
+public class Firebird implements ServiceNativeInterface {
     @Override
     public String get(String directive) {
         String result= "";

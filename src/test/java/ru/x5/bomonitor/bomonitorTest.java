@@ -2,17 +2,13 @@ package ru.x5.bomonitor;
 
 import org.junit.Before;
 import org.junit.Test;
-import ru.x5.bomonitor.Services.ServiceInterface;
-import ru.x5.bomonitor.Services.ZQL.Action;
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.Services.nativ.bo.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class bomonitorTest {
 
@@ -25,7 +21,7 @@ public class bomonitorTest {
     }
     @Test
     public void initialize() throws Exception {
-         HashMap<String, ServiceInterface> mapping = new HashMap<>();
+         HashMap<String, ServiceNativeInterface> mapping = new HashMap<>();
 
             mapping.put("loyalty", new Loyalty());
             mapping.put("db", new DBMonitoring());
@@ -39,9 +35,9 @@ public class bomonitorTest {
             mapping.put("transportmodule", new TransportModule());
             mapping.put("firebird", new Firebird());
             //mapping.put("action", new Action());
-        HashMap<String,ServiceInterface> map =bomonitor.initialize();
+        HashMap<String, ServiceNativeInterface> map =bomonitor.initializeNativeServices();
         if(map.size()!=mapping.size()) throw new Exception();
-        for(Map.Entry<String,ServiceInterface> pr : mapping.entrySet()){
+        for(Map.Entry<String, ServiceNativeInterface> pr : mapping.entrySet()){
             if(!mapping.containsKey(pr.getKey())&&!mapping.containsValue(pr.getValue())) throw new Exception();
         }
     }

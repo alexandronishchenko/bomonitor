@@ -1,16 +1,16 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.database.DBConnection;
 import ru.x5.bomonitor.Services.Metric;
-import ru.x5.bomonitor.Services.ServiceInterface;
-import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
 import ru.x5.bomonitor.database.SQLqueries;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-@ServiceUnit("Лояльность")
-public class Loyalty implements ServiceInterface {
+@ServiceNative("Лояльность")
+public class Loyalty implements ServiceNativeInterface {
 
     public String get(String directive){
         String result=null;

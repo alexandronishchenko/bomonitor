@@ -3,15 +3,13 @@ package ru.x5.bomonitor.Services.ZQL;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
-import ru.x5.bomonitor.Services.ServiceInterface;
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.bomonitor;
-import ru.x5.bomonitor.Services.nativ.bo.*;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import ru.x5.bomonitor.Services.ZQL.Service;
 
 /**
  * Класс для нативных проверок (БД, файлы).
@@ -30,7 +28,7 @@ public class NativeService extends Service {
     /**
      * Карта всех нативных сервисов. Инициализируется рефлексией из основного класса.
      */
-    static HashMap<String, ServiceInterface> mapping = bomonitor.initialize();
+    static HashMap<String, ServiceNativeInterface> mapping = bomonitor.initializeNativeServices();
 
     /**
      * Получение результата. В случае ошибки возвращает null.

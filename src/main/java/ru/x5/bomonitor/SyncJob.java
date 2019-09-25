@@ -1,7 +1,7 @@
 package ru.x5.bomonitor;
 
 
-import ru.x5.bomonitor.Services.*;
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
 
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class SyncJob {
 
-    static HashMap<String, ServiceInterface> mapping = bomonitor.initialize();
+    static HashMap<String, ServiceNativeInterface> mapping = bomonitor.initializeNativeServices();
 
     private ArrayList<String> directives=new ArrayList<>();
     public void addDirective(String s){

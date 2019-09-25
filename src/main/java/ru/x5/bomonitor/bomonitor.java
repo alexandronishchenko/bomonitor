@@ -4,13 +4,12 @@ package ru.x5.bomonitor;
 import org.reflections.Reflections;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
-import ru.x5.bomonitor.Services.ServiceInterface;
-import ru.x5.bomonitor.Services.ServiceUnit;
-import ru.x5.bomonitor.Services.ZQL.NativeService;
+import ru.x5.bomonitor.Services.nativ.ServiceNative;
+import ru.x5.bomonitor.Services.jmx.ServiceJMXInterface;
+import ru.x5.bomonitor.Services.jmx.ServiceUnitJMX;
+import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
-import sun.applet.Main;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,16 +75,16 @@ public class bomonitor {
     /**
      * Для вызова в других классах для получения всех сервисов. Мапы можно удалять.
      */
-    public static HashMap<String, ServiceInterface> initialize(){
-        HashMap<String,ServiceInterface> classes = new HashMap<>();
+    public static HashMap<String, ServiceNativeInterface> initializeNativeServices(){
+        HashMap<String, ServiceNativeInterface> classes = new HashMap<>();
         Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
-        Set<Class<?>> classesSet = reflections.getTypesAnnotatedWith(ServiceUnit.class);
+        Set<Class<?>> classesSet = reflections.getTypesAnnotatedWith(ServiceNative.class);
 
         for(Class cls: classesSet) {
             Class cl;
             try {
                 cl = Class.forName(cls.getName());
-                classes.put(cls.getSimpleName().toLowerCase(),(ServiceInterface)cl.newInstance());
+                classes.put(cls.getSimpleName().toLowerCase(),(ServiceNativeInterface)cl.newInstance());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -100,28 +99,31 @@ public class bomonitor {
 
     }
 
-    /**
-     * Метод сканирования директории.
-     * @param file
-     * @param classes
-     * @return
-     */
-    private static ArrayList<File> scanDir(String file,ArrayList<File> classes){
-        File fl = new File(file);
-        File[] files = fl.listFiles();
-        for(File s : files){
-            System.out.println(s);
-            if(fl.isDirectory()){
-                scanDir(s.getName(),classes);
-            }else {
-                if(fl.getName().contains("class")){
-                    classes.add(fl);
-                }
+    public static HashMap<String, String> initializeJMXServices(){
+        HashMap<String,String> classes = new HashMap<>();
+        Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
+        Set<Class<?>> classesSet = reflections.getTypesAnnotatedWith(ServiceUnitJMX.class);
+
+        for(Class cls: classesSet) {
+            Class cl;
+            try {
+                cl = Class.forName(cls.getName());
+                ServiceJMXInterface inst = (ServiceJMXInterface)cl.newInstance();
+                classes.put(inst.getName().toLowerCase(),inst.getValue());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
+            catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+
         }
         return classes;
-    }
 
+    }
     /**
      * Выводи все доступные метрики. Опять же, желательно перевести на рефлексию.
      */
