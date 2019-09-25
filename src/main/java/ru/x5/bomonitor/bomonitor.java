@@ -1,14 +1,22 @@
 package ru.x5.bomonitor;
 
 
+import org.reflections.Reflections;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
+import ru.x5.bomonitor.Services.ServiceInterface;
+import ru.x5.bomonitor.Services.ServiceUnit;
+import ru.x5.bomonitor.Services.ZQL.NativeService;
 import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
+import sun.applet.Main;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Класс для запуска - основной.
@@ -28,7 +36,6 @@ public class bomonitor {
     }
 
     public static void main(String[] args) {
-        //initialize();//reflection init services
         if(args.length==1){
             System.out.println("testing zabbix");
             logger.insertRecord(bomonitor.class.getName(),"Testing zabbix", LogLevel.info);
@@ -67,14 +74,29 @@ public class bomonitor {
     }
 
     /**
-     * Не используется, возможно будет сканирование на аннотации.
+     * Для вызова в других классах для получения всех сервисов. Мапы можно удалять.
      */
-    public static void initialize(){
-        ArrayList<File> classes = new ArrayList<>();
-        scanDir(String.valueOf(bomonitor.class.getProtectionDomain().getCodeSource().getLocation()),classes);
-        for(File f : classes){
-            System.out.println(f.getName());
+    public static HashMap<String, ServiceInterface> initialize(){
+        HashMap<String,ServiceInterface> classes = new HashMap<>();
+        Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
+        Set<Class<?>> classesSet = reflections.getTypesAnnotatedWith(ServiceUnit.class);
+
+        for(Class cls: classesSet) {
+            Class cl;
+            try {
+                cl = Class.forName(cls.getName());
+                classes.put(cls.getSimpleName().toLowerCase(),(ServiceInterface)cl.newInstance());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+             catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            //ServiceUnit target = (ServiceUnit) cls.getAnnotation(ServiceUnit.class);
         }
+        return classes;
 
     }
 
@@ -103,34 +125,39 @@ public class bomonitor {
     /**
      * Выводи все доступные метрики. Опять же, желательно перевести на рефлексию.
      */
-    static void printAllMetrics(){
-        System.out.println("fulldiag or fulldiag.db(reciepts ...)");
-        System.out.println("log.bolog or log.postgreslog or log.bolog.error");
-        System.out.println("native.firebird.actual");
-        System.out.println("native.egais.gettmptables");
-        System.out.println("native.items.getdiff");
-        System.out.println("native.db.activerequests");
-        System.out.println("native.db.frozentransaction");
-        System.out.println("native.db.long");
-        System.out.println("native.db.tmptables");
-        System.out.println("native.prices.errorchange");
-        System.out.println("native.printers.queue");
-        System.out.println("native.reciepts.balancediff");
-        System.out.println("native.reciepts.duplicatebon");
-        System.out.println("native.reciepts.incorrectbon");
-        System.out.println("native.reciepts.queue");
-        System.out.println("native.reciepts.stockandreciept");
-        System.out.println("native.stock.geterrors");
-        System.out.println("native.taskmanager.count");
-        System.out.println("native.transportmodule.geterrors");
-        System.out.println("jmx.heap.HeapMemoryUsage.used");
-        System.out.println("jmx.gc1.CollectionCount");
-        System.out.println("jmx.gc2.CollectionCount");
-        System.out.println("jmx.classesloaded.LoadedClassCount");
-        System.out.println("jmx.activemq.TotalMessageCount");
-        System.out.println("jmx.defactivemq.QueueSize");
-        System.out.println("jmx.threads.ThreadCount");
-        System.out.println("jmx.openedfiles.OpenFileDescriptorCount");
+    static ArrayList<String> printAllMetrics(){
+        ArrayList<String> info = new ArrayList<>();
+        info.add("fulldiag or fulldiag.db(reciepts ...)");
+        info.add("log.bolog or log.postgreslog or log.bolog.error");
+        info.add("native.firebird.actual");
+        info.add("native.egais.gettmptables");
+        info.add("native.items.getdiff");
+        info.add("native.db.activerequests");
+        info.add("native.db.frozentransaction");
+        info.add("native.db.long");
+        info.add("native.db.tmptables");
+        info.add("native.prices.errorchange");
+        info.add("native.printers.queue");
+        info.add("native.reciepts.balancediff");
+        info.add("native.reciepts.duplicatebon");
+        info.add("native.reciepts.incorrectbon");
+        info.add("native.reciepts.queue");
+        info.add("native.reciepts.stockandreciept");
+        info.add("native.stock.geterrors");
+        info.add("native.taskmanager.count");
+        info.add("native.transportmodule.geterrors");
+        info.add("jmx.heap.HeapMemoryUsage.used");
+        info.add("jmx.gc1.CollectionCount");
+        info.add("jmx.gc2.CollectionCount");
+        info.add("jmx.classesloaded.LoadedClassCount");
+        info.add("jmx.activemq.TotalMessageCount");
+        info.add("jmx.defactivemq.QueueSize");
+        info.add("jmx.threads.ThreadCount");
+        info.add("jmx.openedfiles.OpenFileDescriptorCount");
+        for (int i = 0; i < info.size(); i++) {
+            System.out.println(info.get(i));
+        }
+        return info;
 
     }
 

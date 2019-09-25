@@ -2,7 +2,7 @@ package ru.x5.bomonitor.Services.ZQL;
 
 import ru.x5.bomonitor.Services.ServiceUnit;
 
-@ServiceUnit("Action")
+//@ServiceUnit("Action")
 public class Action {//implements Service {
     ProcessBuilder pb;
 //    @Override
