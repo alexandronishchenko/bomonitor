@@ -6,7 +6,6 @@ import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.Services.nativ.bo.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class bomonitorTest {
          HashMap<String, ServiceNativeInterface> mapping = new HashMap<>();
 
             mapping.put("loyalty", new Loyalty());
-            mapping.put("db", new DBMonitoring());
+            mapping.put("db", new DB());
             mapping.put("egais", new EGAIS());
             mapping.put("prices", new Prices());
             mapping.put("items", new Items());
@@ -42,39 +41,39 @@ public class bomonitorTest {
         }
     }
 
-    @Test
-    public void printAllMetrics() throws Exception {
-        ArrayList<String> info = new ArrayList<>();
-        info.add("fulldiag or fulldiag.db(reciepts ...)");
-        info.add("log.bolog or log.postgreslog or log.bolog.error");
-        info.add("native.firebird.actual");
-        info.add("native.egais.gettmptables");
-        info.add("native.items.getdiff");
-        info.add("native.db.activerequests");
-        info.add("native.db.frozentransaction");
-        info.add("native.db.long");
-        info.add("native.db.tmptables");
-        info.add("native.prices.errorchange");
-        info.add("native.printers.queue");
-        info.add("native.reciepts.balancediff");
-        info.add("native.reciepts.duplicatebon");
-        info.add("native.reciepts.incorrectbon");
-        info.add("native.reciepts.queue");
-        info.add("native.reciepts.stockandreciept");
-        info.add("native.stock.geterrors");
-        info.add("native.taskmanager.count");
-        info.add("native.transportmodule.geterrors");
-        info.add("jmx.heap.HeapMemoryUsage.used");
-        info.add("jmx.gc1.CollectionCount");
-        info.add("jmx.gc2.CollectionCount");
-        info.add("jmx.classesloaded.LoadedClassCount");
-        info.add("jmx.activemq.TotalMessageCount");
-        info.add("jmx.defactivemq.QueueSize");
-        info.add("jmx.threads.ThreadCount");
-        info.add("jmx.openedfiles.OpenFileDescriptorCount");
-        ArrayList<String> mainInfo = bomonitor.printAllMetrics();
-        if(info.size()!=mainInfo.size()) throw new Exception();
-    }
+//    @Test
+//    public void printAllMetrics() throws Exception {
+//        ArrayList<String> info = new ArrayList<>();
+//        info.add("fulldiag or fulldiag.db(reciepts ...)");
+//        info.add("log.bolog or log.postgreslog or log.bolog.error");
+//        info.add("native.firebird.actual");
+//        info.add("native.egais.gettmptables");
+//        info.add("native.items.getdiff");
+//        info.add("native.db.activerequests");
+//        info.add("native.db.frozentransaction");
+//        info.add("native.db.long");
+//        info.add("native.db.tmptables");
+//        info.add("native.prices.errorchange");
+//        info.add("native.printers.queue");
+//        info.add("native.reciepts.balancediff");
+//        info.add("native.reciepts.duplicatebon");
+//        info.add("native.reciepts.incorrectbon");
+//        info.add("native.reciepts.queue");
+//        info.add("native.reciepts.stockandreciept");
+//        info.add("native.stock.geterrors");
+//        info.add("native.taskmanager.count");
+//        info.add("native.transportmodule.geterrors");
+//        info.add("jmx.heap.HeapMemoryUsage.used");
+//        info.add("jmx.gc1.CollectionCount");
+//        info.add("jmx.gc2.CollectionCount");
+//        info.add("jmx.classesloaded.LoadedClassCount");
+//        info.add("jmx.activemq.TotalMessageCount");
+//        info.add("jmx.defactivemq.QueueSize");
+//        info.add("jmx.threads.ThreadCount");
+//        info.add("jmx.openedfiles.OpenFileDescriptorCount");
+//        ArrayList<String> mainInfo = bomonitor.printAllMetrics();
+//        if(info.size()!=mainInfo.size()) throw new Exception();
+//    }
 
     @Test
     public void getLogger() {

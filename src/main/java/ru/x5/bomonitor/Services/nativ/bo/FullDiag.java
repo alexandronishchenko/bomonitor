@@ -15,25 +15,13 @@ import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.bomonitor;
 
 public class FullDiag extends Service {
-    static HashMap<String, String> mappingjmx = new HashMap<>();    static HashMap<String, ServiceNativeInterface> mapping = bomonitor.initializeNativeServices();
+    static HashMap<String, String> mappingjmx = bomonitor.initializeJMXServices();    static HashMap<String, ServiceNativeInterface> mapping = bomonitor.initializeNativeServices();
     static HashMap<String, Service> mappinglog = new HashMap<>();
 
-//    public static void main(String[] args) {
-//        getMetric();
-//    }
-    static {
-        mappingjmx.put("activemq", "TotalMessageCount");
-        mappingjmx.put("classloaded","LoadedClassCount" );
-        mappingjmx.put("defactivemq","QueueSize" );
-        mappingjmx.put("gc1", "CollectionCount");
-        mappingjmx.put("gc2", "CollectionCount");
-        mappingjmx.put("heap", "HeapMemoryUsage.used");
-        mappingjmx.put("openedfiles","OpenFileDescriptorCount" );
-        mappingjmx.put("threads", "ThreadCount");
 
+    static {
         mappinglog.put("boservererror", new LogService());
         mappinglog.put("postgreslog", new LogService());
-
     }
 
          @Override

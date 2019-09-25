@@ -1,5 +1,6 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
+import ru.x5.bomonitor.Services.ZabbixRequest;
 import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.database.DBConnection;
 import ru.x5.bomonitor.Services.Metric;
@@ -12,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 @ServiceNative("Мониторинг БД")
-public class DBMonitoring implements ServiceNativeInterface {
+public class DB implements ServiceNativeInterface {
 
   //  @Override
     public String get(String directive) {
@@ -61,13 +62,13 @@ public class DBMonitoring implements ServiceNativeInterface {
         }
         return res;
     }
-
-
-@Metric("Активные сессии в БД")
+    @ZabbixRequest("native.db.activerequests")
+    @Metric("Активные сессии в БД")
     public int getActiveRequests() throws SQLException {
         HashMap<String,String> map = DBConnection.executeSelect(SQLqueries.COUNT_ACTIVE_REQUESTS);
         return Integer.parseInt(map.get("count"));
     }
+    @ZabbixRequest("native.db.stractiverequests")
     @StringMetric("Активные сессии в БД")
     public String getStringActiveRequests() throws SQLException {
         String result = DBConnection.getNote(SQLqueries.ACTIVE_REQUESTS).get("query");
@@ -98,7 +99,7 @@ public class DBMonitoring implements ServiceNativeInterface {
 
     }
 
-
+    @ZabbixRequest("native.db.autovacuum.health")
     @Metric("Проходит ли автовакуум")
     public int getAutoVacuum() throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
@@ -112,11 +113,12 @@ public class DBMonitoring implements ServiceNativeInterface {
         return DBConnection.executeSelect(SQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count");
     }
 
-
-    @Metric("Зависшие запросы")
+    @ZabbixRequest("native.db.frozentransaction")
+    @Metric("Зависшие запросы количество")
     public int getFrozenTransactions() throws SQLException {
         return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_FROZEN_QUERIES).get("count"));
     }
+    @ZabbixRequest("native.db.strfrozentransaction")
     @StringMetric("Зависшие запросы")
     public String getStringFrozenTransactions() throws SQLException {
         String result="";
@@ -142,6 +144,7 @@ public class DBMonitoring implements ServiceNativeInterface {
         return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_TX).get("count"))+
                 Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_RX).get("count"));
     }
+    @ZabbixRequest("native.db.erroridocs")
     @StringMetric("Ошибки сообщений SAP")
     public String getStringErrIdoc() throws SQLException {
         String result="";
