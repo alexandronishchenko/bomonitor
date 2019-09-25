@@ -28,25 +28,9 @@ public class NativeService extends Service {
      */
     private static Logger loger=bomonitor.getLogger();
     /**
-     * Карта всех нативных сервисов. При добавлении необходимо вносить в карту. Или просто перевод в рефлексию.
+     * Карта всех нативных сервисов. Инициализируется рефлексией из основного класса.
      */
-    static HashMap<String, ServiceInterface> mapping = bomonitor.initialize();//new HashMap<>();//bomonitor.initialize();//new HashMap<>();
-//    static {
-//        System.out.println(NativeService.class.getName()+" "+mapping.size()+" "+mapping.get("printers").toString());
-////        mapping.put("loyalty", new Loyalty());
-////        mapping.put("db", new DBMonitoring());
-////        mapping.put("egais", new EGAIS());
-////        mapping.put("prices", new Prices());
-////        mapping.put("items", new Items());
-////        mapping.put("printers", new Printers());
-////        mapping.put("reciepts", new Reciepts());
-////        mapping.put("stock", new Stock());
-////        mapping.put("taskmanager", new Taskmanager());
-////        mapping.put("transportmodule", new TransportModule());
-////        mapping.put("firebird", new Firebird());
-//
-////      //  mapping.put("action", new Action());
-//    }
+    static HashMap<String, ServiceInterface> mapping = bomonitor.initialize();
 
     /**
      * Получение результата. В случае ошибки возвращает null.
