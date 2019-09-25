@@ -10,7 +10,10 @@ import ru.x5.bomonitor.database.SQLqueries;
 import java.sql.SQLException;
 import java.util.HashMap;
 @ServiceNative("Лояльность")
-public class Loyalty implements ServiceNativeInterface {
+public class Loyalty extends  ParrentNativeService{
+    public Loyalty() {
+        this.name="loyalty";
+    }
 
     public String get(String directive){
         String result=null;

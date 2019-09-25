@@ -13,9 +13,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 @ServiceNative("Мониторинг БД")
-public class DB implements ServiceNativeInterface {
+public class DB extends ParrentNativeService {
+    public DB() {
+        this.name="db";
+        this.value="";
+    }
 
-  //  @Override
+    //  @Override
     public String get(String directive) {
         String result=null;
         try {

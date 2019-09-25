@@ -10,7 +10,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 @ServiceNative("Транспортный модуль")
-public class TransportModule implements ServiceNativeInterface {
+public class TransportModule extends ParrentNativeService {
+    public TransportModule() {
+        this.name="transportmodule";
+    }
+
     @Override
     public String get(String directive) {
         String res="";

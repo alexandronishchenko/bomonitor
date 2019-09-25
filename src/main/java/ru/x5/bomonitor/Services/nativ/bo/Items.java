@@ -9,7 +9,10 @@ import ru.x5.bomonitor.database.SQLqueries;
 
 import java.sql.SQLException;
 @ServiceNative("Товары")
-public class Items implements ServiceNativeInterface {
+public class Items extends ParrentNativeService {
+    public Items() {
+        this.name="items";
+    }
 
     @Override
     public String get(String directive) {

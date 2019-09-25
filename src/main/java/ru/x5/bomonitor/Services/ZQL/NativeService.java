@@ -26,8 +26,7 @@ public class NativeService extends Service {
      */
     private static Logger loger=bomonitor.getLogger();
     /**
-     * Карта всех нативных сервисов. Инициализируется рефлексией из основного класса. Важно, чтобы имя класса соответствовало метрике! То есть для метрик сервиса БД класс DB, значит
-     * метрика должна быть в заббиксе native.{HOST_TYPE}.db.{metric_mapped_method}
+     * Карта всех нативных сервисов. Инициализируется рефлексией из основного класса. Имя в классе должно соответствовать метрике.
      */
     static HashMap<String, ServiceNativeInterface> mapping = bomonitor.initializeNativeServices();
 

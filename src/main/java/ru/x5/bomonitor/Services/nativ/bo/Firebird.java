@@ -13,7 +13,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @ServiceNative("Firebird")
-public class Firebird implements ServiceNativeInterface {
+public class Firebird extends ParrentNativeService {
+    public Firebird() {
+        this.name="firebird";
+        this.value="";
+    }
+
     @Override
     public String get(String directive) {
         String result= "";

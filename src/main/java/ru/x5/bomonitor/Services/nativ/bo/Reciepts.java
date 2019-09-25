@@ -11,7 +11,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 @ServiceNative("Чеки")
-public class Reciepts implements ServiceNativeInterface {
+public class Reciepts extends ParrentNativeService {
+    public Reciepts() {
+        this.name="reciepts";
+    }
+
     @Override
     public String get(String directive) {
         String res=null;

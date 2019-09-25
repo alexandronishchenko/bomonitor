@@ -10,7 +10,12 @@ import ru.x5.bomonitor.database.SQLqueries;
 import java.sql.SQLException;
 
 @ServiceNative("ЕГАИС")
-public class EGAIS implements ServiceNativeInterface {
+public class EGAIS extends ParrentNativeService {
+    public EGAIS() {
+        this.name="egais";
+        this.value="";
+    }
+
     @Override
     public String get(String directive) {
         try {

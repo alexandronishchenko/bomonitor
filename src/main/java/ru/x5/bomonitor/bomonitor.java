@@ -36,6 +36,7 @@ public class bomonitor {
     }
 
     public static void main(String[] args) {
+        initializeNativeServices();
         if(args.length==1){
             System.out.println("testing zabbix");
             logger.insertRecord(bomonitor.class.getName(),"Testing zabbix", LogLevel.info);
@@ -85,7 +86,8 @@ public class bomonitor {
             Class cl;
             try {
                 cl = Class.forName(cls.getName());
-                classes.put(cls.getSimpleName().toLowerCase(),(ServiceNativeInterface)cl.newInstance());
+                ServiceNativeInterface serv = (ServiceNativeInterface)cl.newInstance();
+                classes.put(serv.getName(),serv);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -129,7 +131,7 @@ public class bomonitor {
      * Выводи все доступные метрики. Опять же, желательно перевести на рефлексию.
      */
     static void printAllMetrics(){
-  //      Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
+ //       Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
 //        Set<Class<?>> classesSet =reflections.getTypesAnnotatedWith(ZabbixRequest.class);
 //
 //

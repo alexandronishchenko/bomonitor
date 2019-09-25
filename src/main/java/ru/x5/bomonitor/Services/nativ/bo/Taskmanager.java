@@ -9,7 +9,11 @@ import ru.x5.bomonitor.database.SQLqueries;
 
 import java.sql.SQLException;
 @ServiceNative("Диспетчер заданий")
-public class Taskmanager implements ServiceNativeInterface {
+public class Taskmanager extends ParrentNativeService {
+    public Taskmanager() {
+        this.name="taskmanager";
+    }
+
     @Override
     public String get(String directive) {
         String res="";

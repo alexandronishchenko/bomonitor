@@ -11,7 +11,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 @ServiceNative("Принтеры")
-public class Printers implements ServiceNativeInterface {
+public class Printers extends ParrentNativeService {
+    public Printers() {
+        this.name="printers";
+    }
+
     @Override
     public String get(String directive) {
         String result="";

@@ -11,7 +11,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 @ServiceNative("Контроль цен")
-public class Prices implements ServiceNativeInterface {
+public class Prices extends ParrentNativeService {
+    public Prices() {
+        this.name="prices";
+    }
+
     @Override
     public String get(String directive) {
         String result="";
