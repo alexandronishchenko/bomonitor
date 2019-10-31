@@ -17,7 +17,7 @@ public class Logger {
     }
 
 
-   public void insertRecord(Object o,String record,LogLevel level){
+   synchronized public void insertRecord(Object o,String record,LogLevel level){
         logRotate();
         BufferedWriter writer=null;
         try {

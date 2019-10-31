@@ -1,8 +1,10 @@
 package ru.x5.bomonitor.JMXclient;
 
 import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.Services.ZQL.JMXservice;
 import ru.x5.bomonitor.bomonitor;
+import sun.net.util.IPAddressUtil;
 
 import javax.management.*;
 import javax.management.openmbean.CompositeData;
@@ -10,15 +12,42 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Класс используется для непосредственного открытия и закрытия коннектора к JMX-серверу приложения.
  */
 
 public class JMXconnector {
+
     private String HOST;
-    public JMXconnector(String host){
-        this.HOST=host;
+    private String port;
+    private Logger logger;
+
+    public JMXconnector(String host, String port){
+        this.logger=bomonitor.getLogger();
+        this.port=port;
+        if(!host.equals("127.0.0.2")){
+            try {
+                InetAddress ip= InetAddress.getByName(host);
+                this.HOST=ip.getHostAddress();
+            } catch (UnknownHostException e) {
+
+                e.printStackTrace();
+            }
+        }else {
+
+            try {
+                byte[] ad = new byte[]{127,0,0,2};
+                InetAddress add = InetAddress.getByAddress(ad);
+                InetAddress[] v4 = InetAddress.getAllByName(add.getHostName());
+                this.HOST=v4[1].getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
     /**
      * Метод открывает соединение и обрабатывает полученный результат.
@@ -36,9 +65,9 @@ public class JMXconnector {
      */
     public long docon(String name,String[] param) throws IOException, MalformedObjectNameException, InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
         //Create an RMI connector client and connect it to the RMI connector server
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"+this.HOST+"/jmxrmi");//!!!!!!!!!!
-        bomonitor.getLogger().insertRecord(this,"JMX host is: "+HOST, LogLevel.debug);
-        bomonitor.getLogger().insertRecord(this,"JMX url is: "+"service:jmx:rmi:///jndi/rmi://"+this.HOST+"/jmxrmi", LogLevel.debug);
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"+this.HOST+":"+this.port+"/jmxrmi");//!!!!!!!!!!
+        logger.insertRecord(this,"JMX host is: "+HOST, LogLevel.debug);
+        logger.insertRecord(this,"JMX url is: "+"service:jmx:rmi:///jndi/rmi://"+this.HOST+":"+this.port+"/jmxrmi", LogLevel.debug);
         JMXConnector jmxc=null;
         long result=0;
         try {
@@ -46,16 +75,16 @@ public class JMXconnector {
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
 
             result= Long.parseLong(getData(mbsc,name,param));
-            bomonitor.getLogger().insertRecord(this,"JMX data: "+result, LogLevel.debug);
+            logger.insertRecord(this,"JMX data: "+result, LogLevel.debug);
             return result;
         }catch (IOException e){
-            bomonitor.getLogger().insertRecord(this,"JMX unavailable.", LogLevel.warn);
+            logger.insertRecord(this,"JMX unavailable.", LogLevel.warn);
             e.printStackTrace();
         }finally {
             try {
                 jmxc.close();
             }catch (NullPointerException e){
-                bomonitor.getLogger().insertRecord(this,"there is no JMX connector", LogLevel.info);
+                logger.insertRecord(this,"there is no JMX connector", LogLevel.info);
                 e.printStackTrace();
             }
         }

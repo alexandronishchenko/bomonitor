@@ -48,9 +48,10 @@ public String getMetric(){
                     loger.insertRecord(this,"POS monitoring is disabled at config.",LogLevel.error);
                     return null;
                 }
-                jmXconnector=new JMXconnector(system+":18012");
+
+                jmXconnector=new JMXconnector(system,bomonitor.properties.getProperty("JMX_port_pos"));
             }else if(system.equals("BO")){
-                jmXconnector= new JMXconnector("localhost:6422");
+                jmXconnector= new JMXconnector("127.0.0.2",bomonitor.properties.getProperty("JMX_port_bo"));
             }else{
                 loger.insertRecord(this,"Wrong destination system POS or BO",LogLevel.error);
             }
