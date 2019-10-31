@@ -51,7 +51,7 @@ public String getMetric(){
 
                 jmXconnector=new JMXconnector(system,bomonitor.properties.getProperty("JMX_port_pos"));
             }else if(system.equals("BO")){
-                jmXconnector= new JMXconnector("127.0.0.2",bomonitor.properties.getProperty("JMX_port_bo"));
+                jmXconnector= new JMXconnector(bomonitor.properties.getProperty("JMX_port_bo"));
             }else{
                 loger.insertRecord(this,"Wrong destination system POS or BO",LogLevel.error);
             }

@@ -25,29 +25,29 @@ public class JMXconnector {
     private String port;
     private Logger logger;
 
+    public JMXconnector( String port) {
+        this.logger=bomonitor.getLogger();
+        this.port=port;
+        try {
+            byte[] ad = new byte[]{127,0,0,2};
+            InetAddress add = InetAddress.getByAddress(ad);
+            InetAddress[] v4 = InetAddress.getAllByName(add.getHostName());
+            this.HOST=v4[1].getHostAddress();
+        } catch (UnknownHostException e) {
+            logger.insertRecord(this,"Could not cast inet address of BO.",LogLevel.error);
+            e.printStackTrace();
+        }
+    }
     public JMXconnector(String host, String port){
         this.logger=bomonitor.getLogger();
         this.port=port;
-        if(!host.equals("127.0.0.2")){
-            try {
-                InetAddress ip= InetAddress.getByName(host);
-                this.HOST=ip.getHostAddress();
-            } catch (UnknownHostException e) {
-
-                e.printStackTrace();
-            }
-        }else {
-
-            try {
-                byte[] ad = new byte[]{127,0,0,2};
-                InetAddress add = InetAddress.getByAddress(ad);
-                InetAddress[] v4 = InetAddress.getAllByName(add.getHostName());
-                this.HOST=v4[1].getHostAddress();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
+        try {
+            InetAddress ip= InetAddress.getByName(host);
+            this.HOST=ip.getHostAddress();
+        } catch (UnknownHostException e) {
+            logger.insertRecord(this,"Couldn`t cat pos name to address.",LogLevel.error);
+            e.printStackTrace();
         }
-
     }
     /**
      * Метод открывает соединение и обрабатывает полученный результат.
