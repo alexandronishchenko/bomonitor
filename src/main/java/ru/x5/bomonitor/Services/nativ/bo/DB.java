@@ -52,7 +52,7 @@ public class DB extends ParrentNativeService {
         }
         return result;
     }
-    public String get(String directive,String subquery) {
+        public String get(String directive,String subquery) {
         String res="";
         switch (directive){
             case "autovacuum":

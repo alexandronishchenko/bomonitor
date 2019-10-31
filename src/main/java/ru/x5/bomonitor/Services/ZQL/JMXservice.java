@@ -71,6 +71,7 @@ public String getMetric(){
             e.printStackTrace();
         }catch (ClassCastException e){
             loger.insertRecord(this,"cast error", LogLevel.error);
+            e.printStackTrace();
         }
         return String.valueOf(result);
     }

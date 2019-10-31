@@ -76,11 +76,11 @@ public class Logger {
                 //System.out.println();
                 log.renameTo(new File(log.getAbsolutePath() + date.replaceAll("-", "")));
                 log = new File(bomonitor.properties.getProperty("log"));
-                try {
-                    log.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    log.createNewFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             }
         } catch (NoSuchFileException g) {
             //g.printStackTrace();

@@ -50,11 +50,13 @@ public class JMXconnector {
             return result;
         }catch (IOException e){
             bomonitor.getLogger().insertRecord(this,"JMX unavailable.", LogLevel.warn);
+            e.printStackTrace();
         }finally {
             try {
                 jmxc.close();
             }catch (NullPointerException e){
                 bomonitor.getLogger().insertRecord(this,"there is no JMX connector", LogLevel.info);
+                e.printStackTrace();
             }
         }
         return result;
