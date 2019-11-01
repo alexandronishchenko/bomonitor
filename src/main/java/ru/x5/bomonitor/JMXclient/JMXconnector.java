@@ -26,6 +26,7 @@ public class JMXconnector {
     private Logger logger;
 
     public JMXconnector( String port) {
+        //for BO and address 127.0.0.2
         this.logger=bomonitor.getLogger();
         this.port=port;
         try {
