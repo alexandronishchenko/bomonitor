@@ -11,8 +11,8 @@ import java.util.HashMap;
 public class DBConnection {
     //Creditionals
     private static final String DB_URL="localhost";
-    private static final String DB_USER="gkretail";
-    private static final String DB_PASSWORD="gkretail";
+    private static final String DB_USER=bomonitor.properties.getProperty("db_user");
+    private static final String DB_PASSWORD=bomonitor.properties.getProperty("db_password");
     private static final String DB_NAME= bomonitor.properties.getProperty("db_name");
     private static final String DB_ADDITIONALS="?ApplicationName=BOMonitorApplication";
 
