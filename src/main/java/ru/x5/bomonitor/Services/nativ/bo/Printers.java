@@ -1,11 +1,10 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -45,7 +44,7 @@ public class Printers extends ParrentNativeService {
         long dt = new Date().getTime()-(2*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = smp.format(new Date(dt));
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_QUEUE_PRINTER,"count",new String[]{date}).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_QUEUE_PRINTER,"count",new String[]{date}).get("count"));
     }
     @StringMetric("очередь")
     public String getStringQueue() throws SQLException {
@@ -53,7 +52,7 @@ public class Printers extends ParrentNativeService {
         long dt = new Date().getTime()-(2*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = smp.format(new Date(dt));
-        String s1=DBConnection.executeSelect(SQLqueries.QUEUE_PRINTER,"task_id",new String[]{date}).get("task_id");
+        String s1= PostgresConnection.executeSelect(PostgresSQLqueries.QUEUE_PRINTER,"task_id",new String[]{date}).get("task_id");
         if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }

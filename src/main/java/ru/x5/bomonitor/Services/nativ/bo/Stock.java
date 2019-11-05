@@ -1,11 +1,10 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 @ServiceNative("Остатки")
@@ -39,12 +38,12 @@ public class Stock extends ParrentNativeService {
 
 @Metric("ошибки формата записи")
     public int getErrorFormat() throws SQLException {
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_STOCK_ERR).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_STOCK_ERR).get("count"));
     }
     @StringMetric("ошибки формата записи")
     public String getStringErrorFormat() throws SQLException {
         String result="";
-        String s1 = DBConnection.executeSelect(SQLqueries.STOCK_ERR).get("item_id");
+        String s1 = PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_ERR).get("item_id");
         if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }

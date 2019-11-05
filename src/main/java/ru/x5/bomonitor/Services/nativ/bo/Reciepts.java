@@ -1,11 +1,10 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -69,7 +68,7 @@ public class Reciepts extends ParrentNativeService {
                //Integer.parseInt()
         Double d = 0.0;
         try {
-             d = Double.parseDouble(DBConnection.executeSelect(SQLqueries.BALANCE_DIFF).get("count"));
+             d = Double.parseDouble(PostgresConnection.executeSelect(PostgresSQLqueries.BALANCE_DIFF).get("count"));
         }catch (NullPointerException e){
             System.out.println("NULL was returned.");
         }
@@ -78,7 +77,7 @@ public class Reciepts extends ParrentNativeService {
     @StringMetric("расхождение баланса")
     public String getStringBalanceDiff() throws SQLException {
         String result=null;
-        result=DBConnection.executeSelect(SQLqueries.BALANCE_DIFF).get("count");
+        result= PostgresConnection.executeSelect(PostgresSQLqueries.BALANCE_DIFF).get("count");
         if(result==null||result.equals("null")||result.equals("NULL"))return "";
         return result;
     }
@@ -88,7 +87,7 @@ public class Reciepts extends ParrentNativeService {
         long dt = new Date().getTime()-(3*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.DUPLICATE_BONNR_COUNT,"bonnr",new String[]{date}).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.DUPLICATE_BONNR_COUNT,"bonnr",new String[]{date}).get("count"));
     }
     @StringMetric("задвоенный номер")
     public String getStringDuplicatesBon() throws SQLException {
@@ -96,7 +95,7 @@ public class Reciepts extends ParrentNativeService {
         long dt = new Date().getTime()-(3*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
-        result=DBConnection.executeSelect(SQLqueries.DUPLICATE_BONNR,"bonnr",new String[]{date}).get("bonnr");
+        result= PostgresConnection.executeSelect(PostgresSQLqueries.DUPLICATE_BONNR,"bonnr",new String[]{date}).get("bonnr");
         //System.out.println(result);
         if(result==null||result.equals("null")||result.equals("null"))return "";
         return result;
@@ -104,11 +103,11 @@ public class Reciepts extends ParrentNativeService {
 
     @Metric("Некоректный номер чека")
     public int getIncorrectBonnr() throws SQLException {
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.INCORRECT_BONNR).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.INCORRECT_BONNR).get("count"));
     }
     @StringMetric("Номер некорректного чека")
     public String getStringIncorrectBonnr() throws SQLException{
-        String result = DBConnection.executeSelect(SQLqueries.INCORRECT_BONNR_STR).get("bonnr");
+        String result = PostgresConnection.executeSelect(PostgresSQLqueries.INCORRECT_BONNR_STR).get("bonnr");
         if(result.isEmpty() || result==null || result.equals("NULL")|| result.equals("null")) return "";
         return result;
     }
@@ -116,11 +115,11 @@ public class Reciepts extends ParrentNativeService {
 
     @Metric("очередь чеков")
     int getQueue() throws SQLException {
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.QUEUE_RECIEPTS).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.QUEUE_RECIEPTS).get("count"));
     }
     @StringMetric("очередь чеков")
     String getStringQueue() throws SQLException {
-        String result=DBConnection.getNote(SQLqueries.QUEUE_RECIEPTS_STR).get("TRANSACTION_SEQ_ID");
+        String result= PostgresConnection.getNote(PostgresSQLqueries.QUEUE_RECIEPTS_STR).get("TRANSACTION_SEQ_ID");
         if(result==null)return "";
         if(result.isEmpty() ) return "";
         if(result.equals("NULL"))return "";
@@ -133,8 +132,8 @@ public class Reciepts extends ParrentNativeService {
         long dt = new Date().getTime()-(10*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.STOCK_RECIEPT1,"count",new String[]{date,date}).get("count"))+
-                Integer.parseInt(DBConnection.executeSelect(SQLqueries.STOCK_RECIEPT2,"count",new String[]{date,date}).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_RECIEPT1,"count",new String[]{date,date}).get("count"))+
+                Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_RECIEPT2,"count",new String[]{date,date}).get("count"));
 
     }
     @StringMetric("сверка чек - остаток")
@@ -143,8 +142,8 @@ public class Reciepts extends ParrentNativeService {
         long dt = new Date().getTime()-(10*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
-        result= String.valueOf(Integer.parseInt(DBConnection.executeSelect(SQLqueries.STOCK_RECIEPT1,"count",new String[]{date,date}).get("count"))+
-                Integer.parseInt(DBConnection.executeSelect(SQLqueries.STOCK_RECIEPT2,"count",new String[]{date,date}).get("count")));
+        result= String.valueOf(Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_RECIEPT1,"count",new String[]{date,date}).get("count"))+
+                Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_RECIEPT2,"count",new String[]{date,date}).get("count")));
         if(result==null)return "";
         if(result.isEmpty() ) return "";
         if(result.equals("NULL"))return "";

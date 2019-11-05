@@ -1,14 +1,18 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.*;
+import ru.x5.bomonitor.database.Entity.ItemPrice;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.Entity.POS;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 @ServiceNative("Контроль цен")
 public class Prices extends ParrentNativeService {
@@ -24,6 +28,8 @@ public class Prices extends ParrentNativeService {
                     result= String.valueOf(getErrorChange());
             }else if(directive.equals("strerrorchange")) {
                 result= getStringErrorChange();
+            }else if(directive.equals("posbodifference")) {
+                result= getPosBoDifference();
             }
         }
          catch (SQLException e) {
@@ -45,14 +51,14 @@ public class Prices extends ParrentNativeService {
         String date = smp.format(new Date(dt));
         int subres1=0;
         try {
-            subres1 = Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_PRICE_GK,"count",new String[]{date}).get("count")) +
-                    Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_PRICE_CHANGE,"count",new String[]{date}).get("count"));
+            subres1 = Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_PRICE_GK,"count",new String[]{date}).get("count")) +
+                    Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_PRICE_CHANGE,"count",new String[]{date}).get("count"));
         }catch (NumberFormatException e){
             System.out.println("NULL returned at errors");
         }
         int subres2=0;
         try {
-            subres2 = Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_UNPRINTED).get("count"));
+            subres2 = Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_UNPRINTED).get("count"));
         }catch (NumberFormatException e){
             System.out.println("NULL at 3-rd query PRICES.");
         }
@@ -64,12 +70,46 @@ public class Prices extends ParrentNativeService {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
         String result="";
-        String s1 = DBConnection.executeSelect(SQLqueries.PRICE_GK_ERR,"item_id",new String[]{date}).get("item_id");
+        String s1 = PostgresConnection.executeSelect(PostgresSQLqueries.PRICE_GK_ERR,"item_id",new String[]{date}).get("item_id");
         if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
-        String s2= DBConnection.executeSelect(SQLqueries.PRICE_CHANGE_ERR,"item_id",new String[]{date}).get("item_id");
+        String s2= PostgresConnection.executeSelect(PostgresSQLqueries.PRICE_CHANGE_ERR,"item_id",new String[]{date}).get("item_id");
         if(s2!=null&&!s2.equals("null")&&!s1.equals("NULL"))result+=s2;
-        String s3 =DBConnection.getNote(SQLqueries.UNPRINTED_PRICES).get("item_id");
+        String s3 = PostgresConnection.getNote(PostgresSQLqueries.UNPRINTED_PRICES).get("item_id");
         if(s3!=null&&!s3.equals("null")&&!s1.equals("NULL"))result+=s3;
         return result;
     }
+
+    @StringMetric("Разница цен на кассах и БО")
+    public String getPosBoDifference() throws SQLException {
+        //получаем эталонный лист цен из БО.
+        Table<ItemPrice> itemPricesTableBO = PostgresConnection.executeTableSelectPrices(PostgresSQLqueries.ITEM_SELLING_PRICES);
+//        for(ItemPrice itm : itemPricesTable.getList()){
+//            System.out.println("ID: "+itm.getItemId()+" Type code: "+itm.getPriceType()+" Price: "+itm.getPrice());
+//        }
+//TODO добавить определение касс, получение листов с каждой кассы.
+        //Определяем количество касс:
+        ArrayList<POS> poses = new ArrayList<>();
+        for(int i=0;i<10;i++){
+            try {
+                InetAddress adr = InetAddress.getByName("POS0"+i);
+                if(adr.isReachable(1000)){
+                    poses.add(new POS("POS0"+i));
+                }
+            } catch (UnknownHostException e) {
+                System.out.println("No host with name POS0"+i);
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Host POS0"+i+" unreachable.");
+                e.printStackTrace();
+            }
+        }
+
+        //Получаем данные из БД касс.
+        for(POS pos : poses) {
+            FirebirdConnection fbConnection = new FirebirdConnection(pos.getName());
+            pos.setPrices(fbConnection.executeTableSelectPrices(FirebirdSQLqueries.ITEM_SELLING_PRICES));
+        }
+        return null;
+    }
+
 }

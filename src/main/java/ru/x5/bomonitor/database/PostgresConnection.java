@@ -1,6 +1,7 @@
 package ru.x5.bomonitor.database;
 
 import ru.x5.bomonitor.bomonitor;
+import ru.x5.bomonitor.database.Entity.ItemPrice;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 /**
  * Простое подключение к БД.
  */
-public class DBConnection {
+public class PostgresConnection {
     //Creditionals
     private static final String DB_URL="localhost";
     private static final String DB_USER=bomonitor.properties.getProperty("db_user");
@@ -21,7 +22,7 @@ public class DBConnection {
     /**
      * Конструктор по умолчанию в привате для реализации паттерна синглтон.
      */
-    private DBConnection() {
+    private PostgresConnection() {
         //Connection= DriverManager.getConnection();
     }
 
@@ -50,7 +51,7 @@ public class DBConnection {
     public static HashMap<String,String> executeSelect(String s) throws SQLException {
         //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();
-        Connection con = DBConnection.getConnection();
+        Connection con = PostgresConnection.getConnection();
         Statement st = con.createStatement();
         st.executeQuery(s);
         //System.out.println(st.toString());
@@ -82,7 +83,7 @@ public class DBConnection {
     public static HashMap<String,String> executeSelect(String s,String requiredColumn,String[] dates) throws SQLException {
         //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();
-        Connection con = DBConnection.getConnection();
+        Connection con = PostgresConnection.getConnection();
         PreparedStatement st = con.prepareStatement(s);
         //st.setString(1,requiredColumn);
         //System.out.println(dates.length);
@@ -128,7 +129,7 @@ public class DBConnection {
     public static HashMap<String,String> getNote(String s) throws SQLException {
         //String queryAndParams = s.split("")
         HashMap<String,String> map = new HashMap<>();
-        Connection con = DBConnection.getConnection();
+        Connection con = PostgresConnection.getConnection();
         Statement st = con.createStatement();
         st.executeQuery(s);
 
@@ -156,5 +157,28 @@ public class DBConnection {
         st.close();
         con.close();
         return map;
+    }
+    public  static Table executeTableSelectPrices(String sql) throws SQLException {
+        Table<ItemPrice> table= new Table<>();
+        Connection con = PostgresConnection.getConnection();
+        Statement st = con.createStatement();
+        st.executeQuery(sql);
+        ResultSet result = st.getResultSet();
+        ResultSetMetaData rsmd = result.getMetaData();
+        while (result.next()){
+            String subres = result.getString(1);
+            if(!subres.equals("null") && !subres.equals("")){
+                try {
+                    table.put(
+                            new ItemPrice(
+                                    Integer.parseInt(result.getString(1)),
+                                    Integer.parseInt(result.getString(2)),
+                                    Double.parseDouble(result.getString(3))));
+                }catch (NumberFormatException e){
+                    System.out.println("failed");
+                }
+            }
+        }
+        return table;
     }
 }

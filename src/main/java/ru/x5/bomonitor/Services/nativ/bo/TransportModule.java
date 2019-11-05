@@ -1,10 +1,9 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -46,7 +45,7 @@ public class TransportModule extends ParrentNativeService {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
 
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_TRANSPORT_ERRORS,"count",new String[]{date}).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_TRANSPORT_ERRORS,"count",new String[]{date}).get("count"));
     }
     @Metric("ошибки")
     public String getStringErrors() throws SQLException {
@@ -54,7 +53,7 @@ public class TransportModule extends ParrentNativeService {
         long dt = new Date().getTime()-(10*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
-        String s1 = DBConnection.executeSelect(SQLqueries.TRANSPORT_ERRORS,"bon_seq_id",new String[]{date}).get("bon_seq_id");
+        String s1 = PostgresConnection.executeSelect(PostgresSQLqueries.TRANSPORT_ERRORS,"bon_seq_id",new String[]{date}).get("bon_seq_id");
         if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }

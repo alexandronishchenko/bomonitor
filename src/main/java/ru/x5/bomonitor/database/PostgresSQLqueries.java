@@ -1,6 +1,6 @@
 package ru.x5.bomonitor.database;
 
-public class SQLqueries {
+public class PostgresSQLqueries {
 
     //reciepts
     public static String BALANCE_DIFF = "SELECT (balance-safe_amount) as \"count\" FROM   ( SELECT ( SELECT Sum( To_number( text, '999999999D99' ) ) AS BALANCE FROM   GK_ACCOUNTING_PERIOD_APPENDIX WHERE  accounting_period_id =\n" +
@@ -133,6 +133,7 @@ public class SQLqueries {
     public static String PRICE_GK_ERR="select item_id from GK_PRICE_CHANGE_IMPORT where status = 'ERROR' and CREATION_TIMESTAMP > cast(? as date)";
     public static String PRICE_CHANGE_ERR="select item_id from GK_PRICE_CHANGE_CONTROL where status = 'ERROR' and CREATION_TIMESTAMP > cast(? as date)";
     public static String UNPRINTED_PRICES="select item_id item_id from gk_price_change_control where status in ('NEW', 'PRINTED') and price_type_code in ('00', '01') group by item_id having count(*)>1";
+    public static String ITEM_SELLING_PRICES="select item_id,price_type_code,price_amount from gk_item_selling_prices where now() between price_effective_date and price_expiration_date";
 
     //Printers
     public static String COUNT_QUEUE_PRINTER = "select count(*) from gk_raw_change_event WHERE STATUS!='PROCESSED' and CREATED_TIMESTAMP < cast(? as date) and type_code in ('CHANGE_EVENT', 'PARAM.ITEM')";

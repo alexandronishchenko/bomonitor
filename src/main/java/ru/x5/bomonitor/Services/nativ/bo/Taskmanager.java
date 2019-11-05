@@ -1,11 +1,10 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 @ServiceNative("Диспетчер заданий")
@@ -40,12 +39,12 @@ public class Taskmanager extends ParrentNativeService {
     @Metric("задания не из ТОП")
     public int getTaskNotTop() throws SQLException {
 
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_TASKS_NOT_TOP).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_TASKS_NOT_TOP).get("count"));
     }
     @StringMetric("задания не из ТОП")
     public String getStringTaskNotTop() throws SQLException {
         String result="";
-        String s1 = DBConnection.executeSelect(SQLqueries.TASKS_NOT_TOP).get("task_mgmt_ga_id");
+        String s1 = PostgresConnection.executeSelect(PostgresSQLqueries.TASKS_NOT_TOP).get("task_mgmt_ga_id");
         if(s1!=null&&!s1.equals("null")&&!s1.equals("NULL"))result+=s1;
         return result;
     }

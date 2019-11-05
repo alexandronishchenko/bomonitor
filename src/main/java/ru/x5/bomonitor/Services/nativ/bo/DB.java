@@ -1,12 +1,11 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
 import ru.x5.bomonitor.Services.ZabbixRequest;
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -69,13 +68,13 @@ public class DB extends ParrentNativeService {
     @ZabbixRequest("native.db.activerequests")
     @Metric("Активные сессии в БД")
     public int getActiveRequests() throws SQLException {
-        HashMap<String,String> map = DBConnection.executeSelect(SQLqueries.COUNT_ACTIVE_REQUESTS);
+        HashMap<String,String> map = PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_ACTIVE_REQUESTS);
         return Integer.parseInt(map.get("count"));
     }
     @ZabbixRequest("native.db.stractiverequests")
     @StringMetric("Активные сессии в БД")
     public String getStringActiveRequests() throws SQLException {
-        String result = DBConnection.getNote(SQLqueries.ACTIVE_REQUESTS).get("query");
+        String result = PostgresConnection.getNote(PostgresSQLqueries.ACTIVE_REQUESTS).get("query");
         if(result.isEmpty() || result==null || result.equals("NULL") || result.equals("null")) return "";
         return result;
     }
@@ -98,7 +97,7 @@ public class DB extends ParrentNativeService {
         }else{
             return 0;
         }
-        map=DBConnection.executeSelect(query);
+        map= PostgresConnection.executeSelect(query);
         return Integer.parseInt(map.get("count"));
 
     }
@@ -108,25 +107,25 @@ public class DB extends ParrentNativeService {
     public int getAutoVacuum() throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count"));
     }
     @StringMetric("Проходит ли автовакуум")
     public String getStringAutoVacuum() throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
-        return DBConnection.executeSelect(SQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count");
+        return PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count");
     }
 
     @ZabbixRequest("native.db.frozentransaction")
     @Metric("Зависшие запросы количество")
     public int getFrozenTransactions() throws SQLException {
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_FROZEN_QUERIES).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_FROZEN_QUERIES).get("count"));
     }
     @ZabbixRequest("native.db.strfrozentransaction")
     @StringMetric("Зависшие запросы")
     public String getStringFrozenTransactions() throws SQLException {
         String result="";
-        String met=DBConnection.getNote(SQLqueries.FROZEN_QUERIES).get("query");
+        String met= PostgresConnection.getNote(PostgresSQLqueries.FROZEN_QUERIES).get("query");
         if(met!=null && !met.equals("NULL") && !met.equals("null")){
             result=met;
         }else{
@@ -145,15 +144,15 @@ public class DB extends ParrentNativeService {
 
     @Metric("Ошибки сообщений SAP")
     public int getCountErrSap() throws SQLException {
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_TX).get("count"))+
-                Integer.parseInt(DBConnection.executeSelect(SQLqueries.COUNT_SAP_ERRORS_RX).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_SAP_ERRORS_TX).get("count"))+
+                Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_SAP_ERRORS_RX).get("count"));
     }
     @ZabbixRequest("native.db.erroridocs")
     @StringMetric("Ошибки сообщений SAP")
     public String getStringErrIdoc() throws SQLException {
         String result="";
-        String s1=DBConnection.getNote(SQLqueries.SAP_ERRORS_TX).get("msgtype");
-        String s2=DBConnection.getNote(SQLqueries.SAP_ERRORS_RX).get("msgtype");
+        String s1= PostgresConnection.getNote(PostgresSQLqueries.SAP_ERRORS_TX).get("msgtype");
+        String s2= PostgresConnection.getNote(PostgresSQLqueries.SAP_ERRORS_RX).get("msgtype");
         if(s1==null || s1.equals("null")){result+= "";}else {
             result+=s1+";";
         }

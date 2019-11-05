@@ -1,11 +1,10 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
-import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.database.DBConnection;
+import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
-import ru.x5.bomonitor.database.SQLqueries;
+import ru.x5.bomonitor.database.PostgresSQLqueries;
 
 import java.sql.SQLException;
 
@@ -38,11 +37,11 @@ public class EGAIS extends ParrentNativeService {
     }
 @Metric("временные таблицы не очищаются")
     public int getTmpTables() throws SQLException {
-        return Integer.parseInt(DBConnection.executeSelect(SQLqueries.EGAIS_COUNT_TMP).get("count"));
+        return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.EGAIS_COUNT_TMP).get("count"));
     }
     @StringMetric("временные таблицы не очищаются")
     public String getStringTmpTables() throws SQLException {
-        String result=DBConnection.getNote(SQLqueries.EGAIS_CREATION_TSTP).get("CREATION_TIMESTAMP");
+        String result= PostgresConnection.getNote(PostgresSQLqueries.EGAIS_CREATION_TSTP).get("CREATION_TIMESTAMP");
         if(result==null)return "";
         if(result.isEmpty() ) return "";
         if(result.equals("NULL"))return "";
