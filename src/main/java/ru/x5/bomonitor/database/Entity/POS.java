@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class POS {
     String name;
+
+    public Table<ItemPrice> getPrices() {
+        return prices;
+    }
+
     Table<ItemPrice> prices;
     public POS(String name) {
         this.name = name;

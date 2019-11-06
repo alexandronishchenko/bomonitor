@@ -2,5 +2,5 @@ package ru.x5.bomonitor.database;
 
 public class FirebirdSQLqueries {
 
-public static String ITEM_SELLING_PRICES="select * from item_selling_prices";
+public static String ITEM_SELLING_PRICES="SELECT ITEM_ID, PRICE_TYPE_CODE,PRICE_AMOUNT FROM ITEM_SELLING_PRICES WHERE CURRENT_TIMESTAMP BETWEEN PRICE_EFFECTIVE_DATE AND  PRICE_EXPIRATION_DATE";
 }

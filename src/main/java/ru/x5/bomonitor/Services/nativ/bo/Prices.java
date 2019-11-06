@@ -83,12 +83,10 @@ public class Prices extends ParrentNativeService {
     public String getPosBoDifference() throws SQLException {
         //получаем эталонный лист цен из БО.
         Table<ItemPrice> itemPricesTableBO = PostgresConnection.executeTableSelectPrices(PostgresSQLqueries.ITEM_SELLING_PRICES);
-//        for(ItemPrice itm : itemPricesTable.getList()){
-//            System.out.println("ID: "+itm.getItemId()+" Type code: "+itm.getPriceType()+" Price: "+itm.getPrice());
-//        }
 //TODO добавить определение касс, получение листов с каждой кассы.
         //Определяем количество касс:
         ArrayList<POS> poses = new ArrayList<>();
+//        poses.add(0,new POS("localhost"));
         for(int i=0;i<10;i++){
             try {
                 InetAddress adr = InetAddress.getByName("POS0"+i);
@@ -103,13 +101,30 @@ public class Prices extends ParrentNativeService {
                 e.printStackTrace();
             }
         }
-
         //Получаем данные из БД касс.
         for(POS pos : poses) {
             FirebirdConnection fbConnection = new FirebirdConnection(pos.getName());
             pos.setPrices(fbConnection.executeTableSelectPrices(FirebirdSQLqueries.ITEM_SELLING_PRICES));
         }
-        return null;
+        //Сравниваем результаты цен касс и БО. Записывая ошибки в строку ERROR.
+        String ERROR="";
+        //Проверка по размеру.
+        for(POS pos : poses){
+            if(pos.getPrices().getList().size()!=itemPricesTableBO.getList().size()){
+                ERROR+=pos.getName()+" size different: "+pos.getPrices().getList().size()+" at pos, but"+ itemPricesTableBO.getList().size()+" at BO.";
+            }
+        }
+        //поштучная проверка для каждой ПЛЮ.
+        for(int i =0;i<itemPricesTableBO.getList().size();i++){
+            for(POS pos : poses){
+                if(!pos.getPrices().getList().contains(itemPricesTableBO.getList().get(i))){
+                    ERROR+=" "+pos.getName()+" does not have ITEM: "+itemPricesTableBO.getList().get(i).getItemId()+" with "+
+                            itemPricesTableBO.getList().get(i).getPriceType()+"type code and amount: "+itemPricesTableBO.getList().get(i).getPrice();
+                }
+            }
+
+        }
+        return ERROR;
     }
 
 }
