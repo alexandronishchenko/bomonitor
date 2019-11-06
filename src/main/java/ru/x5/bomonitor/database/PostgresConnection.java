@@ -175,7 +175,7 @@ public class PostgresConnection {
                                     Integer.parseInt(result.getString(2)),
                                     Double.parseDouble(result.getString(3))));
                 }catch (NumberFormatException e){
-                    System.out.println("failed");
+                    //System.out.println("failed");
                 }
             }
         }

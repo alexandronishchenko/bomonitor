@@ -17,14 +17,7 @@ public class FirebirdConnection {
     public FirebirdConnection(String posName){
         this.posName=posName;
         DB_URL=posName;
-        File directory = new File(bomonitor.properties.getProperty("fb_path"));
-        String[] files = directory.list();
-        for(String s : files){
-            if(s.contains("standard_stamm")){
-                DB_PATH= bomonitor.properties.getProperty("fb_path")+s;
-                break;
-            }
-        }
+        DB_PATH= bomonitor.properties.getProperty("fb_path")+"standard_stamm.";
 
     }
     public FirebirdConnection(String posName, String path){
@@ -32,9 +25,25 @@ public class FirebirdConnection {
         DB_URL=posName;
         DB_PATH=path;
     }
-    public Connection getConnection() throws SQLException {
-
-        return DriverManager.getConnection("jdbc:firebirdsql:"+DB_URL+"/3052:"+DB_PATH+"?charSet=utf-8",DB_USER,DB_PASSWORD);
+    public Connection getConnection()  {
+        Connection con=null;
+        int dbIterator=0;
+        boolean success=false;
+        while(dbIterator<10 && !success){
+            try{
+                String connection="jdbc:firebirdsql://"+DB_URL+"/3052:/"+DB_PATH+dbIterator+".gdb";
+                //connection="jdbc:firebirdsql://"+"192.168.224.49"+"/3052:/"+DB_PATH+dbIterator+".gdb?charSet=utf-8";
+                con = DriverManager.getConnection(connection,DB_USER,DB_PASSWORD);
+                System.out.println("connecting to -> "+ connection);
+                success=true;
+                ++dbIterator;
+                return con;
+            }catch (SQLException s){
+                ++dbIterator;
+                s.printStackTrace();
+            }
+        }
+        return con;
     }
 
     public Table executeTableSelectPrices(String sql) throws SQLException {

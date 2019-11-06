@@ -51,7 +51,7 @@ public class ZabbixAgentServer implements Runnable {
         }
         try {
             serverSocket.setReuseAddress(true);
-            serverSocket.setSoTimeout(30000);
+            serverSocket.setSoTimeout(180000);
         } catch (SocketException e) {
             e.printStackTrace();
         }

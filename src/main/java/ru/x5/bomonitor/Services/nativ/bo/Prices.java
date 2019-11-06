@@ -1,5 +1,8 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
+import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
+import ru.x5.bomonitor.bomonitor;
 import ru.x5.bomonitor.database.*;
 import ru.x5.bomonitor.database.Entity.ItemPrice;
 import ru.x5.bomonitor.Services.Metric;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 @ServiceNative("Контроль цен")
 public class Prices extends ParrentNativeService {
+    Logger logger = bomonitor.getLogger();
     public Prices() {
         this.name="prices";
     }
@@ -86,40 +90,48 @@ public class Prices extends ParrentNativeService {
 //TODO добавить определение касс, получение листов с каждой кассы.
         //Определяем количество касс:
         ArrayList<POS> poses = new ArrayList<>();
-//        poses.add(0,new POS("localhost"));
-        for(int i=0;i<10;i++){
+   //     poses.add(0,new POS("localhost"));
+        for(int i=1;i<10;i++){
             try {
                 InetAddress adr = InetAddress.getByName("POS0"+i);
-                if(adr.isReachable(1000)){
+                if(adr.isReachable(5000)){
+                    System.out.println("POS0"+i+" was found and is reachable.");
                     poses.add(new POS("POS0"+i));
                 }
             } catch (UnknownHostException e) {
-                System.out.println("No host with name POS0"+i);
+                logger.insertRecord(this,"No host with name POS0"+i,LogLevel.debug);
                 e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("Host POS0"+i+" unreachable.");
+                logger.insertRecord(this,"Host POS0"+i+" unreachable.",LogLevel.debug);
                 e.printStackTrace();
             }
         }
         //Получаем данные из БД касс.
         for(POS pos : poses) {
+            System.out.println(pos.getName()+" creating DB connection...");
             FirebirdConnection fbConnection = new FirebirdConnection(pos.getName());
             pos.setPrices(fbConnection.executeTableSelectPrices(FirebirdSQLqueries.ITEM_SELLING_PRICES));
         }
         //Сравниваем результаты цен касс и БО. Записывая ошибки в строку ERROR.
         String ERROR="";
         //Проверка по размеру.
+        logger.insertRecord(this,"Сверка размера баз.",LogLevel.debug);
         for(POS pos : poses){
+            System.out.println(pos.getName()+" size is"+pos.getPrices().getList().size()+", size at BO: "+itemPricesTableBO.getList().size());
             if(pos.getPrices().getList().size()!=itemPricesTableBO.getList().size()){
                 ERROR+=pos.getName()+" size different: "+pos.getPrices().getList().size()+" at pos, but"+ itemPricesTableBO.getList().size()+" at BO.";
             }
         }
         //поштучная проверка для каждой ПЛЮ.
         for(int i =0;i<itemPricesTableBO.getList().size();i++){
+            logger.insertRecord(this,"Item: "+itemPricesTableBO.getList().get(i).getItemId()+"Type Code:"+itemPricesTableBO.getList().get(i).getPriceType()+", amount:"+
+                    +itemPricesTableBO.getList().get(i).getPrice(),LogLevel.debug);
             for(POS pos : poses){
                 if(!pos.getPrices().getList().contains(itemPricesTableBO.getList().get(i))){
                     ERROR+=" "+pos.getName()+" does not have ITEM: "+itemPricesTableBO.getList().get(i).getItemId()+" with "+
                             itemPricesTableBO.getList().get(i).getPriceType()+"type code and amount: "+itemPricesTableBO.getList().get(i).getPrice();
+                }else{
+                    logger.insertRecord(this,pos.getName()+" no such itemPrice...", LogLevel.warn);
                 }
             }
 
