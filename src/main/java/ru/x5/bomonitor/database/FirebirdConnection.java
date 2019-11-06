@@ -25,7 +25,7 @@ public class FirebirdConnection {
     }
     public Connection getConnection() throws SQLException {
 
-        return DriverManager.getConnection("jdbc:firebirdsql:localhost/3052:/home/alexandr/stamm/standard_stamm.2.gdb?charSet=utf-8","SYSDBA","masterkey");
+        return DriverManager.getConnection("jdbc:firebirdsql:"+DB_URL+"/3052:"+DB_PATH+"?charSet=utf-8",DB_USER,DB_PASSWORD);
     }
 
     public Table executeTableSelectPrices(String sql) throws SQLException {
