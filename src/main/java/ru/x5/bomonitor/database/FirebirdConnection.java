@@ -3,6 +3,7 @@ package ru.x5.bomonitor.database;
 import ru.x5.bomonitor.bomonitor;
 import ru.x5.bomonitor.database.Entity.ItemPrice;
 
+import java.io.File;
 import java.sql.*;
 
 public class FirebirdConnection {
@@ -16,7 +17,15 @@ public class FirebirdConnection {
     public FirebirdConnection(String posName){
         this.posName=posName;
         DB_URL=posName;
-        DB_PATH= bomonitor.properties.getProperty("fb_path");
+        File directory = new File(bomonitor.properties.getProperty("fb_path"));
+        String[] files = directory.list();
+        for(String s : files){
+            if(s.contains("standard_stamm")){
+                DB_PATH= bomonitor.properties.getProperty("fb_path")+s;
+                break;
+            }
+        }
+
     }
     public FirebirdConnection(String posName, String path){
         this.posName=posName;
