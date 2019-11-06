@@ -32,12 +32,12 @@ public class Items extends ParrentNativeService {
     public String get(String directive, String subquery) {
         return "";
     }
-@Metric("разница в БД")
+@Metric(value = "Количество отличий в БД xrg - gk",directive = "native.items.getdiff")
     public int getDiff() throws SQLException{
         String query = "select count(ID_ITM) from as_itm t left join XRG_ITEM k on t.id_itm = k.item_id where k.item_id is null";
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_ITEMS_DIFF).get("count"));
     }
-    @StringMetric("разница в БД")
+    @StringMetric(value = "разница в БД",directive = "native.items.strgetdiff")
     public String regetStringDiff() throws SQLException{
         String result="";
         String s1 = PostgresConnection.getNote(PostgresSQLqueries.ITEMS_DIFF).get("ID_ITM");

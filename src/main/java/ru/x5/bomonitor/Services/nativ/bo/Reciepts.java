@@ -63,7 +63,7 @@ public class Reciepts extends ParrentNativeService {
         return "0";
     }
 
-    @Metric("расхождение баланса")
+    @Metric(value = "расхождение баланса число",directive = "native.reciepts.balancediff")
     public int getBalanceDiff() throws SQLException {
                //Integer.parseInt()
         Double d = 0.0;
@@ -74,7 +74,7 @@ public class Reciepts extends ParrentNativeService {
         }
         return d.intValue();
     }
-    @StringMetric("расхождение баланса")
+    @StringMetric(value = "расхождение баланса",directive = "native.reciepts.strbalancediff")
     public String getStringBalanceDiff() throws SQLException {
         String result=null;
         result= PostgresConnection.executeSelect(PostgresSQLqueries.BALANCE_DIFF).get("count");
@@ -82,14 +82,14 @@ public class Reciepts extends ParrentNativeService {
         return result;
     }
 
-    @Metric("задвоенный номер")
+    @Metric(value = "задвоенный номер количество",directive = "native.reciepts.duplicatebon")
     public int getDuplicatesBon() throws SQLException {
         long dt = new Date().getTime()-(3*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date(dt));
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.DUPLICATE_BONNR_COUNT,"bonnr",new String[]{date}).get("count"));
     }
-    @StringMetric("задвоенный номер")
+    @StringMetric(value = "задвоенный номер",directive = "native.reciepts.ыекduplicatebon")
     public String getStringDuplicatesBon() throws SQLException {
         String result=null;
         long dt = new Date().getTime()-(3*24*60*60*1000);
@@ -101,11 +101,11 @@ public class Reciepts extends ParrentNativeService {
         return result;
     }
 
-    @Metric("Некоректный номер чека")
+    @Metric(value = "Некоректный номер чека",directive = "native.reciepts.incorrectbon")
     public int getIncorrectBonnr() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.INCORRECT_BONNR).get("count"));
     }
-    @StringMetric("Номер некорректного чека")
+    @StringMetric(value = "Номер некорректного чека",directive = "native.reciepts.strincorrectbon")
     public String getStringIncorrectBonnr() throws SQLException{
         String result = PostgresConnection.executeSelect(PostgresSQLqueries.INCORRECT_BONNR_STR).get("bonnr");
         if(result.isEmpty() || result==null || result.equals("NULL")|| result.equals("null")) return "";
@@ -113,11 +113,11 @@ public class Reciepts extends ParrentNativeService {
     }
 
 
-    @Metric("очередь чеков")
+    @Metric(value = "очередь чеков количественно",directive = "native.reciepts.queue")
     int getQueue() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.QUEUE_RECIEPTS).get("count"));
     }
-    @StringMetric("очередь чеков")
+    @StringMetric(value = "очередь чеков",directive = "native.reciepts.strqueue")
     String getStringQueue() throws SQLException {
         String result= PostgresConnection.getNote(PostgresSQLqueries.QUEUE_RECIEPTS_STR).get("TRANSACTION_SEQ_ID");
         if(result==null)return "";
@@ -127,7 +127,7 @@ public class Reciepts extends ParrentNativeService {
         return result;
     }
 
-    @Metric("сверка чек - остаток")
+    @Metric(value = "сверка чек - остаток число",directive = "native.reciepts.stockandreciept")
     int getStockAndReciept() throws SQLException {
         long dt = new Date().getTime()-(10*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
@@ -136,7 +136,7 @@ public class Reciepts extends ParrentNativeService {
                 Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_RECIEPT2,"count",new String[]{date,date}).get("count"));
 
     }
-    @StringMetric("сверка чек - остаток")
+    @StringMetric(value = "сверка чек - остаток",directive = "native.reciepts.stockandreciept")
     String getStringStockAndReciept() throws SQLException {
         String result="";
         long dt = new Date().getTime()-(10*60*60*1000);

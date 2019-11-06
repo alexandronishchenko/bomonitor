@@ -65,14 +65,12 @@ public class DB extends ParrentNativeService {
         }
         return res;
     }
-    @ZabbixRequest("native.db.activerequests")
-    @Metric("Активные сессии в БД")
+    @Metric(value = "Активные сессии в БД",directive = "native.db.activerequests")
     public int getActiveRequests() throws SQLException {
         HashMap<String,String> map = PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_ACTIVE_REQUESTS);
         return Integer.parseInt(map.get("count"));
     }
-    @ZabbixRequest("native.db.stractiverequests")
-    @StringMetric("Активные сессии в БД")
+    @StringMetric(value = "Активные сессии в БД",directive = "native.db.stractiverequests")
     public String getStringActiveRequests() throws SQLException {
         String result = PostgresConnection.getNote(PostgresSQLqueries.ACTIVE_REQUESTS).get("query");
         if(result.isEmpty() || result==null || result.equals("NULL") || result.equals("null")) return "";
@@ -102,27 +100,24 @@ public class DB extends ParrentNativeService {
 
     }
 
-    @ZabbixRequest("native.db.autovacuum.health")
-    @Metric("Проходит ли автовакуум")
+    @Metric(value = "Проходит ли автовакуум",directive = "not used")
     public int getAutoVacuum() throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count"));
     }
-    @StringMetric("Проходит ли автовакуум")
+    @StringMetric(value = "Проходит ли автовакуум",directive = "not used")
     public String getStringAutoVacuum() throws SQLException {
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
         String date = smp.format(new Date());
         return PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count");
     }
 
-    @ZabbixRequest("native.db.frozentransaction")
-    @Metric("Зависшие запросы количество")
+    @Metric(value = "Зависшие запросы количество",directive = "native.db.frozentransaction")
     public int getFrozenTransactions() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_FROZEN_QUERIES).get("count"));
     }
-    @ZabbixRequest("native.db.strfrozentransaction")
-    @StringMetric("Зависшие запросы")
+    @StringMetric(value = "Зависшие запросы",directive = "native.db.strfrozentransaction")
     public String getStringFrozenTransactions() throws SQLException {
         String result="";
         String met= PostgresConnection.getNote(PostgresSQLqueries.FROZEN_QUERIES).get("query");
@@ -135,20 +130,19 @@ public class DB extends ParrentNativeService {
     }
 
 
-    @Metric("Длинные операции в АПП к БД")
+    @Metric(value = "Длинные операции в АПП к БД",directive = "not used cause parsing log")
     public int getLongOperations(){
 //TODO: grep for log???
         return 0;
     }
 
 
-    @Metric("Ошибки сообщений SAP")
+    @Metric(value = "Ошибки сообщений SAP",directive = "native.db.counterrsap")
     public int getCountErrSap() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_SAP_ERRORS_TX).get("count"))+
                 Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_SAP_ERRORS_RX).get("count"));
     }
-    @ZabbixRequest("native.db.erroridocs")
-    @StringMetric("Ошибки сообщений SAP")
+    @StringMetric(value = "Ошибки сообщений SAP",directive = "native.db.erroridocs")
     public String getStringErrIdoc() throws SQLException {
         String result="";
         String s1= PostgresConnection.getNote(PostgresSQLqueries.SAP_ERRORS_TX).get("msgtype");

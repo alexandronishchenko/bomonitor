@@ -39,14 +39,14 @@ public class Printers extends ParrentNativeService {
     }
 
 
-@Metric("очередь")
+@Metric(value = "очередь",directive = "native.printers.queue")
     public int getQueue() throws SQLException {
         long dt = new Date().getTime()-(2*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = smp.format(new Date(dt));
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_QUEUE_PRINTER,"count",new String[]{date}).get("count"));
     }
-    @StringMetric("очередь")
+    @StringMetric(value = "очередь",directive = "native.printers.strqueue")
     public String getStringQueue() throws SQLException {
         String result="";
         long dt = new Date().getTime()-(2*60*60*1000);

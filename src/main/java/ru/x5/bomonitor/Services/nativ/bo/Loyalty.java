@@ -42,11 +42,11 @@ public class Loyalty extends  ParrentNativeService{
         return "";
     }
 
-    @Metric("Остановленные счетчики")
+    @Metric(value = "Остановленные счетчики",directive = "native.loyalty.counter")
     public int getStoppedCounters()throws SQLException{
             return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_STOPPED_COUNTERS).get("count"));
     }
-    @StringMetric("Остановленные счетчики")
+    @StringMetric(value = "Остановленные счетчики",directive = "native.loyalty.strcounter")
     public String getStringStoppedCounters()throws SQLException{
         String result="";
         String s1= PostgresConnection.getNote(PostgresSQLqueries.STOPPED_COUNTERS).get("upload_type_code");
@@ -56,11 +56,11 @@ public class Loyalty extends  ParrentNativeService{
     }
 
 
-@Metric("Давно зависшие транзакции")
+@Metric(value = "Давно зависшие транзакции",directive = "native.loyalty.long")
     public int getLongUnsetTransactions()throws SQLException{
            return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_OLD_UNSENT_TRANSACTIONS).get("count"));
     }
-    @StringMetric("Давно зависшие транзакции")
+    @StringMetric(value = "Давно зависшие транзакции",directive = "native.loyalty.strlong")
     public String getStringLongUnsetTransactions()throws SQLException{
         String result="";
         String s1 = PostgresConnection.getNote(PostgresSQLqueries.OLD_UNSENT_TRANSACTIONS).get("bon_seq_id");
@@ -72,13 +72,13 @@ public class Loyalty extends  ParrentNativeService{
 
 
 
-@Metric("Неотправленные транзакции")
+@Metric(value = "Неотправленные транзакции",directive = "native.loyalty.unsent")
     public int getUnsentTransactions()throws SQLException{
             HashMap<String,String> map = PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_UNSENT1);
             HashMap<String,String> map2 = PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_UNSENT2);
             return Integer.parseInt(map.get("count"))+ Integer.parseInt(map2.get("count"));
     }
-    @StringMetric("Неотправленные транзакции")
+    @StringMetric(value = "Неотправленные транзакции",directive = "native.loyalty.strunsent")
     public String getStringUnsentTransactions()throws SQLException{
         String result="";
         String s1 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT1).get("bon_seq_id");

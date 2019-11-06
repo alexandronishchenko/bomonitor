@@ -34,7 +34,7 @@ public class Firebird extends ParrentNativeService {
     public String get(String directive, String subquery) {
         return "";
     }
-@Metric("Репликация идет")
+@Metric(value = "Репликация идет число",directive = "native.firebird.actual")
     public int isActualGDB(){
         int res=0;
         boolean b=false;
@@ -55,7 +55,7 @@ public class Firebird extends ParrentNativeService {
         res=b?0:1;
         return res;
     }
-    @StringMetric("Репликация идет")
+    @StringMetric(value = "Репликация идет",directive = "native.firebird.stractual")
     public String StringIsActualGDB(){
         String res="";
         boolean b=false;

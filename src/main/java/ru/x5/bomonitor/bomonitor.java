@@ -4,6 +4,8 @@ package ru.x5.bomonitor;
 import org.reflections.Reflections;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
+import ru.x5.bomonitor.Services.Metric;
+import ru.x5.bomonitor.Services.StringMetric;
 import ru.x5.bomonitor.Services.ZabbixRequest;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.jmx.ServiceJMXInterface;
@@ -13,6 +15,8 @@ import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -131,21 +135,28 @@ public class bomonitor {
      * Выводи все доступные метрики. Опять же, желательно перевести на рефлексию.
      */
     static void printAllMetrics(){
- //       Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
-//        Set<Class<?>> classesSet =reflections.getTypesAnnotatedWith(ZabbixRequest.class);
-//
-//
-//        for(Class cls: classesSet) {
-//            try {
-//
-//                Class cl= Class.forName(cls.getName());
-//                System.out.println(((ServiceJMXInterface)cl).getClass().getName());
-//
-//                System.out.println(cl.getClass().getAnnotation(ZabbixRequest.class).value());
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        Reflections reflections = new Reflections(bomonitor.class.getPackage().getName());
+        Set<Class<?>> classesSet =reflections.getTypesAnnotatedWith(ServiceNative.class);
+        Set<Class<?>> classesSetJMX =reflections.getTypesAnnotatedWith(ServiceUnitJMX.class);
+
+        for(Class cls: classesSet) {
+           // try {
+                System.out.println(cls.getAnnotation(ServiceNative.class));
+                Method[] methods = cls.getMethods();
+                for(Method m : methods){
+                    if(m.getAnnotation(Metric.class)!=null){
+                        System.out.println( m.getAnnotation(Metric.class).value()+" directive: "+ m.getAnnotation(Metric.class).directive());
+
+                    }else if(m.getAnnotation(StringMetric.class)!=null){
+                        System.out.println( m.getAnnotation(StringMetric.class).value()+" directive: "+ m.getAnnotation(StringMetric.class).directive());
+                    }
+                }
+        }
+        for(Class cls : classesSetJMX){
+            System.out.println(cls.getAnnotation(ServiceUnitJMX.class));
+            System.out.println(cls.getAnnotation(ZabbixRequest.class).toString());
+
+        }
     }
 
     public static Logger getLogger(){

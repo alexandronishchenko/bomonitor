@@ -36,12 +36,12 @@ public class Taskmanager extends ParrentNativeService {
     }
 
 
-    @Metric("задания не из ТОП")
+    @Metric(value = "задания не из ТОП",directive = "native.taskmanager.tasknottop")
     public int getTaskNotTop() throws SQLException {
 
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_TASKS_NOT_TOP).get("count"));
     }
-    @StringMetric("задания не из ТОП")
+    @StringMetric(value = "задания не из ТОП",directive = "native.taskmanager.strtasknottop")
     public String getStringTaskNotTop() throws SQLException {
         String result="";
         String s1 = PostgresConnection.executeSelect(PostgresSQLqueries.TASKS_NOT_TOP).get("task_mgmt_ga_id");

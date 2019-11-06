@@ -48,7 +48,7 @@ public class Prices extends ParrentNativeService {
     }
 
 
-    @Metric("ошибки в изменении цен")
+    @Metric(value = "ошибки в изменении цен",directive = "native.prices.errorchange")
     public int getErrorChange() throws SQLException {
         long dt = new Date().getTime()-(10*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
@@ -68,7 +68,7 @@ public class Prices extends ParrentNativeService {
         }
         return subres1+subres2;
     }
-    @StringMetric("ошибки в изменении цен")
+    @StringMetric(value = "ошибки в изменении цен",directive = "native.prices.strerrorchange")
     public String getStringErrorChange() throws SQLException {
         long dt = new Date().getTime()-(10*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
@@ -83,7 +83,7 @@ public class Prices extends ParrentNativeService {
         return result;
     }
 
-    @StringMetric("Разница цен на кассах и БО")
+    @StringMetric(value = "Разница цен на кассах и БО",directive = "native.prices.posbodifference")
     public String getPosBoDifference() throws SQLException {
         //получаем эталонный лист цен из БО.
         Table<ItemPrice> itemPricesTableBO = PostgresConnection.executeTableSelectPrices(PostgresSQLqueries.ITEM_SELLING_PRICES);

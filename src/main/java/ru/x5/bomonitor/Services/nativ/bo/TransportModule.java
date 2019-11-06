@@ -39,7 +39,7 @@ public class TransportModule extends ParrentNativeService {
     }
 
 
-    @Metric("ошибки")
+    @Metric(value = "ошибки транспортного модуля количество",directive = "native.transportmodule.errors")
     public int getErrors() throws SQLException {
         long dt = new Date().getTime()-(10*24*60*60*1000);
         SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
@@ -47,7 +47,7 @@ public class TransportModule extends ParrentNativeService {
 
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_TRANSPORT_ERRORS,"count",new String[]{date}).get("count"));
     }
-    @Metric("ошибки")
+    @Metric(value = "ошибки транспортного модуля",directive = "native.transportmodule.strerrors")
     public String getStringErrors() throws SQLException {
         String result="";
         long dt = new Date().getTime()-(10*24*60*60*1000);

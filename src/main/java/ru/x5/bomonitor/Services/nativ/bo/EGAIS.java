@@ -35,11 +35,11 @@ public class EGAIS extends ParrentNativeService {
     public String get(String directive, String subquery) {
         return "";
     }
-@Metric("временные таблицы не очищаются")
+@Metric(value = "Количество временные таблицы не очищаются",directive = "native.egais.tmptables")
     public int getTmpTables() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.EGAIS_COUNT_TMP).get("count"));
     }
-    @StringMetric("временные таблицы не очищаются")
+    @StringMetric(value = "Временные таблицы не очищаются",directive = "native.egais.strtmptables")
     public String getStringTmpTables() throws SQLException {
         String result= PostgresConnection.getNote(PostgresSQLqueries.EGAIS_CREATION_TSTP).get("CREATION_TIMESTAMP");
         if(result==null)return "";

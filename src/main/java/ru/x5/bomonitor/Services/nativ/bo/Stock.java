@@ -36,11 +36,11 @@ public class Stock extends ParrentNativeService {
     }
 
 
-@Metric("ошибки формата записи")
+@Metric(value = "ошибки формата записи",directive = "native.stock.errorformat")
     public int getErrorFormat() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_STOCK_ERR).get("count"));
     }
-    @StringMetric("ошибки формата записи")
+    @StringMetric(value = "ошибки формата записи",directive = "native.stock.strerrorformat")
     public String getStringErrorFormat() throws SQLException {
         String result="";
         String s1 = PostgresConnection.executeSelect(PostgresSQLqueries.STOCK_ERR).get("item_id");
