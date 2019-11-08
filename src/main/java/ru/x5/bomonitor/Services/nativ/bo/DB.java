@@ -112,7 +112,7 @@ public class DB extends ParrentNativeService {
         String date = smp.format(new Date());
         return PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_AUTOVACUUM,"count",new String[]{date}).get("count");
     }
-
+//TODO: send time start.
     @Metric(value = "Зависшие запросы количество",directive = "native.db.frozentransaction")
     public int getFrozenTransactions() throws SQLException {
         return Integer.parseInt(PostgresConnection.executeSelect(PostgresSQLqueries.COUNT_FROZEN_QUERIES).get("count"));
