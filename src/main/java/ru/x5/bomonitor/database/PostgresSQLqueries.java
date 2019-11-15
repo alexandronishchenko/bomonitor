@@ -159,4 +159,8 @@ public class PostgresSQLqueries {
     public static String TRANSPORT_ERRORS="select d.bon_seq_id from (select bon_seq_id from XRG_TRANSPORT_MODULE group by bon_seq_id having count(bon_seq_id)=1) r,\n" +
             " xrg_transport_module d where d.ERROR_DESCRIPTION is not null and d.TIMESTAMP > cast(? as date) and r.bon_seq_id = d.bon_seq_id";
 
+    //Plucorrectdata
+    public static String INCORRECT_PLU_UOM="select itm.id_itm as \"item\" from As_itm itm join GK_STOCK_LEDGER_ACCOUNT la on itm.id_itm=la.item_id where LU_UOM_CNTN_PCKG is null and current_unit_count>0 and id_mrhrc_gp not like 'ZNK%' or \n" +
+            "LU_UOM_CNTN_PCKG is null and current_unit_count>0 and itm.id_itm not like '800%' ;";
+
 }
