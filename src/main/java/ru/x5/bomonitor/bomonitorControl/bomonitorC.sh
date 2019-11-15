@@ -57,6 +57,34 @@ uploadsh(){
   #ssh mgmgkappl@bo-$i '/etc/zabbix/bomonitor/zabbixjar.sh restart'
 done
 }
+uploadversion(){
+ for i in `cat $HOSTS`
+ do
+  echo BO-$i
+  scp /etc/zabbix/bomonitor/bomonitor.version mgmgkappl@bo-$i:/etc/zabbix/bomonitor/bomonitor.version
+  #ssh mgmgkappl@bo-$i '/etc/zabbix/bomonitor/zabbixjar.sh restart'
+done
+}
+uploaderrlist(){
+ for i in `cat $HOSTS`
+ do
+  echo BO-$i
+  scp /etc/zabbix/bomonitor/errorList mgmgkappl@bo-$i:/etc/zabbix/bomonitor/errorList
+  #ssh mgmgkappl@bo-$i '/etc/zabbix/bomonitor/zabbixjar.sh restart'
+done
+}
+uploadall(){
+ for i in `cat $HOSTS`
+ do
+  echo BO-$i
+scp /etc/zabbix/bomonitor/bomonitor.properties mgmgkappl@bo-$i:/etc/zabbix/bomonitor/bomonitor.properties
+scp /etc/zabbix/bomonitor/bomonitor.jar mgmgkappl@bo-$i:/etc/zabbix/bomonitor/bomonitor.jar
+  scp /etc/zabbix/bomonitor/errorList mgmgkappl@bo-$i:/etc/zabbix/bomonitor/errorList
+scp /etc/zabbix/bomonitor/zabbixjar.sh mgmgkappl@bo-$i:/etc/zabbix/bomonitor/zabbixjar.sh
+scp /etc/zabbix/bomonitor/bomonitor.version mgmgkappl@bo-$i:/etc/zabbix/bomonitor/bomonitor.version
+  #ssh mgmgkappl@bo-$i '/etc/zabbix/bomonitor/zabbixjar.sh restart'
+done
+}
 if [ "$1" = "status" ];
 then
 status
@@ -75,12 +103,24 @@ test
 elif [ "$1" = "uploadprop" ];
 then
 uploadProperties
+elif [ "$1" = "uploadversion" ];
+then
+uploadversion
 elif [ "$1" = "uploadjar" ];
 then
-uploadsh
+uploadJAR
 elif [ "$1" = "uploadsh" ];
 then
 uploadsh
+elif [ "$1" = "uploadver" ];
+then
+uploadversion
+elif [ "$1" = "uploaderrlist" ];
+then
+uploaderrlist
+elif [ "$1" = "uploadall" ];
+then
+uploadall
 else
-  echo "wrong parameter. It should be: status,update,share,version,uploadprop list_file ,uploadjar list_file, uploadsh list "
+  echo "wrong parameter. It should be: status,update,share,version,uploadprop list_file ,uploadjar list_file, uploadsh list, uploadversion list, uploadver list,uploaderrlist list,uploadall list"
 fi
