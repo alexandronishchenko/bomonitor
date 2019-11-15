@@ -2,15 +2,12 @@ package ru.x5.bomonitor.zabbix;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
-import ru.x5.bomonitor.Services.ZQL.Composer;
 import ru.x5.bomonitor.bomonitor;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 public class ZabbixAgentServer implements Runnable {
@@ -37,7 +34,7 @@ public class ZabbixAgentServer implements Runnable {
     }
 
     ServerSocket serverSocket;
-    static ArrayList<Thread> threads=new ArrayList<>();
+    static ArrayList<Thread> threads = new ArrayList<>();
 
     @Override
     public void run() {
@@ -61,7 +58,7 @@ public class ZabbixAgentServer implements Runnable {
                 Socket socket;
                 socket = serverSocket.accept();
                 ZabbixAgentThread newThread = new ZabbixAgentThread(socket);
-                threads.add(newThread) ;
+                threads.add(newThread);
                 newThread.start();
             } catch (IOException e) {
                 this.isRun = false;
