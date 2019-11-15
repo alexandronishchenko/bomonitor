@@ -34,6 +34,7 @@ public class bomonitor {
         properties = new Properties();
         try {
             properties.load(new FileInputStream("/etc/zabbix/bomonitor/bomonitor.properties"));
+            System.getProperties().setProperty("project",properties.getProperty("project"));//установка сети магазинов для вариабильности работы.
         } catch (IOException e) {
             e.printStackTrace();
         }
