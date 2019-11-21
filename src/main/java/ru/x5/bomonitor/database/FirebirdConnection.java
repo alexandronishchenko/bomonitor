@@ -1,5 +1,7 @@
 package ru.x5.bomonitor.database;
 
+import ru.x5.bomonitor.Logger.LogLevel;
+import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
 import ru.x5.bomonitor.database.Entity.ItemPrice;
 
@@ -13,6 +15,7 @@ public class FirebirdConnection {
     private static final String DB_USER = bomonitor.properties.getProperty("fb_user");
     private static final String DB_PASSWORD = bomonitor.properties.getProperty("fb_password");
     private String DB_PATH;
+    private Logger logger = bomonitor.getLogger();
 
     public FirebirdConnection(String posName) {
         this.posName = posName;
@@ -33,7 +36,7 @@ public class FirebirdConnection {
         boolean success = false;
         while (dbIterator < 10 && !success) {
             try {
-                String connection = "jdbc:firebirdsql://" + DB_URL + "/3052:/" + DB_PATH + dbIterator + ".gdb";
+                String connection = "jdbc:firebirdsql://" + DB_URL + ":3052/" + DB_PATH + dbIterator + ".gdb";
                 //connection="jdbc:firebirdsql://"+"192.168.224.49"+"/3052:/"+DB_PATH+dbIterator+".gdb?charSet=utf-8";
                 con = DriverManager.getConnection(connection, DB_USER, DB_PASSWORD);
                 System.out.println("connecting to -> " + connection);
@@ -41,6 +44,7 @@ public class FirebirdConnection {
                 ++dbIterator;
                 return con;
             } catch (SQLException s) {
+                logger.insertRecord(this,"couldn`t connect to FB DB with number="+dbIterator+". Goes to next number", LogLevel.debug);
                 ++dbIterator;
                 s.printStackTrace();
             }

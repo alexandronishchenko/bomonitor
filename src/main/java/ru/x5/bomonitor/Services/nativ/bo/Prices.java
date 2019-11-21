@@ -96,6 +96,7 @@ public class Prices extends ParrentNativeService {
                 InetAddress adr = InetAddress.getByName("POS0"+i);
                 if(adr.isReachable(5000)){
                     System.out.println("POS0"+i+" was found and is reachable.");
+                    logger.insertRecord(this,"POS0"+i+" was found and is reachable.",LogLevel.debug);
                     poses.add(new POS("POS0"+i));
                 }
             } catch (UnknownHostException e) {
@@ -107,9 +108,11 @@ public class Prices extends ParrentNativeService {
             }
         }
         //Получаем данные из БД касс.
+        logger.insertRecord(this,"Trying to connect to each POS.",LogLevel.debug);
         for(POS pos : poses) {
             System.out.println(pos.getName()+" creating DB connection...");
             FirebirdConnection fbConnection = new FirebirdConnection(pos.getName());
+            logger.insertRecord(this,"Connecting to "+pos.getName(),LogLevel.debug);
             pos.setPrices(fbConnection.executeTableSelectPrices(FirebirdSQLqueries.ITEM_SELLING_PRICES));
         }
         //Сравниваем результаты цен касс и БО. Записывая ошибки в строку ERROR.
@@ -118,6 +121,7 @@ public class Prices extends ParrentNativeService {
         logger.insertRecord(this,"Сверка размера баз.",LogLevel.debug);
         for(POS pos : poses){
             System.out.println(pos.getName()+" size is"+pos.getPrices().getList().size()+", size at BO: "+itemPricesTableBO.getList().size());
+            logger.insertRecord(this,pos.getName()+" size is"+pos.getPrices().getList().size()+", size at BO: "+itemPricesTableBO.getList().size(),LogLevel.debug);
             if(pos.getPrices().getList().size()!=itemPricesTableBO.getList().size()){
                 ERROR+=pos.getName()+" size different: "+pos.getPrices().getList().size()+" at pos, but"+ itemPricesTableBO.getList().size()+" at BO.";
             }
