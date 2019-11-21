@@ -107,6 +107,9 @@ public class Prices extends ParrentNativeService {
                 e.printStackTrace();
             }
         }
+        for(POS pos : poses) {
+            logger.insertRecord(this,"Try to connect to "+pos.getName(),LogLevel.debug);
+        }
         //Получаем данные из БД касс.
         logger.insertRecord(this,"Trying to connect to each POS.",LogLevel.debug);
         for(POS pos : poses) {
