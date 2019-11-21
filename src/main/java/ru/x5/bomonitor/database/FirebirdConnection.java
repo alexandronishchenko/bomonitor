@@ -6,7 +6,10 @@ import ru.x5.bomonitor.bomonitor;
 import ru.x5.bomonitor.database.Entity.ItemPrice;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.*;
+import java.util.Properties;
 
 public class FirebirdConnection {
     private String posName;
@@ -19,7 +22,13 @@ public class FirebirdConnection {
 
     public FirebirdConnection(String posName) {
         this.posName = posName;
-        DB_URL = posName;
+//        try {
+//            String address=InetAddress.getAllByName(this.posName)[0].toString();
+//            DB_URL= address.substring(address.indexOf("/")+1);
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
+        DB_URL=posName;
         DB_PATH = bomonitor.properties.getProperty("fb_path") + "standard_stamm.";
 
     }
@@ -34,9 +43,19 @@ public class FirebirdConnection {
         Connection con = null;
         int dbIterator = 0;
         boolean success = false;
+//        Properties props = new Properties();
+//        props.setProperty("user", DB_USER);
+//        props.setProperty("password", DB_PASSWORD);
+//        props.setProperty("encoding", "UTF8");
+        try {
+            Class.forName("org.firebirdsql.jdbc.FBDriver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("CLASS not found");
+            e.printStackTrace();
+        }
         while (dbIterator < 10 && !success) {
             try {
-                String connection = "jdbc:firebirdsql://" + DB_URL + ":3052/" + DB_PATH + dbIterator + ".gdb";
+                String connection = "jdbc:firebirdsql://" + DB_URL + ":3052/" + DB_PATH + dbIterator + ".gdb?charSet=utf-8";
                 //connection="jdbc:firebirdsql://"+"192.168.224.49"+"/3052:/"+DB_PATH+dbIterator+".gdb?charSet=utf-8";
                 con = DriverManager.getConnection(connection, DB_USER, DB_PASSWORD);
                 System.out.println("connecting to -> " + connection);
