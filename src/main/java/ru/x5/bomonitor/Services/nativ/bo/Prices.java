@@ -138,7 +138,7 @@ public class Prices extends ParrentNativeService {
                     ERROR+=" "+pos.getName()+" does not have ITEM: "+itemPricesTableBO.getList().get(i).getItemId()+" with "+
                             itemPricesTableBO.getList().get(i).getPriceType()+"type code and amount: "+itemPricesTableBO.getList().get(i).getPrice();
                 }else{
-                    logger.insertRecord(this,pos.getName()+" Ok...", LogLevel.warn);
+                    logger.insertRecord(this,pos.getName()+" Ok...", LogLevel.debug);
                 }
             }
 
