@@ -2,6 +2,7 @@ package ru.x5.bomonitor.zabbix;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
+import ru.x5.bomonitor.ServiceController;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.IOException;
@@ -10,6 +11,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+/**
+ * Zabbix agent implementation. Listen port from properties. And run threads for each connection.
+ */
+@ServiceController(name="Zabbix agent service controller.")
 public class ZabbixAgentServer implements Runnable {
     private static Logger loger = bomonitor.getLogger();
     private Boolean isRun = true;

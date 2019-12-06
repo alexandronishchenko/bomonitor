@@ -66,12 +66,21 @@
 
     </build>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+<!--        STRUCTURE-->
+        <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.6</version>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+
+<!--        TESTS-->
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -86,22 +95,19 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
-        </dependency>
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.firebirdsql.jdbc/jaybird &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.firebirdsql.jdbc</groupId>-->
-<!--            <artifactId>jaybird</artifactId>-->
-<!--            <version>2.1.6</version>-->
-<!--        </dependency>-->
+
+
+<!--        DATABASE-->
         <dependency>
             <groupId>org.firebirdsql.jdbc</groupId>
             <artifactId>jaybird-jdk18</artifactId>
             <version>3.0.5</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.6</version>
         </dependency>
     </dependencies>
 

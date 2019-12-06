@@ -2,6 +2,7 @@ package ru.x5.bomonitor.zabbix;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
+import ru.x5.bomonitor.ServiceController;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.IOException;
@@ -13,6 +14,10 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/**
+ * Zabbix client. Resend packets to naive zabix-agent.
+ */
+@ServiceController(name="Zabbix client implementation.")
 public class ZabbixProxing {
     private Socket connector;
 

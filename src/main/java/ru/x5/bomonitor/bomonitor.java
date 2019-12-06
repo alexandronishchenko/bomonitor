@@ -6,16 +6,16 @@ import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.StringMetric;
+import ru.x5.bomonitor.Services.ZQL.Composer;
 import ru.x5.bomonitor.Services.ZabbixRequest;
-import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.jmx.ServiceJMXInterface;
 import ru.x5.bomonitor.Services.jmx.ServiceUnitJMX;
+import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class bomonitor {
         properties = new Properties();
         try {
             properties.load(new FileInputStream("/etc/zabbix/bomonitor/bomonitor.properties"));
-            System.getProperties().setProperty("project",properties.getProperty("project"));//установка сети магазинов для вариабильности работы.
+            System.getProperties().setProperty("project", properties.getProperty("project"));//установка сети магазинов для вариабильности работы.
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +43,8 @@ public class bomonitor {
 
     public static void main(String[] args) {
         initializeNativeServices();
-        if (args.length == 1) {
+        if (args.length == 1 && args[0].equals("daemon")) {
+            ArrayList<String> servicesToStart = new ArrayList<>();
             System.out.println("testing zabbix");
             logger.insertRecord(bomonitor.class.getName(), "Testing zabbix", LogLevel.info);
             ZabbixAgentServer zi = new ZabbixAgentServer(Integer.parseInt(properties.getProperty("port")));
@@ -71,11 +72,15 @@ public class bomonitor {
             System.out.println("incorrect param");
             printAllMetrics();
         } else {
-            SyncJob job = new SyncJob();
-            for (int i = 0; i < args.length; i++) {
-                job.addDirective(args[i]);
+            //old paradigm with parameters script call.
+            System.out.println("run with old paradigm. SOUT results. To run zabbix and log run with @daemon@ param.");
+            Composer composer = new Composer(args[0]);
+            String result = String.valueOf(composer.getResult());
+            if (result.equals("null")) {
+                logger.insertRecord(bomonitor.class, "Null result. Sending empty row.", LogLevel.debug);
+                result = "";
             }
-            System.out.println(job.runJob());
+            System.out.println(result);
         }
     }
 
