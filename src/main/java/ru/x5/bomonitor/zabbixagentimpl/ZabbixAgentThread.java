@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.zabbix;
+package ru.x5.bomonitor.zabbixagentimpl;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;

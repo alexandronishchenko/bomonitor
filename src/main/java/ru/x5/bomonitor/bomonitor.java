@@ -12,15 +12,14 @@ import ru.x5.bomonitor.Services.jmx.ServiceJMXInterface;
 import ru.x5.bomonitor.Services.jmx.ServiceUnitJMX;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.zabbix.ZabbixAgentServer;
+import ru.x5.bomonitor.logparser.LogService;
+import ru.x5.bomonitor.zabbixagentimpl.ZabbixAgentServer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+
 
 /**
  * Класс для запуска - основной.
@@ -29,6 +28,7 @@ public class bomonitor {
 
     public static Properties properties;
     public static Logger logger;
+    public static volatile boolean run;
 
     static {
         properties = new Properties();
@@ -42,29 +42,21 @@ public class bomonitor {
     }
 
     public static void main(String[] args) {
+        run=true;
         initializeNativeServices();
         if (args.length == 1 && args[0].equals("daemon")) {
-            ArrayList<String> servicesToStart = new ArrayList<>();
-            System.out.println("testing zabbix");
-            logger.insertRecord(bomonitor.class.getName(), "Testing zabbix", LogLevel.info);
-            ZabbixAgentServer zi = new ZabbixAgentServer(Integer.parseInt(properties.getProperty("port")));
-            Thread zabbix = new Thread(zi);
-            zabbix.start();
-            while (true) {
-                try {
-                    Thread.sleep(20000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (!zi.getRun()) {
-                    try {
-                        Thread.sleep(20000);
-                    } catch (InterruptedException e) {
-                        logger.insertRecord(bomonitor.class.getName(), "Socket rerun.", LogLevel.info);
-                        e.printStackTrace();
-                    }
-                    zabbix.start();
-                }
+            List<String> servicesToStart = new ArrayList<>();
+            servicesToStart= Arrays.asList(properties.getProperty("services").split(","));
+            //zabbixagentimpl,zabbixagentcli,logparse,jmxcli
+            //jmxcli checking at Composer.
+            //zabbixagentcli checking at Composer befor creating instance.
+            //other checks here.
+            System.out.println("testing bomonitor daemon");
+            logger.insertRecord(bomonitor.class.getName(), "Testing bomonitor daemon", LogLevel.info);
+
+
+            while (isRun()) {
+                checkServices(servicesToStart);
             }
 
 
@@ -82,6 +74,7 @@ public class bomonitor {
             }
             System.out.println(result);
         }
+        run=false;
     }
 
     /**
@@ -167,4 +160,48 @@ public class bomonitor {
         return logger;
     }
 
+    public static boolean isRun(){
+        return run;
+    }
+
+    private static void  checkServices(List<String> servicesToStart){
+        ZabbixAgentServer zi=null;
+        Thread zabbix=null;
+        if(servicesToStart.contains("zabbixagentimpl")){
+            zi = new ZabbixAgentServer(Integer.parseInt(properties.getProperty("port")));
+            zabbix = new Thread(zi);
+            zabbix.start();
+        }
+        LogService ls = null;
+        Thread logservice=null;
+        if(servicesToStart.contains("logparse")){
+            ls= LogService.getInstance();
+            logservice = new Thread(ls);
+            logservice.start();
+        }
+            try {
+                Thread.sleep(20000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (!zi.getRun()) {
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
+                    logger.insertRecord(bomonitor.class.getName(), "Socket rerun.", LogLevel.info);
+                    e.printStackTrace();
+                }
+                zabbix.start();
+            }
+            if (!ls.isRun()) {
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
+                    logger.insertRecord(bomonitor.class.getName(), "Socket rerun.", LogLevel.info);
+                    e.printStackTrace();
+                }
+                logservice.start();
+            }
+
+    }
 }

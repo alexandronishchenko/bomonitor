@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.zabbix;
+package ru.x5.bomonitor.zabbixagentcli;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
@@ -19,6 +19,11 @@ import java.nio.ByteOrder;
  */
 @ServiceController(name="Zabbix client implementation.")
 public class ZabbixProxing {
+    Logger logger = bomonitor.getLogger();
+    public ZabbixProxing() {
+        logger.insertRecord(this,"Zabbix-agent client service initialized.",LogLevel.debug);
+    }
+
     private Socket connector;
 
     private static Logger loger=bomonitor.getLogger();

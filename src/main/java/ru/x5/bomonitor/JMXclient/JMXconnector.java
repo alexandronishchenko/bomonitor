@@ -2,6 +2,7 @@ package ru.x5.bomonitor.JMXclient;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
+import ru.x5.bomonitor.ServiceController;
 import ru.x5.bomonitor.Services.ZQL.JMXservice;
 import ru.x5.bomonitor.bomonitor;
 import sun.net.util.IPAddressUtil;
@@ -18,7 +19,6 @@ import java.net.UnknownHostException;
 /**
  * Класс используется для непосредственного открытия и закрытия коннектора к JMX-серверу приложения.
  */
-
 public class JMXconnector {
 
     private String HOST;
