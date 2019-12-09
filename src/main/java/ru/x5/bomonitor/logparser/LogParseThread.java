@@ -25,7 +25,7 @@ public class LogParseThread implements Runnable, LogMonitor {
     private Cache cache;
     private CachedRecordEntity recordEntity;
     private File logFile;
-    private FileTime createdTime;
+    private Long createdTime;
     private FileInputStream fileInputStream;
     private Logger logger = bomonitor.getLogger();
     private FileChannel fc = null;
@@ -42,7 +42,7 @@ public class LogParseThread implements Runnable, LogMonitor {
         List<String> consList= Arrays.asList(bomonitor.properties.getProperty("log.consumer").split(","));
         this.consumers=new ArrayList<>();
         consList.forEach(consumer -> this.consumers.add(new Consumer(consumer)));
-        createdTime= fileAttributes.creationTime();
+        createdTime= fileAttributes.creationTime().toMillis();
         this.running = true;
         logger.insertRecord(this, "Parsing of log: " + this.logFile.getAbsolutePath() + " started.", LogLevel.info);
         this.cache = Cache.getInstance();
@@ -54,11 +54,19 @@ public class LogParseThread implements Runnable, LogMonitor {
     @Override
     public void run() {
         while (running) {
-//            if(!isSameFile()){
-//                this.recordEntity.setFilePosition(0);
-//                cache.cacheRecord();
-//                continue;
-//            }
+            if(!isSameFile()){
+                long curTime = 0;
+                try {
+                    curTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).creationTime().toMillis();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                createdTime=curTime;
+                this.recordEntity.setFilePosition(0);
+                this.recordEntity.setTime(new Date(curTime));
+                cache.cacheRecord();
+                continue;
+            }
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -83,9 +91,9 @@ public class LogParseThread implements Runnable, LogMonitor {
                 StringBuilder sb = new StringBuilder();
                 while ((i = fileInputStream.read()) != -1) {
                     //Если файл поменялся - прерываем цикл и открываем все заново.
-//                    if(!isSameFile()){
-//                        break;
-//                    }
+                    if(!isSameFile()){
+                        break;
+                    }
 
                     // get channel position
                     this.recordEntity.setFilePosition(fc.position());
@@ -119,14 +127,15 @@ public class LogParseThread implements Runnable, LogMonitor {
 
     private boolean isSameFile(){
         boolean same=false;
-        BasicFileAttributes cur = null;
+        long curTime=0;
         try {
-            cur = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class);
+            curTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).creationTime().toMillis();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Cant load time attributes.");
         }
-        if(createdTime.equals(cur.creationTime()))same=true;
+        if(createdTime==curTime)same=true;
+        if(this.recordEntity.getTime().getTime()<curTime)same=false;
         return same;
     }
 
