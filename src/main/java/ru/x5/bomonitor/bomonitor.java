@@ -55,9 +55,9 @@ public class bomonitor {
             logger.insertRecord(bomonitor.class.getName(), "Testing bomonitor daemon", LogLevel.info);
 
 
-            while (isRun()) {
+
                 checkServices(servicesToStart);
-            }
+
 
 
         } else if (args.length == 0) {
@@ -179,6 +179,7 @@ public class bomonitor {
             logservice = new Thread(ls);
             logservice.start();
         }
+        while (isRun()) {
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {
@@ -197,11 +198,12 @@ public class bomonitor {
                 try {
                     Thread.sleep(20000);
                 } catch (InterruptedException e) {
-                    logger.insertRecord(bomonitor.class.getName(), "Socket rerun.", LogLevel.info);
+                    logger.insertRecord(bomonitor.class.getName(), "Log monitor rerun.", LogLevel.info);
                     e.printStackTrace();
                 }
                 logservice.start();
             }
+        }
 
     }
 }

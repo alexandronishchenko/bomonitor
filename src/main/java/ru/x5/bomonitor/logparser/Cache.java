@@ -3,9 +3,7 @@ package ru.x5.bomonitor.logparser;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 public class Cache {
     private static Cache instance;
@@ -14,7 +12,36 @@ public class Cache {
 
     private Cache() {
         this.cache = new File(bomonitor.properties.getProperty("cache.file"));
-        cashedRecords = new HashSet<>();
+        if(!cache.exists()) {
+            try {
+                cache.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        List<String> logFiles = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
+        //Initialize records from file.
+        cashedRecords=new HashSet<>();
+        if(cache.length()==0){
+            for(String file : logFiles){
+                File log = new File(file);
+                cashedRecords.add(new CachedRecordEntity("", new Date(), log.getName(), log.length(), 0));
+            }
+            cacheRecord();
+        }else {
+            ObjectInputStream is = getInputStream();
+            try {
+                while (is.available() >= 0) {
+                    cashedRecords.add((CachedRecordEntity) is.readObject());
+                }
+                is.close();
+            }catch (IOException | ClassNotFoundException | NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+
+
+
     }
 
     static Cache getInstance() {
@@ -26,33 +53,6 @@ public class Cache {
 
 
     synchronized void cacheRecord() {
-
-    }
-
-    synchronized CachedRecordEntity getRecord() {
-
-        return null;
-    }
-
-    synchronized CachedRecordEntity getRecordForFile(File file) {
-        syncList();
-        CachedRecordEntity record = null;
-        for (CachedRecordEntity rec : cashedRecords) {
-            if (rec.fileName.equals(file.getName())) record = rec;
-        }
-        if (null == record) {
-            record = new CachedRecordEntity("", new Date(), file.getName(), file.length(), 0);
-        }
-        cashedRecords.add(record);
-        updateList();
-        return record;
-    }
-
-    synchronized void updateRecord(CachedRecordEntity recordEntity){
-        cashedRecords.add(recordEntity);
-        updateList();
-    }
-    synchronized private void updateList() {
         ObjectOutputStream os = getOutputStream();
         try {
             for (CachedRecordEntity rec : cashedRecords) {
@@ -63,15 +63,38 @@ public class Cache {
         }catch (IOException e){
             e.printStackTrace();
         }
-//            while (is.available()>0) {
-//                cashedRecords.add((CachedRecordEntity) is.readObject());
-//            }
     }
+
+
+    synchronized CachedRecordEntity getRecordForFile(File file) {
+        //syncList();
+        CachedRecordEntity record = null;
+        for (CachedRecordEntity rec : cashedRecords) {
+            if (rec.fileName.equals(file.getName())) record = rec;
+        }
+        if (null == record) {
+            record = new CachedRecordEntity("", new Date(), file.getName(), file.length(), 0);
+        }
+        cashedRecords.add(record);
+        //updateList();
+        return record;
+    }
+
+//    synchronized void updateRecord(CachedRecordEntity recordEntity){
+//        cashedRecords.add(recordEntity);
+//        updateList();
+//    }
+//    synchronized private void updateList() {
+//
+////            while (is.available()>0) {
+////                cashedRecords.add((CachedRecordEntity) is.readObject());
+////            }
+//    }
 
     synchronized private void syncList() {
         ObjectInputStream is = getInputStream();
         try {
-            while (is.available() > 0) {
+            while (is.available() >= 0) {
                 cashedRecords.add((CachedRecordEntity) is.readObject());
             }
             is.close();
@@ -80,6 +103,9 @@ public class Cache {
         }
     }
 
+
+
+    //Stream getters
     synchronized private ObjectInputStream getInputStream() {
         ObjectInputStream is=null;
         if(cache.length()>0) {

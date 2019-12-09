@@ -40,7 +40,7 @@ public class LogService implements Runnable{
     @Override
     public void run() {
         run=true;
-        List<String> files = Arrays.asList(bomonitor.properties.getProperty("logfiles").split(","));
+        List<String> files = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
         List<Thread> logMonitors = new ArrayList<>();
         files.forEach(file -> {
             logMonitors.add(new Thread(new LogParseThread(file)));
