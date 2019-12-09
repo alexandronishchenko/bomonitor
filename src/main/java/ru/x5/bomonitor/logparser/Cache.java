@@ -3,7 +3,10 @@ package ru.x5.bomonitor.logparser;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 public class Cache {
     private static Cache instance;
@@ -12,7 +15,7 @@ public class Cache {
 
     private Cache() {
         this.cache = new File(bomonitor.properties.getProperty("cache.file"));
-        if(!cache.exists()) {
+        if (!cache.exists()) {
             try {
                 cache.createNewFile();
             } catch (IOException e) {
@@ -21,25 +24,24 @@ public class Cache {
         }
         List<String> logFiles = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
         //Initialize records from file.
-        cashedRecords=new HashSet<>();
-        if(cache.length()==0){
-            for(String file : logFiles){
+        cashedRecords = new HashSet<>();
+        if (cache.length() == 0) {
+            for (String file : logFiles) {
                 File log = new File(file);
                 cashedRecords.add(new CachedRecordEntity("", new Date(), log.getName(), log.length(), 0));
             }
             cacheRecord();
-        }else {
+        } else {
             ObjectInputStream is = getInputStream();
             try {
                 while (is.available() >= 0) {
                     cashedRecords.add((CachedRecordEntity) is.readObject());
                 }
                 is.close();
-            }catch (IOException | ClassNotFoundException | NullPointerException e){
+            } catch (IOException | ClassNotFoundException | NullPointerException e) {
                 e.printStackTrace();
             }
         }
-
 
 
     }
@@ -60,7 +62,7 @@ public class Cache {
             }
             os.flush();
             os.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -80,16 +82,6 @@ public class Cache {
         return record;
     }
 
-//    synchronized void updateRecord(CachedRecordEntity recordEntity){
-//        cashedRecords.add(recordEntity);
-//        updateList();
-//    }
-//    synchronized private void updateList() {
-//
-////            while (is.available()>0) {
-////                cashedRecords.add((CachedRecordEntity) is.readObject());
-////            }
-//    }
 
     synchronized private void syncList() {
         ObjectInputStream is = getInputStream();
@@ -98,17 +90,16 @@ public class Cache {
                 cashedRecords.add((CachedRecordEntity) is.readObject());
             }
             is.close();
-        }catch (IOException | ClassNotFoundException | NullPointerException e){
+        } catch (IOException | ClassNotFoundException | NullPointerException e) {
             e.printStackTrace();
         }
     }
 
 
-
     //Stream getters
     synchronized private ObjectInputStream getInputStream() {
-        ObjectInputStream is=null;
-        if(cache.length()>0) {
+        ObjectInputStream is = null;
+        if (cache.length() > 0) {
             try {
                 is = new ObjectInputStream(new FileInputStream(cache));
             } catch (IOException ex) {
@@ -120,7 +111,7 @@ public class Cache {
     }
 
     synchronized private ObjectOutputStream getOutputStream() {
-        ObjectOutputStream os=null;
+        ObjectOutputStream os = null;
         try {
             os = new ObjectOutputStream(new FileOutputStream(cache));
         } catch (IOException ex) {

@@ -3,7 +3,7 @@ package ru.x5.bomonitor.logparser;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
-import ru.x5.bomonitor.logparser.consumers.Consumer;
+import ru.x5.bomonitor.logparser.consumers.Sender;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,14 +13,12 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class LogParseThread implements Runnable, LogMonitor {
-    private List<Consumer> consumers;
+    private Sender sender;
     private volatile boolean running;
     private Cache cache;
     private CachedRecordEntity recordEntity;
@@ -39,10 +37,9 @@ public class LogParseThread implements Runnable, LogMonitor {
             e.printStackTrace();
             System.out.println("Cant load time attributes.");
         }
-        List<String> consList= Arrays.asList(bomonitor.properties.getProperty("log.consumer").split(","));
-        this.consumers=new ArrayList<>();
-        consList.forEach(consumer -> this.consumers.add(new Consumer(consumer)));
-        createdTime= fileAttributes.creationTime().toMillis();
+        List<String> consList = Arrays.asList(bomonitor.properties.getProperty("log.consumer").split(","));
+        this.sender =new Sender();
+        createdTime = fileAttributes.creationTime().toMillis();
         this.running = true;
         logger.insertRecord(this, "Parsing of log: " + this.logFile.getAbsolutePath() + " started.", LogLevel.info);
         this.cache = Cache.getInstance();
@@ -54,14 +51,14 @@ public class LogParseThread implements Runnable, LogMonitor {
     @Override
     public void run() {
         while (running) {
-            if(!isSameFile()){
+            if (!isSameFile()) {
                 long curTime = 0;
                 try {
                     curTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).creationTime().toMillis();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                createdTime=curTime;
+                createdTime = curTime;
                 this.recordEntity.setFilePosition(0);
                 this.recordEntity.setTime(new Date(curTime));
                 cache.cacheRecord();
@@ -91,7 +88,7 @@ public class LogParseThread implements Runnable, LogMonitor {
                 StringBuilder sb = new StringBuilder();
                 while ((i = fileInputStream.read()) != -1) {
                     //Если файл поменялся - прерываем цикл и открываем все заново.
-                    if(!isSameFile()){
+                    if (!isSameFile()) {
                         break;
                     }
 
@@ -121,27 +118,27 @@ public class LogParseThread implements Runnable, LogMonitor {
 
 
     private void sendLine(String line) {
-        System.out.println(line);
-        //this.consumers.forEach(consumer -> sendLine(line));
+        this.sender.sendLine(line);
     }
 
-    private boolean isSameFile(){
-        boolean same=false;
-        long curTime=0;
+    private boolean isSameFile() {
+        boolean same = false;
+        long curTime = 0;
         try {
             curTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).creationTime().toMillis();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Cant load time attributes.");
         }
-        if(createdTime==curTime)same=true;
-        if(this.recordEntity.getTime().getTime()<curTime)same=false;
+        if (createdTime == curTime) same = true;
+        if (this.recordEntity.getTime().getTime() < curTime) same = false;
         return same;
     }
 
-    private void getActualVars(){
+    private void getActualVars() {
 
     }
+
     //Service methods
     public boolean isRunning() {
         return running;
