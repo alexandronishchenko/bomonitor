@@ -4,6 +4,6 @@ public class KafkaSenderConnector implements SenderConnector {
     @Override
     public boolean sendLine(String s) {
         //implement and inject kafka from kafka package.
-        return false;
+        return true;
     }
 }

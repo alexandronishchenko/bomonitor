@@ -9,8 +9,8 @@ public class DinamicMessageQueue {
     private Deque<String> messages;
     private File history;
     private SenderCache senderCache;
+    List<SenderConnector> connectors=new ArrayList<>();
 
-    List<SenderConnector> connectors;
     public DinamicMessageQueue() {
         messages=new ArrayDeque<>();
         List<String> conNames=Arrays.asList(bomonitor.properties.getProperty("log.consumers").split(","));
@@ -22,12 +22,16 @@ public class DinamicMessageQueue {
                 break;
             }
         }
-        senderCache=new SenderCache(messages);
+        senderCache=SenderCache.getInstance(messages);
+        if(history==null){
+            getHistoryFile();
+        }
     }
 
 
     public void sendFirst(){
         //Если файла нет ждем 10 секунд
+        getHistoryFile();
         if(history==null){
             try {
                 Thread.sleep(10000);
@@ -38,13 +42,15 @@ public class DinamicMessageQueue {
         if(messages.size()==0){
             try {
                 Thread.sleep(10000);
+                senderCache.updateMessages(history);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }else {
-            String first = senderCache.getFirst();
+            String first = senderCache.getFirst(history);
             for(SenderConnector connector : connectors){
                 if(!connector.sendLine(first)){break;}else {
+                    senderCache.cacheRecord();
                     senderCache.uncacheFirst();
                 }
             }

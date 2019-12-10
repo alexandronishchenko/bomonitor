@@ -47,15 +47,21 @@ public class LogService implements Runnable{
             logMonitors.add(new Thread(new LogParseThread(file)));
         });
         logMonitors.forEach(monitor -> monitor.start());
-        Thread senderThread=new Thread(new Sender());
+        Sender sender = new Sender();
+        Thread senderThread=new Thread(sender);
         senderThread.start();
         while (isRun()){
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             for(Thread th : logMonitors){
                 if(!th.isAlive()){
                     th.start();
                 }
             }
-            if(!senderThread.isAlive()){
+            if(!sender.isRunning()){
                 senderThread.start();
             }
 

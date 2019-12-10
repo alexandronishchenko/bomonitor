@@ -37,7 +37,7 @@ public class LogParseThread implements Runnable, LogMonitor {
             e.printStackTrace();
             System.out.println("Cant load time attributes.");
         }
-        List<String> consList = Arrays.asList(bomonitor.properties.getProperty("log.consumer").split(","));
+
         this.queueSaver =new QueueSaver();
         createdTime = fileAttributes.creationTime().toMillis();
         this.running = true;

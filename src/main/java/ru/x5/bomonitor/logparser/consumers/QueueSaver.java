@@ -15,10 +15,11 @@ public class QueueSaver {
     }
 
     private void saveLine(String line){
+        System.out.println("Saving: " + line);
         File logFile = getHistoryFile();
         try {
-            FileWriter writer = new FileWriter(logFile);
-            writer.write(line);
+            FileWriter writer = new FileWriter(logFile,true);
+            writer.write(line+"\r");
             writer.flush();
             writer.close();
         } catch (IOException e) {

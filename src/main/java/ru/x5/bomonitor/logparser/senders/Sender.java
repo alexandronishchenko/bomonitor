@@ -6,9 +6,14 @@ public class Sender implements Runnable {
 
     @Override
     public void run() {
-        running=true;
+        this.running=true;
         messageQueue=new DinamicMessageQueue();
-        while (running){
+        while (this.running){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             trySend();
         }
         running=false;
@@ -18,4 +23,11 @@ public class Sender implements Runnable {
         messageQueue.sendFirst();
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
 }

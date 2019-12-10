@@ -1,6 +1,8 @@
 package ru.x5.bomonitor.logparser.senders;
 
-public class SenderCacheRecord {
+import java.io.Serializable;
+
+public class SenderCacheRecord implements Serializable {
     private long position;
 
     public long getPosition() {
