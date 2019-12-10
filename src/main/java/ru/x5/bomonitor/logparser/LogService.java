@@ -5,6 +5,7 @@ import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.ServiceController;
 import ru.x5.bomonitor.bomonitor;
+import ru.x5.bomonitor.logparser.senders.Sender;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,12 +47,18 @@ public class LogService implements Runnable{
             logMonitors.add(new Thread(new LogParseThread(file)));
         });
         logMonitors.forEach(monitor -> monitor.start());
+        Thread senderThread=new Thread(new Sender());
+        senderThread.start();
         while (isRun()){
             for(Thread th : logMonitors){
                 if(!th.isAlive()){
                     th.start();
                 }
             }
+            if(!senderThread.isAlive()){
+                senderThread.start();
+            }
+
             try{
                 Thread.currentThread().sleep(2000);
             } catch (InterruptedException e) {

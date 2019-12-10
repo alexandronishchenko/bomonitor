@@ -3,7 +3,7 @@ package ru.x5.bomonitor.logparser;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
-import ru.x5.bomonitor.logparser.consumers.Sender;
+import ru.x5.bomonitor.logparser.consumers.QueueSaver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 public class LogParseThread implements Runnable, LogMonitor {
-    private Sender sender;
+    private QueueSaver queueSaver;
     private volatile boolean running;
     private Cache cache;
     private CachedRecordEntity recordEntity;
@@ -38,7 +38,7 @@ public class LogParseThread implements Runnable, LogMonitor {
             System.out.println("Cant load time attributes.");
         }
         List<String> consList = Arrays.asList(bomonitor.properties.getProperty("log.consumer").split(","));
-        this.sender =new Sender();
+        this.queueSaver =new QueueSaver();
         createdTime = fileAttributes.creationTime().toMillis();
         this.running = true;
         logger.insertRecord(this, "Parsing of log: " + this.logFile.getAbsolutePath() + " started.", LogLevel.info);
@@ -118,7 +118,7 @@ public class LogParseThread implements Runnable, LogMonitor {
 
 
     private void sendLine(String line) {
-        this.sender.sendLine(line);
+        this.queueSaver.putLine(line);
     }
 
     private boolean isSameFile() {
