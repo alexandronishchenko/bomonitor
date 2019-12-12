@@ -72,7 +72,7 @@ public class ZabbixAgentServer implements Runnable {
                 this.isRun = false;
                 bomonitor.getLogger().insertRecord(this, "Socket was closed.", LogLevel.info);
                 Thread.currentThread().interrupt();
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         try {

@@ -3,6 +3,7 @@ package ru.x5.bomonitor.logparser.consumers;
 import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,9 @@ public class QueueSaver {
     }
     private File getHistoryFile(){
         File currentHistory = new File(bomonitor.properties.getProperty("log.history.dir")+"loghistory");
-        if(currentHistory.length()>=Integer.parseInt(bomonitor.properties.getProperty("log.history.maxsize"))*1024){
+        long currentHistoryLenth=currentHistory.length();
+        long maxLenth=Integer.parseInt(bomonitor.properties.getProperty("log.history.maxsize"))*102;//4*1024;
+        if(currentHistoryLenth>=maxLenth){
             currentHistory=rotateFile();
         }
         return currentHistory;
@@ -42,13 +45,40 @@ public class QueueSaver {
             }
         }));
         if(historyFiles.isEmpty()){
-            File fl = new File(bomonitor.properties.getProperty("log.history.dir")+"loghistory");
+            File fl = new File(path+"loghistory");
             try {
                 fl.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             historyFiles.add(fl);
+        }else{
+            //int iter = historyFiles.size();
+            ArrayList<String> names = new ArrayList<>();
+            for(File fl : historyFiles){
+                names.add(fl.getName().replaceAll("loghistory",""));
+            }
+            String name=null;
+            if(names.size()>1){
+                Collections.sort(names);
+                int num=Integer.parseInt(names.get(names.size()-1))+1;
+                name = path+"/loghistory"+num;
+            }else {
+                name=path+"/loghistory1";
+            }
+
+            File arch = new File(name);
+            File old = new File(path+"/loghistory");
+            old.renameTo(arch);
+
+            File fl = new File(path+"/loghistory");
+            try {
+                fl.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //historyFiles.add(fl);
+            return fl;
         }
         Collections.sort(historyFiles);
         return historyFiles.get(0);

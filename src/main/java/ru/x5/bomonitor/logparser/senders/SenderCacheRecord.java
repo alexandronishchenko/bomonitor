@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class SenderCacheRecord implements Serializable {
     private long position;
+    private String fileName;
 
     public long getPosition() {
         return position;
@@ -13,4 +14,11 @@ public class SenderCacheRecord implements Serializable {
         this.position = position;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 }

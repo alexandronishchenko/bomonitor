@@ -4,19 +4,29 @@ import ru.x5.bomonitor.bomonitor;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.Deque;
+import java.util.*;
 
 public class SenderCache {
 
     private static SenderCache instance;
 
-    Object lock=new Object();
+    Object lock = new Object();
     private File cache;
     Deque<String> messages;
     private int capacity;
     private SenderCacheRecord cacheRecord;
+    List<SenderConnector> connectors=new ArrayList<>();
+    private File history;
 
-    private SenderCache(Deque<String> messages) {
+    public static SenderCache getInstance() {
+        if (instance == null) {
+            instance = new SenderCache();
+        }
+        return instance;
+    }
+
+    //constructor
+    private SenderCache() {
         this.cache = new File(bomonitor.properties.getProperty("log.sender.cache"));
         if (!cache.exists()) {
             try {
@@ -28,43 +38,61 @@ public class SenderCache {
         if (cache.length() == 0) {
             this.cacheRecord = new SenderCacheRecord();
             this.cacheRecord.setPosition(0);
+            //this.cacheRecord.setFileName();
             cacheRecord();
         } else {
             cacheRecord = getRecord();
         }
-        this.messages = messages;
+        this.messages = new ArrayDeque<>();
         this.capacity = Integer.parseInt(bomonitor.properties.getProperty("sender.cache.capacity"));
-    }
-
-    public static SenderCache getInstance(Deque<String> messages) {
-        if (instance == null) {
-            instance = new SenderCache(messages);
+        getHistoryFile();
+        List<String> conNames=Arrays.asList(bomonitor.properties.getProperty("log.consumers").split(","));
+        for(String con : conNames){
+            switch (con){
+                case "kafka":connectors.add(new KafkaSenderConnector());
+                    break;
+                case "out":connectors.add(new OutSenderConnector());
+                    break;
+            }
         }
-        return instance;
     }
 
-    void updateMessages(File history) {
-        //TODO: check end of file. Open next.
-synchronized (lock) {
-    FileInputStream inputLog = null;
-    try {
-        inputLog = new FileInputStream(history);
-    } catch (FileNotFoundException | NullPointerException e) {
-        e.printStackTrace();
+    public void dropCache(){
+        this.cacheRecord.setPosition(0);
     }
-    if (inputLog != null) {
-        while (messages.size() <= capacity) {
-            loadString(inputLog);
+
+
+    boolean updateMessages() {
+        synchronized (lock) {
+            boolean fileFinished=false;
+            FileInputStream inputLog = null;
+            getHistoryFile();
+            try {
+                if(history!=null) inputLog = new FileInputStream(history);
+            } catch (FileNotFoundException | NullPointerException e) {
+                e.printStackTrace();
+            }
+            if (inputLog != null) {
+                this.cacheRecord.setFileName(history.getName());
+                while (messages.size() <= capacity && !fileFinished) {
+                    fileFinished=loadString(inputLog);
+                }
+            }
+
+            return fileFinished;
         }
 
     }
-}
-    }
 
-    synchronized String getFirst(File history) {
-        updateMessages(history);
+    synchronized String getFirst() {
+        if(messages.size()==0) {
+            removeOldFile();
 
-        return messages.getFirst();
+            updateMessages();
+        }
+        if(messages.size()!=0){
+            return messages.getFirst();
+        }else {return null;}
     }
 
     synchronized void uncacheFirst() {
@@ -122,8 +150,15 @@ synchronized (lock) {
         return os;
     }
 
+
     //job with file
-    void loadString(FileInputStream inputLog) {
+    boolean loadString(FileInputStream inputLog) {
+        boolean fileFinished = false;
+//        try {
+//            if (inputLog.available() < 0) {cacheRecord.setPosition(0);return true;}
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         FileChannel fc = inputLog.getChannel();
         int i = 0;
         long pos;
@@ -142,16 +177,100 @@ synchronized (lock) {
                 // integer to character
                 c = (char) i;
                 if (c == '\r' || c == '\n') {
-                    messages.addLast(sb.toString());
-//                    cacheRecord();
-                    sb = new StringBuilder();
+                messages.addFirst(sb.toString());
+                sb = new StringBuilder();
                 } else {
                     sb.append(c);
                 }
             }
+           // messages.addLast(sb.toString());
+            fileFinished=true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return fileFinished;
+    }
 
+
+
+
+    private void getHistoryFile() {
+        File path = new File(bomonitor.properties.getProperty("log.history.dir"));
+        List<File> historyFiles = Arrays.asList(path.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.startsWith("loghistory");
+            }
+        }));
+        if (historyFiles.isEmpty()) {
+            history = null;
+        } else {
+
+            Collections.sort(historyFiles);
+            if(historyFiles.size()>1){
+                ArrayList<Integer> names = new ArrayList<>();
+                for(File fl : historyFiles){
+                    try {
+                        names.add(Integer.parseInt(fl.getName().replaceAll("loghistory", "")));
+                    }catch (NumberFormatException e){
+                        names.add(0);
+                    }
+                }
+                //ames.stream().forEach(i -> Integer.parseInt(i));
+                Collections.sort(names);
+                //history = historyFiles.get(1);
+                for(File fl : historyFiles){
+                    //String sn = fl.getName();
+                    if(fl.getName().equals("loghistory"+names.get(1))) history=fl;
+                }
+            }else{
+                history = historyFiles.get(historyFiles.size() - 1);
+            }
+
+        }
+    }
+    private void removeOldFile(){
+        try{
+            if(history.getName().equals("loghistory")){
+                getHistoryFile();
+                return;
+            }
+            history.delete();
+            dropCache();
+            getHistoryFile();
+        }catch (NullPointerException e){
+            System.out.println("No history file");
+            //e.printStackTrace();
+        }
+
+    }
+
+
+    void sendFirst(){
+        boolean success=false;
+        try {
+            while (!success) {
+                for (SenderConnector connector : connectors) {
+                    if (!connector.sendLine(getFirst())) {
+                        success = false;
+                        System.out.println("retdsafsdfry!" + getFirst());
+                        break;
+                    } else {
+                        success = true;
+                    }
+                }
+
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+
+            }
+            cacheRecord();
+            messages.removeFirst();
+        }catch (NullPointerException e){
+            //e.printStackTrace();
+        }
     }
 }

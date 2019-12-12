@@ -10,11 +10,16 @@ public class Sender implements Runnable {
         messageQueue=new DinamicMessageQueue();
         while (this.running){
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            trySend();
+            try {
+                trySend();
+            }catch (NullPointerException e){
+                System.out.println("retry");
+                e.printStackTrace();
+            }
         }
         running=false;
     }
