@@ -30,7 +30,7 @@ public class QueueSaver {
     private File getHistoryFile(){
         File currentHistory = new File(bomonitor.properties.getProperty("log.history.dir")+"loghistory");
         long currentHistoryLenth=currentHistory.length();
-        long maxLenth=Integer.parseInt(bomonitor.properties.getProperty("log.history.maxsize"))*1024*20;
+        long maxLenth=Integer.parseInt(bomonitor.properties.getProperty("log.history.maxsize"))*1024*1024;
         if(currentHistoryLenth>=maxLenth){
             currentHistory=rotateFile();
         }
