@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.logparser;
+package ru.x5.bomonitor.logsender;
 
 import java.io.Serializable;
 import java.util.Date;

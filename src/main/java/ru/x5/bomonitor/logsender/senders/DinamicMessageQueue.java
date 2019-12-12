@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.logparser.senders;
+package ru.x5.bomonitor.logsender.senders;
 
 /**
  * Псевдообъект для работы с отсылкой. Singletone

@@ -1,9 +1,9 @@
-package ru.x5.bomonitor.logparser;
+package ru.x5.bomonitor.logsender;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
-import ru.x5.bomonitor.logparser.consumers.QueueSaver;
+import ru.x5.bomonitor.logsender.consumers.QueueSaver;
 
 import java.io.File;
 import java.io.FileInputStream;

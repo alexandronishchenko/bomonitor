@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.logparser.senders;
+package ru.x5.bomonitor.logsender.senders;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;

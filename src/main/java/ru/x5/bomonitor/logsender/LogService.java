@@ -1,13 +1,12 @@
-package ru.x5.bomonitor.logparser;
+package ru.x5.bomonitor.logsender;
 
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.ServiceController;
 import ru.x5.bomonitor.bomonitor;
-import ru.x5.bomonitor.logparser.senders.Sender;
+import ru.x5.bomonitor.logsender.senders.Sender;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

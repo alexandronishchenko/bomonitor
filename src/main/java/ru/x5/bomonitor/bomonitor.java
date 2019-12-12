@@ -12,7 +12,7 @@ import ru.x5.bomonitor.Services.jmx.ServiceJMXInterface;
 import ru.x5.bomonitor.Services.jmx.ServiceUnitJMX;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
-import ru.x5.bomonitor.logparser.LogService;
+import ru.x5.bomonitor.logsender.LogService;
 import ru.x5.bomonitor.zabbixagentimpl.ZabbixAgentServer;
 
 import java.io.FileInputStream;

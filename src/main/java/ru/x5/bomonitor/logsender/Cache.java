@@ -1,4 +1,4 @@
-package ru.x5.bomonitor.logparser;
+package ru.x5.bomonitor.logsender;
 
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
