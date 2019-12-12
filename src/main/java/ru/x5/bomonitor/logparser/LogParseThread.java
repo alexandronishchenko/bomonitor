@@ -39,7 +39,11 @@ public class LogParseThread implements Runnable, LogMonitor {
         }
 
         this.queueSaver =new QueueSaver();
-        createdTime = fileAttributes.creationTime().toMillis();
+        try {
+            createdTime = fileAttributes.creationTime().toMillis();
+        }catch (NullPointerException e){
+            System.out.println("no file");
+        }
         this.running = true;
         logger.insertRecord(this, "Parsing of log: " + this.logFile.getAbsolutePath() + " started.", LogLevel.info);
         this.cache = Cache.getInstance();
@@ -123,15 +127,17 @@ public class LogParseThread implements Runnable, LogMonitor {
 
     private boolean isSameFile() {
         boolean same = false;
-        long curTime = 0;
+        long crTime = 0;
+        long mdTime=0;
         try {
-            curTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).creationTime().toMillis();
+            crTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).creationTime().toMillis();
+            mdTime = Files.readAttributes(Paths.get(this.logFile.getAbsolutePath()), BasicFileAttributes.class).lastModifiedTime().toMillis();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Cant load time attributes.");
         }
-        if (createdTime == curTime) same = true;
-        if (this.recordEntity.getTime().getTime() < curTime) same = false;
+        if (createdTime == crTime || crTime==mdTime) same = true;
+        //if (this.recordEntity.getTime().getTime() < crTime) same = false;
         return same;
     }
 

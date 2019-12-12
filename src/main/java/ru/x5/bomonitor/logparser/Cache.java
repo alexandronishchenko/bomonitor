@@ -82,20 +82,6 @@ public class Cache {
         return record;
     }
 
-
-    synchronized private void syncList() {
-        ObjectInputStream is = getInputStream();
-        try {
-            while (is.available() >= 0) {
-                cashedRecords.add((CachedRecordEntity) is.readObject());
-            }
-            is.close();
-        } catch (IOException | ClassNotFoundException | NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     //Stream getters
     synchronized private ObjectInputStream getInputStream() {
         ObjectInputStream is = null;
