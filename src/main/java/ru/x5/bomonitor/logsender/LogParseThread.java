@@ -171,6 +171,7 @@ public class LogParseThread implements Runnable, LogMonitor {
      * @return
      */
     private boolean isSameFile() {
+        //TODO: Сделать: если файл поменялся. Берем сжатый предыдущий. Разархивируем его. Проверяем длинну файла с кэшем длинны. Если длинна больше - досохраняем строки и удаляем файл. Только затем обновляем кэш.
         boolean same = false;
         long crTime = 0;
         long mdTime = 0;
