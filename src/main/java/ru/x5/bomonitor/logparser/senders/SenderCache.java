@@ -177,7 +177,7 @@ public class SenderCache {
                 // integer to character
                 c = (char) i;
                 if (c == '\r' || c == '\n') {
-                messages.addFirst(sb.toString());
+                messages.addLast(sb.toString());
                 sb = new StringBuilder();
                 } else {
                     sb.append(c);
