@@ -3,6 +3,10 @@ package ru.x5.bomonitor.logparser;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Объект кэшированной записи позиции чтения из лога.
+ * Большинство полей неиспользуются вовсе.
+ */
 public class CachedRecordEntity implements Serializable {
     String value;
     Date time;
@@ -11,20 +15,20 @@ public class CachedRecordEntity implements Serializable {
     long filePosition;
 
     public CachedRecordEntity(String value, Date time, String fileName, long fileSize, long filePosition) {
-        this.value = value;
+//        this.value = value;
         this.time = time;
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.filePosition = filePosition;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+//    public String getValue() {
+//        return value;
+//    }
+//
+//    public void setValue(String value) {
+//        this.value = value;
+//    }
 
     public Date getTime() {
         return time;
@@ -65,9 +69,9 @@ public class CachedRecordEntity implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof CachedRecordEntity){
+        if (obj instanceof CachedRecordEntity) {
             return this.fileName.equals(((CachedRecordEntity) obj).fileName);
-        }else {
+        } else {
             return false;
         }
 

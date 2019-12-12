@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Service control log parsing threads. Singletone like zabbix-service thread.
+ * Service control log parsing threads. Singletone like zabbix-service thread. Singletone. @ServiceController
  */
 @ServiceController(name="Log monitor controller")
 public class LogService implements Runnable{
@@ -24,7 +24,7 @@ public class LogService implements Runnable{
 
     private LogService() {
         logger= bomonitor.getLogger();
-        logger.insertRecord(this,"Log monitoring started.", LogLevel.debug);
+        logger.insertRecord(this,"Log monitoring started.", LogLevel.info);
     }
     public static LogService getInstance(){
         if(instance==null){
@@ -38,6 +38,9 @@ public class LogService implements Runnable{
     }
 
 
+    /**
+     * Запускает и проверяет состояние потоков чтения и записи. Управляет Sender Saver Reader.
+     */
     @Override
     public void run() {
         run=true;
@@ -69,6 +72,7 @@ public class LogService implements Runnable{
                 Thread.currentThread().sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                logger.insertRecord(this,"Thread is dead", LogLevel.error);
             }
         }
         for (Thread th : logMonitors){

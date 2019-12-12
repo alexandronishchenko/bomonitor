@@ -1,25 +1,25 @@
 package ru.x5.bomonitor.logparser.senders;
 
-import ru.x5.bomonitor.bomonitor;
-
-import java.io.*;
-import java.util.*;
-
+/**
+ * Псевдообъект для работы с отсылкой. Singletone
+ */
 public class DinamicMessageQueue {
     private SenderCache senderCache;
 
-
+    /**
+     * Возвращает один инстанс.
+     */
     public DinamicMessageQueue() {
-        senderCache=SenderCache.getInstance();
+        senderCache = SenderCache.getInstance();
     }
 
 
-    public void sendFirst(){
+    /**
+     * Пытается отправить первую строку в очереди на отправку, если таковые есть.
+     */
+    public void sendFirst() {
         senderCache.sendFirst();
-        }
-
-
-
+    }
 
 
 }
