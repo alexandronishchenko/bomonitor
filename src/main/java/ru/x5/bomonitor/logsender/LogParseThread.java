@@ -147,12 +147,6 @@ public class LogParseThread implements Runnable, LogMonitor {
             StringBuilder sb = new StringBuilder();
             //читает строку
             while ((i = fileInputStream.read()) != -1) {
-                //Если файл поменялся - прерываем цикл и открываем все заново.
-                if (!isSameFile()) {
-                    logger.insertRecord(this, "Log file was changed.", LogLevel.info);
-                    break;
-                }
-
                 // get channel position
                 this.recordEntity.setFilePosition(fc.position());
 
@@ -236,16 +230,22 @@ public class LogParseThread implements Runnable, LogMonitor {
             logFile=old;
             setCurrentFileInput(logFile);
             if(logFile.length()>recordEntity.getFileSize()) {
+                logger.insertRecord(this,"Saving strings from old file.",LogLevel.debug);
                 try {
-                    while (fileInputStream.available() > 0) {
+                    while (fileInputStream.available() > 0) {//до окончания файла отправляем строки.
                         readString();
                     }
                 } catch (IOException e) {
                     logger.insertRecord(this, "Cant load old-file input. Or no strings", LogLevel.error);
                 }
             }
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             logFile.delete();
-            logFile=new File(recordEntity.getFileName());
+            logFile=new File(recordEntity.getFileName());//возвращаем дефолтный файл
             setCurrentFileInput(logFile);
         }
     }
