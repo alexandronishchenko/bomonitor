@@ -84,7 +84,7 @@ public class LogParseThread implements Runnable, LogMonitor {
     public void run() {
         while (running) {
             if (!isSameFile()) {
-                //TODO: Сделать: если файл поменялся. Берем сжатый предыдущий. Разархивируем его. Проверяем длинну файла с кэшем длинны. Если длинна больше - досохраняем строки и удаляем файл. Только затем обновляем кэш.
+                //TODO: Проверить переключение назал на дефолтный файл в check-method.
                 checkAndLoadLastStrings();
                 returnToCurrentLogFile();
                 continue;

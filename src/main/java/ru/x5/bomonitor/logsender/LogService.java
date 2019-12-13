@@ -10,7 +10,7 @@ import ru.x5.bomonitor.logsender.senders.Sender;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+//TODO: cache handler instead different classes, filehandlers, keeper logs.
 /**
  * Service control log parsing threads. Singletone like zabbix-service thread. Singletone. @ServiceController
  */
