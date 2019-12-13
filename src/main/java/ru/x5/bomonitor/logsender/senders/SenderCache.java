@@ -129,7 +129,7 @@ public class SenderCache {
                 //e.printStackTrace();
             }
             if (inputLog != null) {
-                logger.insertRecord(this, "Started loading strings.", LogLevel.debug);
+                //logger.insertRecord(this, "Started loading strings.", LogLevel.debug);
                 this.cacheRecord.setFileName(history.getName());
                 while (messages.size() <= capacity && !fileFinished) {
                     fileFinished = loadString(inputLog);
@@ -148,7 +148,7 @@ public class SenderCache {
      */
     synchronized String getFirst() {
         if (messages.size() == 0) {
-            logger.insertRecord(this, "message size == 0", LogLevel.debug);
+            //logger.insertRecord(this, "message size == 0", LogLevel.debug);
             removeOldFile();
             updateMessages();
         }
@@ -316,7 +316,7 @@ public class SenderCache {
                 }
             } else {
                 history = historyFiles.get(historyFiles.size() - 1);
-                logger.insertRecord(this, "History will: " + history.getName(), LogLevel.debug);
+                //logger.insertRecord(this, "History will: " + history.getName(), LogLevel.debug);
             }
 
         }
@@ -363,7 +363,7 @@ public class SenderCache {
             cacheRecord();
             messages.removeFirst();
         } catch (NullPointerException e) {
-            logger.insertRecord(this, "No messages.", LogLevel.debug);
+            //logger.insertRecord(this, "No messages.", LogLevel.debug);
         }
     }
 }

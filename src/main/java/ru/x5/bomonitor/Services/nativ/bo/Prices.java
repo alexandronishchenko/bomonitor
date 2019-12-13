@@ -87,7 +87,6 @@ public class Prices extends ParrentNativeService {
     public String getPosBoDifference() throws SQLException {
         //получаем эталонный лист цен из БО.
         Table<ItemPrice> itemPricesTableBO = PostgresConnection.executeTableSelectPrices(PostgresSQLqueries.ITEM_SELLING_PRICES);
-//TODO добавить определение касс, получение листов с каждой кассы.
         //Определяем количество касс:
         ArrayList<POS> poses = new ArrayList<>();
    //     poses.add(0,new POS("localhost"));
