@@ -79,6 +79,6 @@ public class KafkaSenderConnector implements SenderConnector {
                 logger.insertRecord(this, "Record was not successfully sended." + s, LogLevel.debug);
             }
         });
-        return true;
+        return true;//success.isDone();
     }
 }

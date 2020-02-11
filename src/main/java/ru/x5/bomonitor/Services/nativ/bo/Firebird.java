@@ -5,6 +5,7 @@ import ru.x5.bomonitor.Services.nativ.ServiceNative;
 import ru.x5.bomonitor.Services.StringMetric;
 import ru.x5.bomonitor.Services.nativ.ServiceNativeInterface;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -37,43 +38,21 @@ public class Firebird extends ParrentNativeService {
 @Metric(value = "Репликация идет число",directive = "native.firebird.actual")
     public int isActualGDB(){
         int res=0;
-        boolean b=false;
         String file_name = "/usr/local/gkretail/bo/data/standard_stamm.gdb.zip";
-        BasicFileAttributes attr = null;
-        try {
-            attr = Files.readAttributes(Paths.get(file_name), BasicFileAttributes.class);
-            String created_date= String.valueOf(attr.creationTime());
-            long dt = new Date().getTime()-(24*60*60*1000);
-            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
-            String date = smp.format(new Date(dt));
-            b=date.equals(created_date.substring(0,10));
-        } catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("No file GDB");
-            return 0;
+        File gdbFile = new File(file_name);
+        if(gdbFile.exists()){
+            res=1;
         }
-        res=b?0:1;
         return res;
     }
     @StringMetric(value = "Репликация идет",directive = "native.firebird.stractual")
     public String StringIsActualGDB(){
         String res="";
-        boolean b=false;
         String file_name = "/usr/local/gkretail/bo/data/standard_stamm.gdb.zip";
-        BasicFileAttributes attr = null;
-        try {
-            attr = Files.readAttributes(Paths.get(file_name), BasicFileAttributes.class);
-            String created_date= String.valueOf(attr.creationTime());
-            long dt = new Date().getTime()-(24*60*60*1000);
-            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
-            String date = smp.format(new Date(dt));
-            b=date.equals(created_date.substring(0,10));
-        } catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("No file GDB");
-            return "No file GDB";
+        File gdbFile = new File(file_name);
+        if(!gdbFile.exists()){
+            res="Not actual GDB";
         }
-        res=b?"":"Not actual GDB";
         return res;
     }
 }

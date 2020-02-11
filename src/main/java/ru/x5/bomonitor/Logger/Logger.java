@@ -35,6 +35,8 @@ public class Logger {
             try {
                 String propLevel=level.name();
                 switch (bomonitor.properties.getProperty("log_level").toLowerCase()){
+                    case  "off":
+                        break;
                     case "debug":
                         if(propLevel.equals("debug")||propLevel.equals("info")||propLevel.equals("warn")||propLevel.equals("error")){write(writer,curDate+" <"+o.getClass().getName()+"> "+record+"\r\n");}
                         break;

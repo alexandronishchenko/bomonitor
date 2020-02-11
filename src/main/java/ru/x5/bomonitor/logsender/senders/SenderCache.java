@@ -350,10 +350,15 @@ public class SenderCache {
         boolean success = false;
         try {
             while (!success) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 for (SenderConnector connector : connectors) {
                     if (!connector.sendLine(getFirst())) {
                         success = false;
-                        System.out.println("retdsafsdfry!" + getFirst());
+                        System.out.println("retdsafsdfry!" +connector.getClass().getName()+ getFirst());
                         break;
                     } else {
                         success = true;

@@ -133,7 +133,7 @@ public class LogParseThread implements Runnable, LogMonitor {
             e.printStackTrace();
             System.out.println("Cant load time attributes.");
         }
-        if (createdTime == crTime || crTime != mdTime) same = true;//!!!
+        if (createdTime == crTime || crTime == mdTime) same = true;//!!!
         //if (this.recordEntity.getTime().getTime() < crTime) same = false;
         return same;
     }
