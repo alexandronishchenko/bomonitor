@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class Cache {
 
+    private int period;
     Logger logger = bomonitor.getLogger();
     /**
      * Инстанс.
@@ -37,6 +38,12 @@ public class Cache {
      * Конструктор. Проверяет и создает кэш-файл, проверяет наличие лога.
      */
     private Cache() {
+        try {
+            this.period=Integer.parseInt(bomonitor.properties.getProperty("cache.file.write.period"));
+        }catch (NullPointerException e){
+            System.out.println("Not setted property cache.file.write.period, use default =10");
+            this.period=10;
+        }
         this.cache = new File(bomonitor.properties.getProperty("cache.file"));
         if (!cache.exists()) {
             logger.insertRecord(this, "Creating new cache for read.", LogLevel.info);
