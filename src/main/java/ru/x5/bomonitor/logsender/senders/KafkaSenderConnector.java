@@ -44,7 +44,7 @@ public class KafkaSenderConnector implements SenderConnector {
             key = InetAddress.getLocalHost().getHostName();
             config.put("client.id", key);
             config.put("bootstrap.servers", bomonitor.properties.getProperty("kafka.servers"));
-            config.put("acks", "all");
+            config.put("acks", bomonitor.properties.getProperty("kafka.acks"));
             config.put("key.serializer", ByteArraySerializer.class);
             config.put("value.serializer", ByteArraySerializer.class);
         } catch (UnknownHostException e) {

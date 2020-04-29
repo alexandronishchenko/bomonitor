@@ -43,42 +43,42 @@ public class LogService implements Runnable{
     @Override
     public void run() {
         //TODO: use logsender (pos developed) library service.
-//        run=true;
-//        List<String> files = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
-//        List<Thread> logMonitors = new ArrayList<>();
-//        files.forEach(file -> {
-//            logMonitors.add(new Thread(new LogParseThread(file)));
-//        });
-//        logMonitors.forEach(monitor -> monitor.start());
-//        Sender sender = new Sender();
-//        Thread senderThread=new Thread(sender);
-//        senderThread.start();
-//        while (isRun()){
-//            try {
-//                Thread.sleep(5000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            for(Thread th : logMonitors){
-//                if(!th.isAlive()){
-//                    th.start();
-//                }
-//            }
-//            if(!sender.isRunning()){
-//                senderThread.start();
-//            }
-//
-//            try{
-//                Thread.currentThread().sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//                logger.insertRecord(this,"Thread is dead", LogLevel.error);
-//            }
-//        }
-//        for (Thread th : logMonitors){
-//            th.interrupt();
-//        }
-//        logger.insertRecord(this,"Log service finished.",LogLevel.debug);
+        run=true;
+        List<String> files = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
+        List<Thread> logMonitors = new ArrayList<>();
+        files.forEach(file -> {
+            logMonitors.add(new Thread(new LogParseThread(file)));
+        });
+        logMonitors.forEach(monitor -> monitor.start());
+        Sender sender = new Sender();
+        Thread senderThread=new Thread(sender);
+        senderThread.start();
+        while (isRun()){
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for(Thread th : logMonitors){
+                if(!th.isAlive()){
+                    th.start();
+                }
+            }
+            if(!sender.isRunning()){
+                senderThread.start();
+            }
+
+            try{
+                Thread.currentThread().sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                logger.insertRecord(this,"Thread is dead", LogLevel.error);
+            }
+        }
+        for (Thread th : logMonitors){
+            th.interrupt();
+        }
+        logger.insertRecord(this,"Log service finished.",LogLevel.debug);
     }
 
 }

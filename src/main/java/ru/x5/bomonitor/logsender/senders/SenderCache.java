@@ -3,6 +3,7 @@ package ru.x5.bomonitor.logsender.senders;
 import ru.x5.bomonitor.Logger.LogLevel;
 import ru.x5.bomonitor.Logger.Logger;
 import ru.x5.bomonitor.bomonitor;
+import ru.x5.bomonitor.logsender.CachedRecordEntity;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
@@ -14,6 +15,9 @@ import java.util.*;
  * и управляет файлами стории. Singletone. Имеет информацию об успешности отправки во все консьюмеры.
  */
 public class SenderCache {
+
+    private int period;
+    private int iteration=0;
 
     Logger logger = bomonitor.getLogger();
     /**
@@ -65,6 +69,12 @@ public class SenderCache {
      * log.consumers консьюмеры для отправки. (Есть только kafka,out).
      */
     private SenderCache() {
+        try {
+            this.period = Integer.parseInt(bomonitor.properties.getProperty("cache.file.send.period"));
+        } catch (NumberFormatException e) {
+            System.out.println("Not setted property cache.file.send.period, use default =10");
+            this.period = 10;
+        }
         this.cache = new File(bomonitor.properties.getProperty("log.sender.cache"));
         if (!cache.exists()) {
             try {
@@ -168,14 +178,19 @@ public class SenderCache {
      */
     //IO for notes
     synchronized void cacheRecord() {
-        ObjectOutputStream os = getOutputStream();
-        try {
-            os.writeObject(cacheRecord);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            logger.insertRecord(this, "Couldnot cache the record for sender. IO", LogLevel.error);
-            //e.printStackTrace();
+        if(this.period<this.iteration){
+            iteration++;
+        }else {
+            ObjectOutputStream os = getOutputStream();
+            try {
+                os.writeObject(cacheRecord);
+                os.flush();
+                os.close();
+            } catch (IOException e) {
+                logger.insertRecord(this, "Couldnot cache the record for sender. IO", LogLevel.error);
+                //e.printStackTrace();
+            }
+            iteration=0;
         }
     }
 
@@ -187,13 +202,14 @@ public class SenderCache {
     synchronized SenderCacheRecord getRecord() {
         SenderCacheRecord rec = null;
         ObjectInputStream is = getInputStream();
+        List<String> logs = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
         try {
-            while (is.available() >= 0) {
-                rec = ((SenderCacheRecord) is.readObject());
-            }
+
+            rec = ((SenderCacheRecord) is.readObject());
             is.close();
-        } catch (IOException | ClassNotFoundException | NullPointerException e) {
-            logger.insertRecord(this, "Couldnot load cache record for sender. IOException | ClassNotFoundException | NullPointerException", LogLevel.error);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return rec;

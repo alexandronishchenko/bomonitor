@@ -124,7 +124,12 @@ public class PostgresSQLqueries {
             "(select document_id from gk_upload_protocol) and XRG_BONPOS_STOLOTTO_TRANS.timestamp between now() - interval '432 hour' and now() - interval '1 hour' " +
             "or SUCCESS_FLAG='N' and XRG_BONPOS_STOLOTTO_TRANS.CANCEL_FLAG='N' and XRG_BONPOS_STOLOTTO_TRANS.timestamp " +
             "between now() - interval '432 hour' and now() - interval '1 hour' and jrnl.error_code not in('907','400','123','112','111','180','185','211','212','213','152','155','190','904')";
+   //BF all transactions
 
+    public static String UNSENT1BF="select document_id from gk_upload_protocol where document_id in(" +
+            "select document_id from gk_upload_protocol where document_id in " +
+            "(select GK_BONZAHLUNG.bon_seq_id from GK_BONZAHLUNG join gk_bonkopf on GK_BONZAHLUNG.bon_seq_id=gk_bonkopf.bon_seq_id where GK_BONZAHLUNG.BPR_CONFIRM_SUCCESS_FLAG='N') " +
+            " and process_timestamp between now() - interval '432 hour' and now() - interval '1 hour' ) and document_id not in (select document_id from xrg_clm_response_journal)";
 
     //Prices
     public static String COUNT_PRICE_GK="select count (*) from GK_PRICE_CHANGE_IMPORT where status = 'ERROR' and CREATION_TIMESTAMP > cast(? as date)";

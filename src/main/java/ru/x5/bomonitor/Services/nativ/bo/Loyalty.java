@@ -1,5 +1,6 @@
 package ru.x5.bomonitor.Services.nativ.bo;
 
+import ru.x5.bomonitor.bomonitor;
 import ru.x5.bomonitor.database.PostgresConnection;
 import ru.x5.bomonitor.Services.Metric;
 import ru.x5.bomonitor.Services.nativ.ServiceNative;
@@ -80,11 +81,19 @@ public class Loyalty extends  ParrentNativeService{
     }
     @StringMetric(value = "Неотправленные транзакции",directive = "native.loyalty.strunsent")
     public String getStringUnsentTransactions()throws SQLException{
+        String project = bomonitor.properties.getProperty("project");
         String result="";
-        String s1 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT1).get("bon_seq_id");
-        String s2 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT2).get("bon_seq_id");
-        if(!s1.equals("null")&&s1!=null)result+=s1;
-        if(s2.equals("null")&&s2!=null)result+=s2;
+        if(project.equals("TC5")) {
+            String s1 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT1).get("bon_seq_id");
+            String s2 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT2).get("bon_seq_id");
+            if (!s1.equals("null") && s1 != null) result += s1;
+            if (s2.equals("null") && s2 != null) result += s2;
+        }else if(project.equals("TCX") || project.equals("TCK")){
+            String s1 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT1BF).get("bon_seq_id");
+            String s2 = PostgresConnection.getNote(PostgresSQLqueries.UNSENT2).get("bon_seq_id");
+            if (!s1.equals("null") && s1 != null) result += s1;
+            if (s2.equals("null") && s2 != null) result += s2;
+        }
         return result;
 
     }

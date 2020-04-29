@@ -19,6 +19,7 @@ import java.util.List;
 public class Cache {
 
     private int period;
+    private int iteration = 0;
     Logger logger = bomonitor.getLogger();
     /**
      * Инстанс.
@@ -39,10 +40,10 @@ public class Cache {
      */
     private Cache() {
         try {
-            this.period=Integer.parseInt(bomonitor.properties.getProperty("cache.file.write.period"));
-        }catch (NullPointerException e){
+            this.period = Integer.parseInt(bomonitor.properties.getProperty("cache.file.write.period"));
+        } catch (NumberFormatException e) {
             System.out.println("Not setted property cache.file.write.period, use default =10");
-            this.period=10;
+            this.period = 10;
         }
         this.cache = new File(bomonitor.properties.getProperty("cache.file"));
         if (!cache.exists()) {
@@ -70,17 +71,28 @@ public class Cache {
             ObjectInputStream is = getInputStream();
             try {
                 logger.insertRecord(this, "Loading cache.", LogLevel.info);
-                while (is.available() >= 0) {
-                    cashedRecords.add((CachedRecordEntity) is.readObject());
-                }
+                loadCache(is);
                 is.close();
-            } catch (IOException | ClassNotFoundException | NullPointerException e) {
-                logger.insertRecord(this, "Loading has an error: IOException | ClassNotFoundException | NullPointerException.", LogLevel.error);
+            } catch (IOException | NullPointerException e) {
+                logger.insertRecord(this, "Loading has an error: IOException | NullPointerException.", LogLevel.error);
                 //e.printStackTrace();
             }
         }
 
 
+    }
+
+    private void loadCache(ObjectInputStream is) {
+        List<String> logs = Arrays.asList(bomonitor.properties.getProperty("log.files").split(","));
+        try {
+            for (String log : logs) {
+                cashedRecords.add((CachedRecordEntity) is.readObject());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -100,16 +112,21 @@ public class Cache {
      * Записать кэш из ОЗУ.
      */
     synchronized void cacheRecord() {
-        ObjectOutputStream os = getOutputStream();
-        try {
-            for (CachedRecordEntity rec : cashedRecords) {
-                os.writeObject(rec);
+        if (this.period < this.iteration) {
+            iteration++;
+        } else {
+            ObjectOutputStream os = getOutputStream();
+            try {
+                for (CachedRecordEntity rec : cashedRecords) {
+                    os.writeObject(rec);
+                }
+                os.flush();
+                os.close();
+            } catch (IOException e) {
+                logger.insertRecord(this, "Cache write error: IOException.", LogLevel.error);
+                e.printStackTrace();
             }
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            logger.insertRecord(this, "Cache write error: IOException.", LogLevel.error);
-            e.printStackTrace();
+            iteration=0;
         }
     }
 
